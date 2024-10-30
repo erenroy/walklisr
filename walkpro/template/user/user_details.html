@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+<style>
+    /* Main container styling */
+    .container {
+        max-width: 1200px;
+        width: 95%;
+        background: #f4f7fb;
+        padding: 30px;
+        margin: 20px auto;
+        border-radius: 12px;
+        display: flex;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Sidebar navigation */
+    .sidebar {
+        flex: 0.3;
+        background-color: #2a3644;
+        border-radius: 12px 0 0 12px;
+        padding: 20px;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    /* Profile picture styling in sidebar */
+    .sidebar .profile-picture img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar h2 {
+        font-size: 20px;
+        color: #e8ecf0;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .sidebar li {
+        margin: 10px 0;
+    }
+
+    .sidebar a {
+        color: #006aff;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 15px;
+        transition: color 0.3s ease;
+    }
+
+    .sidebar a:hover {
+        color: #f2f5f8;
+    }
+
+    /* Content area */
+    .content-area {
+        flex: 0.7;
+        padding: 10px 20px;
+    }
+
+    .section-header {
+        font-size: 22px;
+        color: #334455;
+        padding-bottom: 10px;
+        margin-bottom: 25px;
+        border-bottom: 1px solid #d1d9e0;
+    }
+
+    /* User information grid layout */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    /* Info card */
+    .info-card {
+        padding: 15px;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        border: 1px solid #d0d8df;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-card h3 {
+        font-size: 16px;
+        color: #334455;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e0e4e9;
+        margin-bottom: 10px;
+    }
+
+    .info-card strong {
+        font-size: 14px;
+        color: #556677;
+        display: block;
+        margin-top: 8px;
+    }
+
+    /* Button styling */
+    .button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 15px;
+        color: #ffffff;
+        background-color: #3c8dbc;
+        border-radius: 6px;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .button:hover {
+        background-color: #3572a6;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    @media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        flex: 1;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .content-area {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .sidebar h2 {
+        font-size: 18px;
+    }
+
+    .sidebar a {
+        font-size: 14px;
+    }
+
+    .info-card h3 {
+        font-size: 15px;
+    }
+
+    .info-card strong {
+        font-size: 13px;
+    }
+
+    .button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-card h3 {
+        font-size: 14px;
+    }
+
+    .info-card strong {
+        font-size: 12px;
+    }
+
+    .sidebar h2 {
+        font-size: 16px;
+    }
+
+    .sidebar a {
+        font-size: 12px;
+    }
+
+    .button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
+
+</style>
+
+<div class="container">
+    <!-- Sidebar for navigation and profile picture -->
+    <div class="sidebar">
+        <div class="profile-picture">
+            {% if profile.profile_pic %}
+                <img src="{{ profile.profile_pic.url }}" alt="Profile Picture">
+            {% else %}
+                <img src="{% static 'img/user.png' %}" alt="Default Profile Picture">
+            {% endif %}
+        </div>
+        <h2>{{ username }}</h2>
+        <ul>
+            <li><a href="#account-info">Account Information</a></li>
+            <li><a href="#profile-info">Profile Information</a></li>
+            <li><a href="#subscription-info">Subscription Details</a></li>
+        </ul>
+    </div>
+
+    <!-- Content area -->
+    <div class="content-area">
+        <h1>User Details</h1>
+
+        <!-- Account Information -->
+        <div id="account-info">
+            <h2 class="section-header">Account Information</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Username</h3>
+                    <strong>{{ username }}</strong>
+                </div>
+                <div class="info-card">
+                    <h3>Email</h3>
+                    <strong>{{ user_email }}</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Information -->
+        {% if profile %}
+            <div id="profile-info">
+                <h2 class="section-header">Profile Information</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>First Name</h3>
+                        <strong>{{ profile.first_name }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Last Name</h3>
+                        <strong>{{ profile.last_name }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Phone Number</h3>
+                        <strong>{{ profile.phone_number }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Country</h3>
+                        <strong>{{ profile.country }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>City</h3>
+                        <strong>{{ profile.city }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Street</h3>
+                        <strong>{{ profile.street }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Zip Code</h3>
+                        <strong>{{ profile.zip_code }}</strong>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>No profile information available.</p>
+        {% endif %}
+
+        <!-- Subscription Information -->
+        {% if subscription %}
+            <div id="subscription-info">
+                <h2 class="section-header">Subscription Details</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Plan Name</h3>
+                        <strong>{{ subscription.plan.name }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Price</h3>
+                        <strong>${{ subscription.plan.price }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Managers Allowed</h3>
+                        <strong>{{ subscription.plan.managers }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Poltakers Allowed</h3>
+                        <strong>{{ subscription.plan.poltakers }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Surveys Allowed</h3>
+                        <strong>{{ subscription.plan.surveys }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Contacts Allowed</h3>
+                        <strong>{{ subscription.plan.contacts }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Start Date</h3>
+                        <strong>{{ subscription.start_date }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Expiration Date</h3>
+                        <strong>{{ subscription.expiration_date }}</strong>
+                    </div>
+                    <div class="info-card">
+                        <h3>Active</h3>
+                        <strong>{{ subscription.is_active|yesno:"Yes,No" }}</strong>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p>No subscription information available.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

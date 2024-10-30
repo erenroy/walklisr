@@ -1,0 +1,58 @@
+.custom-label-title{
+    margin-right: 37%;
+}
+@media screen and (max-width: 800px) {
+    .plan-details {
+        padding: 10px; /* Add some padding */
+    }
+
+    .user-info-container {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        width: 100%; /* Full width */
+    }
+
+    .user-info-header,
+    .user-info-data {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Two columns layout */
+        gap: 10px; /* Space between items */
+    }
+
+    .header-item,
+    .data-item {
+        padding: 5px; /* Padding for better spacing */
+        border: 1px solid #ccc; /* Optional: Add border for better visibility */
+        border-radius: 4px; /* Rounded corners */
+        background-color: #f9f9f9; /* Light background for items */
+    }
+
+    .user-info-header {
+        font-weight: bold; /* Make header text bold */
+    }
+
+    hr {
+        display: none; /* Hide horizontal rule for smaller screens */
+    }
+    #main {
+        padding: 0px;
+    }
+    .custom-label-title{
+        margin-right: 10%;
+    }
+    .custom-search-bar {
+        display: block;
+        align-items: center;
+        gap: 10px;
+    }
+    
+.custom-dropbtn {
+    font-size: 0.8rem;
+   
+}
+.custom-search-button {
+ 
+    margin-top: 10px;
+    margin-left: 40%;
+}
+}

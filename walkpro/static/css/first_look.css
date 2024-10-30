@@ -1,0 +1,190 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white; /* Navbar background color */
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Background shadow */
+    height: 90px;
+}
+
+.logo img {
+    height: 50px; /* Adjust height as needed */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2b447c; /* Color for the links */
+    font-weight: bold;
+    font-size: 18px;
+    transition: color 0.3s; /* Smooth color transition on hover */
+}
+
+.nav-links a:hover {
+    color: #ff4b2b; /* Change link color on hover */
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.register, .login {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.register {
+    background-color: #2b447c;
+    border-color: #2b447c;
+    color: white;
+    cursor: pointer; /* Pointer cursor on hover */
+}
+.register:hover {
+    background-color: #ffffff;
+    border: 1px solid #2b447c; /* Correct way to set border */
+    color: rgb(0, 0, 0);
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+
+}
+
+.login {
+    background-color: #ffffff; /* Button background color */
+    border: 1px solid #2b447c; /* Correct way to set border */
+    color: rgb(0, 0, 0); /* Text color */
+    padding: 10px 15px; /* Ensure padding is set */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transitions */
+}
+
+/* Optional: Add hover effect for login button */
+.login:hover {
+    background-color: #2b447c; /* Light gray background on hover */
+    color: #ebebeb; /* Change text color on hover */
+}
+
+
+/* Optional: Add hover effects for buttons */
+.register:hover, .login:hover {
+    opacity: 0.9; /* Slightly dim buttons on hover */
+}
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; /* Stack elements vertically */
+        height: auto; /* Allow height to adjust */
+        padding: 10px; /* Adjust padding for mobile */
+    }
+
+    .nav-links {
+        flex-direction: column; /* Stack nav links vertically */
+        margin: 10px 0; /* Add margin between items */
+    }
+
+    .nav-links li {
+        margin: 5px 0; /* Adjust margin for stacked links */
+    }
+
+    .auth-buttons {
+        flex-direction: column; /* Stack auth buttons vertically */
+        gap: 10px; /* Add gap between buttons */
+    }
+
+    .register, .login {
+        width: 100%; /* Make buttons full width */
+        padding: 12px; /* Adjust padding for mobile */
+    }
+
+    .logo img {
+        height: 40px; /* Adjust logo height for smaller screens */
+    }
+}
+
+
+
+
+
+
+
+.site-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 20px;
+    background-color: #ffffff; /* Light background color */
+    border-radius: 10px; /* Rounded corners */
+    margin-left: 5%;
+    margin-top: 1%;
+}
+
+.site-content-1 {
+    flex: 1; /* Allow this section to take up available space */
+    max-width: 600px; /* Limit width for better readability */
+    margin-right: 20px; /* Space between the content and image */
+}
+
+.site-content-1 h1 {
+    font-size: 2.5rem; /* Heading size */
+    color: #2b447c; /* Heading color */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+.site-content-1 p {
+    font-size: 1.1rem; /* Paragraph size */
+    color: #333; /* Text color */
+    line-height: 1.6; /* Spacing between lines */
+    margin-bottom: 30px; /* Space below the paragraph */
+}
+
+button {
+    padding: 12px 20px; /* Padding for the button */
+    background-color:#2b447c; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1rem; /* Font size for button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #e03e26; /* Darker shade on hover */
+}
+
+.site-content-2 {
+    flex: 1; /* Allow this section to take up available space */
+    display: flex; /* Flex to center the image */
+    justify-content: center; /* Center horizontally */
+}
+
+.site-content-2 img {
+    max-width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 10px; /* Rounded corners for image */
+}

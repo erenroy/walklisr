@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Expired</title>
+</head>
+<body>
+    <h1>Your Subscription Has Expired</h1>
+    <p>Hello, {{ username }}!</p>
+    {% if expiration_date %}
+        <p>Your subscription expired on {{ expiration_date|date:"F j, Y" }}.</p>
+    {% else %}
+        <p>You have no active subscription.</p>
+    {% endif %}
+    <p>Please <a href="{% url 'subscription_plans' %}">renew your subscription</a> to access this content.</p>
+</body>
+</html>

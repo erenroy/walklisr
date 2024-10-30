@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Subscription{% endblock %}
+
+{% block content %}
+<style>
+    /* Base styles */
+    body {
+        font-family: 'Arial', sans-serif; /* Clean font */
+        background-color: #f0f0f0; /* Light gray background */
+        color: #333; /* Dark text for readability */
+        line-height: 1.6; /* Improved line height */
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
+    }
+
+    /* Centering container */
+    .container {
+        max-width: 800px; /* Increased max width for form */
+        margin: 50px auto; /* Centered with margin from top */
+        padding: 40px; /* Increased padding inside the container */
+        background-color: #ffffff; /* White background for form */
+        border-radius: 12px; /* More rounded corners */
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+        border: 1px solid #e0e0e0; /* Light gray border for definition */
+    }
+
+    /* Heading styles */
+    h1 {
+        font-size: 30px; /* Larger font for heading */
+        color: #007bff; /* Bright blue color */
+        text-align: center; /* Center the heading */
+        margin-bottom: 20px; /* Space below heading */
+        font-weight: bold; /* Bold heading */
+    }
+
+    /* Form styles */
+    form {
+        display: flex; /* Flexbox for layout */
+        flex-direction: column; /* Stack elements vertically */
+    }
+
+    label {
+        margin: 10px 0 5px; /* Space around labels */
+        font-weight: bold; /* Bold labels */
+    }
+
+    /* Input styles */
+    input[type="text"],
+    input[type="file"] {
+        padding: 12px; /* Increased padding inside input fields */
+        border: 1px solid #ccc; /* Light gray border */
+        border-radius: 6px; /* Rounded corners */
+        font-size: 16px; /* Font size */
+        transition: border-color 0.3s; /* Smooth transition */
+        outline: none; /* Remove default outline */
+        width: 100%; /* Full width of the container */
+        box-sizing: border-box; /* Include padding and border in width */
+    }
+
+    /* Focus state for inputs */
+    input[type="text"]:focus,
+    input[type="file"]:focus {
+        border-color: #007bff; /* Change border color on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Soft blue glow */
+    }
+
+    /* Button styles */
+    button {
+        margin-top: 20px; /* Space above button */
+        padding: 12px; /* Padding for button */
+        border: none; /* No border */
+        border-radius: 6px; /* Rounded corners */
+        background-color: #007bff; /* Bright blue background */
+        color: white; /* White text color */
+        font-size: 18px; /* Larger font size for button */
+        cursor: pointer; /* Pointer cursor */
+        transition: background-color 0.3s, transform 0.2s; /* Smooth transition */
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); /* Soft shadow for button */
+    }
+
+    /* Button hover effect */
+    button:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        transform: translateY(-2px); /* Lift effect on hover */
+    }
+
+    /* Responsive styles */
+    @media (max-width: 800px) {
+        .container {
+            padding: 30px; /* Adjust padding on smaller screens */
+            margin: 20px; /* Less margin on smaller screens */
+        }
+
+        h1 {
+            font-size: 26px; /* Adjust heading size */
+        }
+
+        button {
+            font-size: 16px; /* Smaller button font size */
+        }
+    }
+</style>
+
+<div class="container">
+    <h1>Subscription Successful!</h1>
+    <p>Your subscription has been activated for the {{ plan.name }} plan.</p>
+    <p>Please complete your profile details:</p>
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'personal_details_plan' %}">  <!-- Updated action to call the view -->
+        {% csrf_token %}
+        
+        <label>First Name:</label>
+        <input type="text" name="first_name" required>
+
+        <label>Last Name:</label>
+        <input type="text" name="last_name" required>
+
+        <label>Profile Picture:</label>
+        <input type="file" name="profile_pic">
+
+        <label>Country:</label>
+        <input type="text" name="country" required>
+
+        <label>City:</label>
+        <input type="text" name="city" required>
+
+        <label>Zip Code:</label>
+        <input type="text" name="zip_code" required>
+
+        <label>Street:</label>
+        <input type="text" name="street" required>
+
+        <label>Phone Number:</label>
+        <input type="text" name="phone_number" required>  <!-- Phone Number field -->
+
+        <button type="submit">Submit Details</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: calc(100% - 22px); /* Adjust for padding */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .add-option-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .options {
+            margin: 15px 0;
+        }
+        .remove-option-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda; /* Light green for success */
+            color: #155724; /* Dark green text */
+        }
+        .error {
+            background-color: #f8d7da; /* Light red for error */
+            color: #721c24; /* Dark red text */
+        }
+        #submitBtn:disabled {
+            background-color: #ccc; /* Grey background when disabled */
+            cursor: not-allowed; /* Change cursor to indicate disabled */
+        }
+        .message-container {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensures the message appears above other content */
+    width: 60%; /* Width of the message box */
+    max-width: 90%; /* Responsive max width */
+}
+
+.message {
+    background-color: #4caf50; /* Green background for success messages */
+    color: white; /* White text */
+    padding: 15px; /* Some padding */
+    margin-bottom: 10px; /* Space between messages */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.close-btn {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: white; /* White text */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    float: right; /* Float to the right */
+}
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Add a Question</h2>
+    {% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {% if message.tags %} {{ message.tags }}{% endif %}">
+                {{ message }}
+                <button class="close-btn" onclick="this.parentElement.style.display='none';">✖</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+    <input type="text" id="questionInput" placeholder="Write your question here..." required>
+    
+    <div class="options" id="optionsContainer">
+        <input type="text" name="options" placeholder="Option 1" required>
+    </div>
+    
+    <button class="add-option-btn" id="addOptionBtn">Add Option</button>
+    <button id="submitBtn" disabled>Submit Question</button> <!-- Disable submit button by default -->
+</div>
+
+<script>
+    let optionCount = 1; // Start with 1 option
+
+    function updateSubmitButtonState() {
+        const questionInput = document.getElementById('questionInput').value.trim();
+        const options = document.getElementsByName('options');
+        const optionValues = Array.from(options).map(input => input.value.trim());
+
+        // Enable submit button only if there's a question and at least one option
+        document.getElementById('submitBtn').disabled = !(questionInput && optionValues.some(option => option !== ''));
+    }
+
+    document.getElementById('questionInput').addEventListener('input', updateSubmitButtonState);
+
+    document.getElementById('addOptionBtn').addEventListener('click', function() {
+        if (optionCount < 6) {
+            optionCount++;
+            const optionInput = document.createElement('input');
+            optionInput.type = 'text';
+            optionInput.name = 'options';
+            optionInput.placeholder = `Option ${optionCount}`;
+            optionInput.addEventListener('input', updateSubmitButtonState); // Update button state on input
+            document.getElementById('optionsContainer').appendChild(optionInput);
+            updateSubmitButtonState(); // Check button state after adding an option
+        } else {
+            alert("You can only add up to 6 options.");
+        }
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        const questionText = document.getElementById('questionInput').value.trim();
+        const options = document.getElementsByName('options');
+        
+        // Gather option values
+        const optionValues = Array.from(options).map(input => input.value.trim()).filter(val => val !== '');
+
+        // Check if question and at least one option are provided
+        if (!questionText || optionValues.length === 0) {
+            alert("Please enter a question and at least one option.");
+            return;
+        }
+
+        // Send data to server via POST request
+        const formData = new FormData();
+        formData.append('question_text', questionText);
+        optionValues.forEach(value => formData.append('options', value));
+
+        fetch('/add-questions/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</body>
+</html>

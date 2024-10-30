@@ -1,0 +1,142 @@
+@media screen and (max-width: 800px) {
+    .plan-details {
+        padding: 10px; /* Add padding for better spacing */
+        height: auto; /* Allow height to adjust automatically */
+    }
+
+    .user-info-container {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        width: 100%; /* Full width */
+    }
+
+    .user-info-header,
+    .user-info-data {
+        display: grid;
+        grid-template-columns: 1fr; /* Single column layout for smaller screens */
+        gap: 10px; /* Space between items */
+    }
+
+    .header-item,
+    .data-item {
+        padding: 8px; /* Padding for better spacing */
+        border: 1px solid #ccc; /* Optional: Add border for better visibility */
+        border-radius: 4px; /* Rounded corners */
+        background-color: #f9f9f9; /* Light background for items */
+        text-align: left; /* Align text to the left */
+    }
+
+    /* Make images responsive */
+    .data-item img {
+        max-width: 50px; /* Set a max width for images */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 50%; /* Optional: Round the profile image */
+    }
+
+    hr {
+        display: none; /* Hide horizontal rule for smaller screens */
+    }
+
+    .modal {
+        width: 90%; /* Full width of modal */
+        max-width: 400px; /* Limit max width for larger screens */
+        margin: auto; /* Center the modal */
+        padding: 20px; /* Add padding */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for better visibility */
+        border-radius: 8px; /* Rounded corners */
+    }
+
+    .close {
+        font-size: 24px; /* Increase close button size */
+        cursor: pointer; /* Pointer cursor for the close button */
+    }
+
+    .message-container {
+        padding: 10px; /* Add padding */
+        margin-top: 10px; /* Space above messages */
+        background-color: #f0f0f0; /* Light background for messages */
+        border: 1px solid #ccc; /* Optional: Add border */
+        border-radius: 4px; /* Rounded corners */
+    }
+
+    .close-btn {
+        display: block; /* Full width button */
+        width: 100%; /* Full width */
+        margin-top: 10px; /* Space above the button */
+        padding: 10px; /* Add padding */
+        background-color: #FF4B2B; /* Background color */
+        color: white; /* Text color */
+        border: none; /* Remove border */
+        border-radius: 4px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor */
+    }
+
+    .close-btn:hover {
+        background-color: #e43f2b; /* Darker shade on hover */
+    }
+}
+
+
+@media screen and (max-width: 800px) {
+
+    #main {
+        transition: margin-left .5s;
+        padding: 0px;
+        margin-left: 250px;
+    }
+    .plan-details {
+        padding: 10px; /* Add padding for better spacing */
+        height: auto; /* Allow height to adjust automatically */
+    }
+
+    .custom-search-bar {
+        display: flex; /* Use flexbox for layout */
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the left */
+        width: 100%; /* Full width */
+    }
+
+    .custom-label-title {
+        margin-bottom: 10px; /* Space below the label */
+        font-size: 18px; /* Adjust font size for smaller screens */
+        text-align: left; /* Align text to the left */
+    }
+
+    form {
+        display: flex; /* Use flexbox for the form */
+        flex-direction: column; /* Stack form elements vertically */
+        width: 100%; /* Full width */
+    }
+
+    .custom-search-box {
+        width: 100%; /* Full width of the search box */
+        padding: 10px; /* Add padding */
+        margin-bottom: 10px; /* Space below the search box */
+        border: 1px solid #ccc; /* Border for the search box */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 16px; /* Font size for input */
+    }
+
+    .custom-search-button {
+        width: 100%; /* Full width of buttons */
+        padding: 10px; /* Add padding */
+        border: none; /* Remove border */
+        border-radius: 4px; /* Rounded corners */
+        color: white; /* Text color */
+        font-size: 16px; /* Font size for buttons */
+        cursor: pointer; /* Pointer cursor */
+        margin-bottom: 5px; /* Space between buttons */
+    }
+
+    .custom-search-button[type="button"] {
+        background-color: rgb(43, 68, 124); /* Custom background for "Add Poltaker" */
+    }
+
+    .custom-search-button[type="submit"] {
+        background-color: #007BFF; /* Custom background for "Search" */
+    }
+
+    .custom-search-button:hover {
+        opacity: 0.9; /* Slightly reduce opacity on hover */
+    }
+}

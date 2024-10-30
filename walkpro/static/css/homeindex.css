@@ -1,0 +1,15 @@
+
+.label-title{
+    margin-right: 24%;
+}
+
+@media screen and (max-width: 800px) {
+    #main {
+    transition: margin-left .5s;
+    padding: 0px;
+    margin-left: 250px;
+}
+.label-title {
+    margin-right: 0%;
+}
+}

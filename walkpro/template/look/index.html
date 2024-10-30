@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/first_look.css' %}">
+    <title>Walk List Pro</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" />
+        </div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Plans</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+        </ul>
+        <div class="auth-buttons">
+            <button class="register" onclick="location.href='{% url 'register' %}'">Register</button>
+            <button class="login" onclick="location.href='{% url 'login' %}'">Login</button>
+        </div>
+    </nav>
+
+    <div class="site-content">
+      <div class="site-content-1">
+          <h1>Welcome to Walk List Pro</h1>
+          <p>Discover the power of effective data collection with Walk List Pro. Our platform enables you to create engaging surveys and polls effortlessly, analyze results in real-time, and gather actionable insights to drive your decisions. Whether you're conducting market research, gathering customer feedback, or engaging your audience, we provide the tools you need to succeed.</p>
+          <button>Learn More</button>
+      </div>
+      <div class="site-content-2">
+          <img src="{% static 'img/home.png' %}" alt="Walk List Pro">
+      </div>
+  </div>
+  
+</body>
+</html>

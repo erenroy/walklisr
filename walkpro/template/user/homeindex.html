@@ -1,0 +1,673 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Confirm Subscription{% endblock %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Link your CSS file -->
+    <style>
+    /* The sidebar menu */
+    .sidebar {
+        height: 92%; /* 100% Full-height */
+        width: 300px; /* Set initial width */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Stay on top */
+        top: 78px;
+        left: 0;
+        background-color: #ffffff; /* Black*/
+        overflow-x: hidden; /* Disable horizontal scroll */
+        padding-top: 60px; /* Place content 60px from the top */
+        transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+    }
+
+    /* The sidebar links */
+    .sidebar a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    /* When you mouse over the navigation links, change their color */
+    .sidebar a:hover {
+        color: #f1f1f1;
+    }
+
+    /* Position and style the close button (top right corner) */
+    .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    /* The button used to open/close the sidebar */
+    .toggle-btn {
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #111;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        position: absolute;
+        bottom: 20px; /* Move button to bottom */
+        left: 20px; /* Position button left side */
+        width: 210px; /* Match button width with sidebar */
+    }
+
+    .toggle-btn:hover {
+        background-color: #444;
+    }
+
+    /* Style page content */
+    #main {
+        transition: margin-left .5s; /* If you want a transition effect */
+        padding: 20px;
+        margin-left: 250px; /* Adjust margin to account for opened sidebar */
+    }
+
+    /* On smaller screens, where height is less than 450px, change the style of the sidenav */
+    @media screen and (max-height: 450px) {
+        .sidebar {padding-top: 15px;}
+        .sidebar a {font-size: 18px;}
+    }
+
+    /* Sidebar styling */
+
+
+/* Sidebar item styling */
+.sidebar-item {
+    padding: 15px 20px; /* Padding for items */
+    color: rgb(0, 0, 0); /* Text color */
+    display: flex; /* Flex layout for icon and text */
+    align-items: center; /* Center vertically */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s; /* Background change on hover */
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.sidebar-item:hover {
+    background-color: #34495e; /* Change background on hover */
+}
+
+.sidebar-item.active {
+    background-color: rgb(43, 68, 124); /* Active item background */
+    color: white;
+}
+
+/* Icon styling */
+.sidebar-item i {
+    margin-right: 10px; /* Space between icon and text */
+
+}
+
+/* Button styling */
+.toggle-btn {
+    margin: 20px; /* Margin around the button */
+    padding: 10px 15px; /* Padding for button */
+    background-color: #e74c3c; /* Button background color */
+    border: none; /* No border */
+    color: white; /* Button text color */
+    cursor: pointer; /* Pointer on hover */
+    border-radius: 5px; /* Rounded corners */
+    transition: background 0.3s; /* Background change on hover */
+}
+
+.toggle-btn:hover {
+    background-color: #c0392b; /* Darker background on hover */
+}
+.toggle-btn {
+    margin: 20px; /* Margin around the button */
+    padding: 12px 24px; /* Padding for button */
+    background-color: #007bff; /* Professional blue color */
+    border: none; /* No border */
+    color: white; /* Button text color */
+    font-size: 16px; /* Font size */
+    font-weight: 600; /* Semi-bold text */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s; /* Smooth transition */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+}
+
+/* Hover effect */
+.toggle-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+/* Active effect */
+.toggle-btn:active {
+    transform: translateY(0); /* Reset lift on click */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+}
+
+
+/* Writting the code of the content part --------------------------------------------------------------------------------------------------- */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.label-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.search-box {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.subscription-type {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.status-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+
+.status-label {
+    font-size: 14px;
+    color: #333;
+}
+/* Search Box Container Styling */
+/* Search Box Container Styling */
+.search-box-container {
+    position: relative;
+    width: 200px; /* Increased width */
+}
+
+.search-box {
+    width: 100%;
+    height: 45px; /* Increased height */
+    padding: 10px 15px 10px 45px; /* Adjusted padding for icon space */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+/* Search Icon Styling */
+.search-box-container::before {
+    content: '🔍'; /* Unicode for magnifying glass */
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 18px;
+}
+
+.search-box:focus {
+    border-color: #007bff;
+}
+/* Dropdown Styling for Subscription Type and Status */
+.subscription-type, .status-dropdown {
+    width: 200px;
+    height: 45px; /* Matching height with search box */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+/* Hover and Focus Effects */
+.subscription-type:focus, .status-dropdown:focus, 
+.subscription-type:hover, .status-dropdown:hover {
+    border-color: #007bff;
+    background-color: #f9f9f9;
+}
+/* Submit Button Styling */
+.submit-btn {
+    padding: 10px 20px; /* Adjusted padding for a better look */
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient background */
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+}
+
+/* Hover Effect */
+.submit-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #004494); /* Darker gradient on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Active Effect */
+.submit-btn:active {
+    transform: translateY(0); /* Reset lift on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow on click */
+}
+
+/* Addding code for next content component ------------------------------------------------ */
+/* User Info Container */
+.user-info-container {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    padding: 20px;
+}
+
+/* Header and Data Items */
+.user-info-header, .user-info-data {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr); /* 9 equal columns */
+    gap: 10px; /* Space between columns */
+}
+
+/* Header Item Styling */
+.header-item {
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    white-space: nowrap; /* Prevent line break */
+}
+
+/* Data Item Styling */
+.data-item {
+    text-align: center;
+    color: #555;
+    white-space: nowrap; /* Prevent line break for data */
+}
+
+/* Profile Image Styling */
+.profile-image {
+    width: 50px; /* Set width for profile image */
+    height: 50px; /* Set height for profile image */
+    border-radius: 50%; /* Circular image */
+}
+
+/* Toggle Switch Styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Width of the toggle */
+    height: 30px; /* Height of the toggle */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Background color for off state */
+    transition: .4s; /* Smooth transition */
+    border-radius: 30px; /* Rounded corners */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px; /* Height of the toggle knob */
+    width: 24px; /* Width of the toggle knob */
+    left: 3px; /* Space from left */
+    bottom: 3px; /* Space from bottom */
+    background-color: white; /* Toggle knob color */
+    border-radius: 50%; /* Round knob */
+    transition: .4s; /* Smooth transition */
+}
+
+input:checked + .slider {
+    background-color: #4CAF50; /* Green background for on state */
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px); /* Move knob to right on check */
+}
+/* Profile Image Styling */
+.profile-image {
+    width: 50px; /* Set width for profile image */
+    height: 50px; /* Set height for profile image */
+    border-radius: 50%; /* Circular image */
+    vertical-align: middle; /* Aligns image vertically in the middle */
+    display: inline-block; /* Ensures the image behaves like an inline element */
+}
+
+/* Adjust the data-item if needed */
+.data-item {
+    text-align: center;
+    color: #555;
+    white-space: nowrap; /* Prevent line break for data */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+
+/* homeindex page code -------------------------------------------------------------------------------------------------- */
+#subscription-info {
+    background-color: #f7f9fc; /* Light background for contrast */
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    margin: 20px auto;
+    border: 1px solid #dfe4ea; /* Light border for subtle definition */
+}
+
+.section-header {
+    font-size: 22px; /* Slightly larger for emphasis */
+    font-weight: 600;
+    color: #2b2d42; /* Dark slate color for professionalism */
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.info-card {
+    background-color: #ffffff; /* White background for cards */
+    color: #2c3e50; /* Darker text for readability */
+    padding: 16px;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #d1d9e0; /* Subtle border around cards */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-card:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-card h3 {
+    font-size: 12px; /* Smaller font size for subheaders */
+    color: #7d7f82; /* Soft gray color for subheader text */
+    margin-bottom: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-card strong {
+    font-size: 14px; /* Stronger emphasis on values */
+    font-weight: 600;
+    color: #2b2d42; /* Consistent professional color */
+}
+body{
+    background-color: #f5f4f4;
+}
+.info-card:hover {
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Writting code to make the page responsive --------------------------------------------------------------------------- */
+
+    </style>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+   <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+<button class="toggle-btns" onclick="closeNav()" style="
+    margin: 5px; 
+    background-color: rgb(43, 68, 124); 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px 15px; 
+    font-size: 16px; 
+    cursor: pointer; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;">
+    &#8592; Close
+</button>
+<button class="toggle-btns" onclick="openNav()" style="
+    margin: 5px; 
+    background-color: rgb(43, 68, 124); 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    padding: 10px 15px; 
+    font-size: 16px; 
+    cursor: pointer; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;">
+    Open &#8594;
+</button>
+</div>
+
+    <!-- Main Layout -->
+    <div style="display: flex;">
+        <!-- Sidebar -->
+        <div id="mySidebar" class="sidebar">
+            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'">
+                <i class="fas fa-tasks"></i> Plan Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'search_person_data' %}'">
+                <i class="fas fa-envelope"></i> Contact Preference Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
+                <i class="fas fa-question-circle"></i> Question Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'accessed_contacts' %}'">
+                <i class="fas fa-user-check"></i> Voter Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'survey_work' %}'">
+                <i class="fas fa-chart-pie"></i> Survey Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
+                <i class="fas fa-users"></i> Polltaker Management
+            </div>
+        </div>
+        
+        <div id="main">
+           
+           
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="plan-details" style="margin-bottom: 30px; height: 100px; ">
+                <div class="search-bar">
+                    <label class="label-title" style="font-size: 1.5rem; ">Plan Details</label>
+                    
+                    <button class="submit-btn" style="margin-left: 50%;">Upgrade</button>
+                </div>
+            </div>
+                
+                  
+                    <!-- Content area -->
+                
+                      
+                        <!-- Subscription Information -->
+                        {% if subscription %}
+                            <div id="subscription-info">
+                                <div class="info-grid">
+                                    <div class="info-card">
+                                        <h3>Plan Name</h3>
+                                        <strong>{{ subscription.plan.name }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Price</h3>
+                                        <strong>${{ subscription.plan.price }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Managers Allowed</h3>
+                                        <strong>{{ subscription.plan.managers }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Poltakers Allowed</h3>
+                                        <strong>{{ subscription.plan.poltakers }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Surveys Allowed</h3>
+                                        <strong>{{ subscription.plan.surveys }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Contacts Allowed</h3>
+                                        <strong>{{ subscription.plan.contacts }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Start Date</h3>
+                                        <strong>{{ subscription.start_date }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Expiration Date</h3>
+                                        <strong>{{ subscription.expiration_date }}</strong>
+                                    </div>
+                                    <div class="info-card">
+                                        <h3>Active</h3>
+                                        <strong>{{ subscription.is_active|yesno:"Yes,No" }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p>No subscription information available.</p>
+                        {% endif %}
+
+            
+        </div>
+    </div>
+<script>
+
+
+function openNav() {
+    document.getElementById("mySidebar").style.width = "300px";
+    document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+}
+
+function toggleDropdown() {
+    var dropdown = document.getElementById("dropdown");
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none"; // Hide the dropdown if it's already visible
+    } else {
+        dropdown.style.display = "block"; // Show the dropdown
+    }
+}
+
+function checkScreenWidth() {
+    if (window.innerWidth < 700) {
+        closeNav(); // Close the sidebar if screen width is less than 700px
+    }
+}
+
+// Add event listener for window resize
+window.addEventListener('resize', checkScreenWidth);
+
+// Initial check when the page loads
+document.addEventListener('DOMContentLoaded', checkScreenWidth);
+
+
+
+// Add event listener for window resize
+window.addEventListener('resize', checkScreenWidth);
+
+// Initial check when the page loads
+document.addEventListener('DOMContentLoaded', checkScreenWidth);
+
+</script>
+   <!-- <link rel="stylesheet" href="{% static 'script.js' %}"> -->
+   <!-- <link rel="stylesheet" href="{% static 'css/homeindex.css' %}"> -->
+<style>
+    
+.label-title{
+    margin-right: 24%;
+}
+
+@media screen and (max-width: 800px) {
+    #main {
+    transition: margin-left .5s;
+    padding: 0px;
+    margin-left: 250px;
+}
+.label-title {
+    margin-right: 0%;
+}
+}
+</style>
+   {% endblock %}

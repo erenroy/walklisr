@@ -1,0 +1,65 @@
+@media screen and (max-width: 800px) {
+    .plan-details {
+        padding: 10px; /* Add padding for better spacing */
+        height: auto; /* Allow height to adjust automatically */
+    }
+
+    .search-bar {
+        display: flex; /* Use flexbox for layout */
+        flex-direction: column; /* Stack items vertically */
+        align-items: stretch; /* Align items to stretch to full width */
+        width: 100%; /* Full width */
+    }
+
+    .label-title {
+        font-size: 1.5rem; /* Keep the font size for the label */
+        margin-bottom: 10px; /* Space below the label */
+        text-align: left; /* Align text to the left */
+    }
+
+    .unique-search-input {
+        width: 100%; /* Full width for the input */
+        padding: 10px; /* Add padding */
+        margin-bottom: 10px; /* Space below the input */
+        border: 1px solid #ccc; /* Border for the input */
+        border-radius: 4px; /* Rounded corners */
+        font-size: 1rem; /* Adjust font size for the input */
+    }
+
+    .unique-search-button {
+        width: 100%; /* Full width for buttons */
+        padding: 10px; /* Add padding */
+        border: none; /* Remove border */
+        border-radius: 4px; /* Rounded corners */
+        color: white; /* Text color */
+        font-size: 1rem; /* Font size for buttons */
+        cursor: pointer; /* Pointer cursor */
+        margin-bottom: 5px; /* Space between buttons */
+    }
+
+    .unique-search-button:first-of-type {
+        background-color: #007BFF; /* Background color for Search button */
+    }
+
+    .unique-search-button:last-of-type {
+        background-color: rgb(43, 68, 124); /* Background color for Add button */
+    }
+
+    .unique-search-button:hover {
+        opacity: 0.9; /* Slightly reduce opacity on hover */
+    }
+    .container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        margin: auto;
+        margin-top: 200px;
+    }
+    #main {
+        transition: margin-left .5s;
+        padding: 0px;
+        margin-left: 250px;
+    }
+}

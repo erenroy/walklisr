@@ -1,0 +1,150 @@
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            position: sticky; /* Makes the navbar sticky */
+            top: 0; /* Positions it at the top of the viewport */
+            z-index: 1000; /* Ensures it's above other content */
+        }
+        
+
+        body {
+            background-color: #f4f4f9;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #ffffff;
+            padding: 10px 20px;
+            color: #fff;
+        }
+
+        .navbar-logo img {
+            width: 100px;
+        }
+
+        .navbar-welcome h2 {
+            font-size: 22px;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .navbar-user {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-name {
+            font-size: 16px;
+            color: #000000;
+        }
+
+        /* Dropdown Menu Styling */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 30px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            min-width: 120px;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #555;
+        }
+
+        /* Show dropdown when clicked */
+        .show {
+            display: block;
+        }
+
+        
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .plan-details {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .plan-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+
+        .upgrade-btn {
+            background-color: #3b5998;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .plan-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            margin-right: 30px;
+        }
+
+        .plan-info div {
+            font-size: 16px;
+            color: #333;
+        }
+
+
+        .dropdown-menu {
+            display: none; /* Initially hide the dropdown */
+            position: absolute; /* Position it absolutely */
+            background-color: #f9f9f9; /* Background color */
+            min-width: 160px; /* Set a minimum width */
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Shadow effect */
+            z-index: 1; /* Make sure it appears above other content */
+        }
+        
+        .dropdown-menu a {
+            color: black; /* Link color */
+            padding: 12px 16px; /* Padding for links */
+            text-decoration: none; /* Remove underline */
+            display: block; /* Make links block elements */
+        }
+        
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1; /* Highlight on hover */
+        }
+        
+
+        /* #e6e6e6; */
