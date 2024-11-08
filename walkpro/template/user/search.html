@@ -605,10 +605,10 @@ ul {
         <!-- Sidebar -->
         <div id="mySidebar" class="sidebar">
             <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'">
+            <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);" onclick="location.href='{% url 'home' %}'">
                 <i class="fas fa-tasks"></i> Plan Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'search_person_data' %}'">
+            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white;  font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'search_person_data' %}'">
                 <i class="fas fa-envelope"></i> Contact Preference Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">

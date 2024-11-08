@@ -1,0 +1,28 @@
+<!-- search_results.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Search Results</h1>
+
+        {% if results %}
+            <h2>Results:</h2>
+            <ul>
+                {% for person in results %}
+                    <li>{{ person.first_name }} {{ person.last_name }} - {{ person.email }} - {{ person.city }}, {{ person.state }} - {{ person.zip_code }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No results found for your search.</p>
+        {% endif %}
+        
+        <a href="{% url 'search_person_data' %}">Back to Search</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navbar Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+/* General styles for body */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f1f3f6; /* Light background for the page */
+}
+
+/* Navbar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff; /* White background for the navbar */
+    padding: 15px 30px;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for navbar */
+    position: relative;
+}
+
+/* Logo in the navbar */
+.navbar .logo img {
+    height: 40px;
+    width: auto;
+    transition: transform 0.3s ease-in-out; /* Logo hover effect */
+}
+
+.navbar .logo img:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+}
+
+/* Center the nav options */
+.navbar .center-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;  /* Center the navigation options */
+}
+
+/* Navigation links */
+.navbar .nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    justify-content: center;  /* This ensures that the items are centered */
+    transition: opacity 0.3s ease;
+}
+
+/* Style for links */
+.navbar .nav-links a {
+    color: #333;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: color 0.3s, transform 0.3s;
+    font-weight: bold;
+}
+
+.navbar .nav-links a:hover {
+    color: #ff4b2b;
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Style for logout button */
+#navbutton {
+    position: absolute;
+    right: 20px; /* Position logout button to the right */
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center logout button */
+    background-color: #ff4b2b;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#navbutton:hover {
+    background-color: #e03e1a; /* Darker shade on hover */
+    transform: translateY(-3px); /* Lift effect on hover */
+}
+
+/* Hamburger Menu Icon for mobile screens */
+.navbar .menu-icon {
+    display: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.navbar .menu-icon:hover {
+    color: #ff4b2b; /* Change icon color on hover */
+}
+
+/* Media Queries for responsiveness */
+
+/* When screen width is less than 800px */
+@media (max-width: 800px) {
+    .navbar .center-nav,
+    .navbar .logout {
+        display: none;
+    }
+
+    .navbar .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #ffffff;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        padding: 10px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .nav-links.active {
+        display: flex;
+    }
+
+    .navbar .nav-links a,
+    #navbutton {
+        width: 100%;
+        padding: 12px 20px;
+        box-sizing: border-box;
+        text-align: left;
+        font-size: 16px;
+    }
+
+    /* Display menu icon for small screens */
+    .navbar .menu-icon {
+        display: block;
+    }
+
+    /* Adjust the logout button position */
+    #navbutton {
+        position: relative;
+        top: 0;
+        right: 0;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* When screen width is larger than 800px */
+@media (min-width: 801px) {
+    /* Show the logout button on larger screens */
+    #navbutton {
+        display: inline-block;
+    }
+}
+
+/* adding own page code  */
+ 
+    /* General Styles */
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f3f4f6, #e0e7ff); /* Soft gradient from light grey to light blue */
+        color: #333; /* Dark text for readability */
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Survey Dashboard */
+    .survey-dashboard {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    /* Welcome Heading */
+    .welcome-heading {
+        text-align: center;
+        color: #ff4b2b; /* Vibrant red color for emphasis */
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+    }
+
+    /* Survey Intro Text */
+    .survey-intro {
+        text-align: center;
+        color: #555;
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+    }
+
+    /* Survey List */
+    .survey-list {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    /* Survey Item Styles */
+    .survey-item {
+        background-color: #f8f8f8; /* Light grey background for survey items */
+        padding: 18px 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .survey-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Survey Title */
+    .survey-title {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #333;
+        display: inline-block;
+        position: relative;
+    }
+
+    /* Pending Tag */
+    .pending-tag {
+        font-size: 0.9rem;
+        color: #fff;
+        background-color: #ff4b2b; /* Red for pending surveys */
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-left: 10px;
+        font-weight: bold;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    /* Survey Description */
+    .survey-description {
+        font-size: 1rem;
+        color: #777;
+    }
+
+    /* Survey Date and Time */
+    .survey-datetime {
+        font-size: 0.95rem;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    /* Take Survey Button */
+    .take-survey-btn {
+        display: inline-block;
+        padding: 8px 18px;
+        font-size: 1rem;
+        background-color: rgb(43, 68, 124); /* Blue for action button */
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+        align-self: flex-start;
+    }
+
+    .take-survey-btn:hover {
+        background-color: rgb(43, 68, 124); /* Blue on hover */
+    }
+
+    /* Fullscreen Layout */
+    .survey-dashboard {
+        min-height: 100vh; /* Ensure the dashboard takes the full height of the screen */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .survey-dashboard {
+            padding: 20px;
+        }
+        
+        .survey-item {
+            padding: 15px;
+        }
+
+        .survey-title {
+            font-size: 1.4rem;
+        }
+
+        .survey-description {
+            font-size: 1rem;
+        }
+
+        .pending-tag {
+            font-size: 0.8rem;
+        }
+
+        .take-survey-btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+
+    /* Body styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #f7f7f7;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Container for the survey list */
+.survey-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+    background: #f7f7f7;
+}
+
+/* Poltaker details box */
+.poltaker-details {
+    background: #fff;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect to raise the box */
+.poltaker-details:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+/* Title */
+.poltaker-details h2 {
+    font-size: 32px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Styling for individual detail rows */
+.poltaker-details p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+/* Strong labels */
+.poltaker-details p strong {
+    font-weight: 700;
+    color: #2b3e64;
+}
+
+/* Modern background gradient for the box */
+.poltaker-details::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, #56ccf2, #2f80ed);
+    z-index: -1;
+    border-radius: 15px;
+    opacity: 0.1;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+    .survey-list {
+        padding: 20px;
+    }
+
+    .poltaker-details {
+        padding: 20px;
+    }
+
+    .poltaker-details h2 {
+        font-size: 28px;
+    }
+
+    .poltaker-details p {
+        font-size: 16px;
+    }
+}
+
+/* Button styling (if needed for any action buttons) */
+.poltaker-details .action-btn {
+    background-color: #56ccf2;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+/* Button hover effect */
+.poltaker-details .action-btn:hover {
+    background-color: #2f80ed;
+}
+
+/* Icons (Optional, if you want to add icons) */
+.poltaker-details i {
+    font-size: 20px;
+    margin-right: 10px;
+    color: #56ccf2;
+}
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo">
+        </div>
+        <div class="menu-icon" id="menu-icon">
+            <i class="fas fa-bars"></i>
+        </div>
+        <nav class="nav-links" id="nav-links">
+            <a href="#home" onclick="window.location.href='{% url 'surveyapp:poltaker_dashboard' %}'" >Dashboard</a>
+            <a href="#survey" onclick="window.location.href='{% url 'surveyapp:all_the_survey' %}'" >Survey</a>
+            <a href="#account" onclick="window.location.href='{% url 'surveyapp:poltaker_account' %}'" style="color: red;" >Account</a>
+            
+           <!-- Logout Button -->
+<form method="post" action="{% url 'surveyapp:poltaker_logout' %}" style="display: inline;">
+    {% csrf_token %}
+    <button class="logout" id="navbutton" type="submit">
+        Logout
+    </button>
+</form>
+
+        </nav>
+    </div>
+    <div class="survey-dashboard">
+        <h1 class="welcome-heading">Welcome, {{ poltaker.name }}</h1>
+        <p class="survey-intro">Here are your account details </p>
+    
+        <div class="survey-list">
+            <div class="poltaker-details">
+                <h2>Poltaker Account Details</h2>
+            
+                <p><strong>Name:</strong> {{ poltaker.name }}</p>
+                <p><strong>Email:</strong> {{ poltaker.email }}</p>
+                <p><strong>Mobile:</strong> {{ poltaker.mobile }}</p>
+                <p><strong>Zip Code:</strong> {{ poltaker.zip_code }}</p>
+                <p><strong>Street:</strong> {{ poltaker.Street }}</p>
+                <p><strong>City:</strong> {{ poltaker.city }}</p>
+                <p><strong>State:</strong> {{ poltaker.state }}</p>
+                <p><strong>Completed Surveys:</strong> {{ poltaker.completed_surveys }}</p>
+                <p><strong>Pending Surveys:</strong> {{ poltaker.pending_surveys }}</p>
+                <p><strong>Total Surveys:</strong> {{ poltaker.total_survey }}</p>
+                
+                
+      
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        const menuIcon = document.getElementById('menu-icon');
+        const navLinks = document.getElementById('nav-links');
+
+        menuIcon.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
+
+
+
+<style>
+  
+
+</style>
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Poltaker Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ poltaker.name }}</h1>
+    <p>Your assigned surveys:</p>
+    {% for survey in surveys %}
+        <h2>{{ survey.title }}</h2>
+        <p>{{ survey.description }}</p>
+        <a href="{% url 'surveyapp:take_survey' survey.id %}">Take Survey</a>
+    {% endfor %}
+</body>
+</html> -->

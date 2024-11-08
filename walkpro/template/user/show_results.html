@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Results for "{{ user_search.state }} {{ user_search.city }} {{ user_search.zip_code }}"</h2>
+<p>Number of records: {{ count }}</p>
+
+{% for result in results %}
+    <div class="result-card">
+        <p>Name: {{ result.first_name }} {{ result.last_name }}</p>
+        <p>Email: {{ result.email }}</p>
+        <p>City: {{ result.city }}</p>
+        <p>State: {{ result.state }}</p>
+        <p>Zip Code: {{ result.zip_code }}</p>
+        <!-- Add other fields as needed -->
+    </div>
+{% empty %}
+    <p>No results found.</p>
+{% endfor %}
+
+    
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Location on Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+</head>
+<body>
+    {% for contact in contacts %}
+        <div>
+            <p><strong>Full Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
+            <p><strong>Email:</strong> {{ contact.email }}</p>
+            <p><strong>Street:</strong> {{ contact.street }}</p>
+            <p><strong>City:</strong> {{ contact.city }}</p>
+            <p><strong>State:</strong> {{ contact.state }}</p>
+            <p><strong>Country:</strong> {{ contact.country }}</p>
+            <p><strong>Zipcode:</strong> {{ contact.zipcode }}</p>
+            <p><strong>Party Preference:</strong> {{ contact.party_preference }}</p>
+            <hr>
+
+            <div id="map_{{ forloop.counter }}" style="height: 400px; width: 100%;"></div>
+
+            <script>
+                // Function to show the location on the map
+                function showLocation(zipCode, country, mapId) {
+                    axios.get(`https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&country=${country}&format=json&limit=1`)
+                        .then(response => {
+                            if (response.data.length > 0) {
+                                var location = response.data[0];
+                                var lat = location.lat;
+                                var lon = location.lon;
+
+                                // Initialize the map for each contact
+                                var map = L.map(mapId).setView([lat, lon], 15);
+
+                                // Add the OpenStreetMap tiles
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    maxZoom: 18,
+                                    attribution: '© OpenStreetMap contributors'
+                                }).addTo(map);
+
+                                // Add a marker to the map
+                                L.marker([lat, lon]).addTo(map)
+                                    .bindPopup(`Location for Zip Code: ${zipCode}`)
+                                    .openPopup();
+                            } else {
+                                console.error('No location found for this zip code.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching geolocation:', error);
+                        });
+                }
+
+                // Get data for the current contact
+                var zipCode = "{{ contact.zipcode }}";
+                var country = "{{ contact.country }}";
+                var mapId = "map_{{ forloop.counter }}";
+
+                // Call the function to show the location on the map
+                showLocation(zipCode, country, mapId);
+            </script>
+        </div>
+    {% endfor %}
+
+    
+<form method="POST">
+    {% csrf_token %}
+
+    <!-- Display Assigned Contact Information -->
+    <h3>Assigned Contact:</h3>
+    <div>
+        <p>{{ assigned_contact.first_name }} {{ assigned_contact.last_name }} ({{ assigned_contact.email }})</p>
+    </div>
+
+    <!-- Survey Questions Loop -->
+    {% for question in questions %}
+        <div>
+            <h4>{{ question.question_text }}</h4>
+
+            {% if question.question_type == 'mcq' %}
+                {% for option in question.options.all %}
+                    <label>
+                        <input type="radio" name="option_{{ question.id }}" value="{{ option.option_text }}">
+                        {{ option.option_text }}
+                    </label><br>
+                {% endfor %}
+            {% elif question.question_type == 'text' %}
+                <textarea name="answer_{{ question.id }}" rows="2" cols="40" placeholder="Type your answer here..."></textarea>
+            {% elif question.question_type == 'yesno' %}
+                <label>
+                    <input type="radio" name="answer_{{ question.id }}" value="Yes"> Yes
+                </label>
+                <label>
+                    <input type="radio" name="answer_{{ question.id }}" value="No"> No
+                </label>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

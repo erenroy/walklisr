@@ -1,18 +1,203 @@
-<!DOCTYPE html>
+{% extends 'poltaker/surveybase.html' %}
+
+{% block title %}Survey Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* General Styles */
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f3f4f6, #e0e7ff); /* Soft gradient from light grey to light blue */
+        color: #333; /* Dark text for readability */
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Survey Dashboard */
+    .survey-dashboard {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    /* Welcome Heading */
+    .welcome-heading {
+        text-align: center;
+        color: #ff4b2b; /* Vibrant red color for emphasis */
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+    }
+
+    /* Survey Intro Text */
+    .survey-intro {
+        text-align: center;
+        color: #555;
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+    }
+
+    /* Survey List */
+    .survey-list {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    /* Survey Item Styles */
+    .survey-item {
+        background-color: #f8f8f8; /* Light grey background for survey items */
+        padding: 18px 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .survey-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Survey Title */
+    .survey-title {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #333;
+        display: inline-block;
+        position: relative;
+    }
+
+    /* Pending Tag */
+    .pending-tag {
+        font-size: 0.9rem;
+        color: #fff;
+        background-color: #ff4b2b; /* Red for pending surveys */
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-left: 10px;
+        font-weight: bold;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    /* Survey Description */
+    .survey-description {
+        font-size: 1rem;
+        color: #777;
+    }
+
+    /* Survey Date and Time */
+    .survey-datetime {
+        font-size: 0.95rem;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    /* Take Survey Button */
+    .take-survey-btn {
+        display: inline-block;
+        padding: 8px 18px;
+        font-size: 1rem;
+        background-color: rgb(43, 68, 124); /* Blue for action button */
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+        align-self: flex-start;
+    }
+
+    .take-survey-btn:hover {
+        background-color: rgb(43, 68, 124); /* Blue on hover */
+    }
+
+    /* Fullscreen Layout */
+    .survey-dashboard {
+        min-height: 100vh; /* Ensure the dashboard takes the full height of the screen */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .survey-dashboard {
+            padding: 20px;
+        }
+        
+        .survey-item {
+            padding: 15px;
+        }
+
+        .survey-title {
+            font-size: 1.4rem;
+        }
+
+        .survey-description {
+            font-size: 1rem;
+        }
+
+        .pending-tag {
+            font-size: 0.8rem;
+        }
+
+        .take-survey-btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="survey-dashboard">
+    <h1 class="welcome-heading">Welcome, {{ poltaker.name }}</h1>
+    <p class="survey-intro">Here are the surveys assigned to you:</p>
+
+    <div class="survey-list">
+        {% for survey in surveys %}
+            <div class="survey-item">
+                <h2 class="survey-title">
+                    {{ survey.title }}
+                    <span class="pending-tag">Pending</span>
+                </h2>
+                <p class="survey-description">{{ survey.description }}</p>
+                <div>
+                <p >Survey Date - {{ survey.survey_date }}</p>
+                <p >Created on - {{survey.created_at}}</p>
+            </div>
+
+
+                <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Poltaker Dashboard</title>
 </head>
 <body>
-    <!-- poltaker_dashboard.html -->
-<h1>Welcome, {{ poltaker.name }}</h1>
-<p>Here is your specific data...</p>
-<!-- Logout Button -->
-<a href="{% url 'poltaker_logout' %}" style="padding: 10px; background-color: #f00; color: #fff; text-decoration: none; border-radius: 5px;">
-    Logout
-</a>
-
+    <h1>Welcome, {{ poltaker.name }}</h1>
+    <p>Your assigned surveys:</p>
+    {% for survey in surveys %}
+        <h2>{{ survey.title }}</h2>
+        <p>{{ survey.description }}</p>
+        <a href="{% url 'surveyapp:take_survey' survey.id %}">Take Survey</a>
+    {% endfor %}
 </body>
-</html>
+</html> -->

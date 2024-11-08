@@ -1,0 +1,29 @@
+<!-- surveyapp/templates/surveyapp/create_survey.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Create Survey</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="title">Title:</label>
+    <input type="text" name="title" id="title" required><br><br>
+
+    <label for="description">Description:</label>
+    <textarea name="description" id="description"></textarea><br><br>
+
+    <label for="questions">Select Questions:</label><br>
+    {% for question in questions %}
+        <input type="checkbox" name="questions" value="{{ question.id }}">
+        {{ question.question_text }}<br>
+    {% endfor %}<br>
+
+    <label for="polltaker">Assign to Polltaker:</label>
+    <select name="polltaker" id="polltaker">
+        {% for polltaker in polltakers %}
+            <option value="{{ polltaker.id }}">{{ polltaker.name }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <button type="submit">Create Survey</button>
+</form>
+{% endblock %}

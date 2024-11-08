@@ -7,6 +7,68 @@
     <link rel="stylesheet" href="{% static 'css/first_look.css' %}">
     <title>Walk List Pro</title>
 </head>
+<style>
+ 
+
+
+        .next-page-map {
+            display: flex;
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            gap: 20px;
+        }
+
+        .next-map1 {
+            flex: 0 0 40%;
+        }
+
+        .next-map1 iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .next-map2 {
+            flex: 0 0 60%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .next-map2 h1 {
+            color: #3949ab;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .next-map2 h2 {
+            color: #3949ab;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .next-map2 p {
+            color: #555;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        @media (max-width: 768px) {
+            .next-page-map {
+                flex-direction: column;
+            }
+
+            .next-map1, .next-map2 {
+                flex: 1 1 100%;
+            }
+        }
+</style>
 <body>
     <nav class="navbar">
         <div class="logo">
@@ -35,5 +97,26 @@
       </div>
   </div>
   
+  <div class="next-page-map">
+    <div class="next-map1">
+        <!-- Replace the src URL with the location you want to embed -->
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509427!2d144.95373531550415!3d-37.81627974202164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf4c6c1be7b4d7a8a!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1635469569935!5m2!1sen!2sus" 
+            allowfullscreen="" 
+            loading="lazy">
+        </iframe>
+    </div>
+    <div class="next-map2">
+        <h1>Learn about WLP</h1>
+        <p>Discover the power of effective data collection with Walk List Pro. Our platform enables you to create engaging surveys and polls effortlessly, analyze results in real-time, and gather actionable insights to drive your decisions. Whether you're conducting market research, gathering customer feedback, or engaging your audience, we provide the tools you need to succeed.</p>
+        <h2>Our Vision</h2>
+        <p>Walk List Pro aims to deliver a seamless and reliable survey polling experience by focusing on user-centric design, data accuracy, and secure handling practices...</p>
+        <h2>Our Mission</h2>
+        <p>Our mission at Walk List Pro is to empower users with an intuitive and reliable platform for creating, managing, and analyzing surveys...</p>
+    </div>
+</div>
+
+
+
 </body>
 </html>

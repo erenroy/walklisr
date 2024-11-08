@@ -1,0 +1,16 @@
+django
+pillow
+pip install paypalrestsdk
+pip install django-paypal
+
+
+
+
+
+
+
+
+# Last worked on survey on new app 
+
+
+last night - did till survay crrate ui page 

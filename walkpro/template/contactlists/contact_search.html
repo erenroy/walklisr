@@ -1,0 +1,1167 @@
+<!-- contact_list.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Confirm Subscription{% endblock %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Link your CSS file -->
+    <style>
+    /* The sidebar menu */
+    .sidebar {
+        height: 92%; /* 100% Full-height */
+        width: 300px; /* Set initial width */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Stay on top */
+        top: 78px;
+        left: 0;
+        background-color: #ffffff; /* Black*/
+        overflow-x: hidden; /* Disable horizontal scroll */
+        padding-top: 60px; /* Place content 60px from the top */
+        transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+    }
+
+    /* The sidebar links */
+    .sidebar a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    /* When you mouse over the navigation links, change their color */
+    .sidebar a:hover {
+        color: #f1f1f1;
+    }
+
+    /* Position and style the close button (top right corner) */
+    .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    /* The button used to open/close the sidebar */
+    .toggle-btn {
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #111;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        position: absolute;
+        bottom: 20px; /* Move button to bottom */
+        left: 20px; /* Position button left side */
+        width: 210px; /* Match button width with sidebar */
+    }
+
+    .toggle-btn:hover {
+        background-color: #444;
+    }
+
+    /* Style page content */
+    #main {
+        transition: margin-left .5s; /* If you want a transition effect */
+        padding: 20px;
+        margin-left: 250px; /* Adjust margin to account for opened sidebar */
+    }
+
+    /* On smaller screens, where height is less than 450px, change the style of the sidenav */
+    @media screen and (max-height: 450px) {
+        .sidebar {padding-top: 15px;}
+        .sidebar a {font-size: 18px;}
+    }
+
+    /* Sidebar styling */
+
+
+/* Sidebar item styling */
+.sidebar-item {
+    padding: 15px 20px; /* Padding for items */
+    color: rgb(0, 0, 0); /* Text color */
+    display: flex; /* Flex layout for icon and text */
+    align-items: center; /* Center vertically */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s; /* Background change on hover */
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.sidebar-item:hover {
+    background-color: #34495e; /* Change background on hover */
+}
+
+.sidebar-item.active {
+    background-color: rgb(43, 68, 124); /* Active item background */
+    color: white;
+}
+
+/* Icon styling */
+.sidebar-item i {
+    margin-right: 10px; /* Space between icon and text */
+
+}
+
+/* Button styling */
+.toggle-btn {
+    margin: 20px; /* Margin around the button */
+    padding: 10px 15px; /* Padding for button */
+    background-color: #e74c3c; /* Button background color */
+    border: none; /* No border */
+    color: white; /* Button text color */
+    cursor: pointer; /* Pointer on hover */
+    border-radius: 5px; /* Rounded corners */
+    transition: background 0.3s; /* Background change on hover */
+}
+
+.toggle-btn:hover {
+    background-color: #c0392b; /* Darker background on hover */
+}
+.toggle-btn {
+    margin: 20px; /* Margin around the button */
+    padding: 12px 24px; /* Padding for button */
+    background-color: #007bff; /* Professional blue color */
+    border: none; /* No border */
+    color: white; /* Button text color */
+    font-size: 16px; /* Font size */
+    font-weight: 600; /* Semi-bold text */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background 0.3s, transform 0.2s, box-shadow 0.2s; /* Smooth transition */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+}
+
+/* Hover effect */
+.toggle-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+}
+
+/* Active effect */
+.toggle-btn:active {
+    transform: translateY(0); /* Reset lift on click */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+}
+
+
+/* Writting the code of the content part --------------------------------------------------------------------------------------------------- */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.label-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.search-box {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.subscription-type {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.status-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(14px);
+}
+
+.status-label {
+    font-size: 14px;
+    color: #333;
+}
+/* Search Box Container Styling */
+/* Search Box Container Styling */
+.search-box-container {
+    position: relative;
+    width: 200px; /* Increased width */
+}
+
+.search-box {
+    width: 100%;
+    height: 45px; /* Increased height */
+    padding: 10px 15px 10px 45px; /* Adjusted padding for icon space */
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+/* Search Icon Styling */
+.search-box-container::before {
+    content: '🔍'; /* Unicode for magnifying glass */
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 18px;
+}
+
+.search-box:focus {
+    border-color: #007bff;
+}
+/* Dropdown Styling for Subscription Type and Status */
+.subscription-type, .status-dropdown {
+    width: 200px;
+    height: 45px; /* Matching height with search box */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    font-size: 16px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+/* Hover and Focus Effects */
+.subscription-type:focus, .status-dropdown:focus, 
+.subscription-type:hover, .status-dropdown:hover {
+    border-color: #007bff;
+    background-color: #f9f9f9;
+}
+/* Submit Button Styling */
+.submit-btn {
+    padding: 10px 20px; /* Adjusted padding for a better look */
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient background */
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease; /* Smooth transition for hover effects */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+}
+
+/* Hover Effect */
+.submit-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #004494); /* Darker gradient on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Active Effect */
+.submit-btn:active {
+    transform: translateY(0); /* Reset lift on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow on click */
+}
+
+/* Addding code for next content component ------------------------------------------------ */
+/* User Info Container */
+.user-info-container {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    padding: 20px;
+}
+
+/* Header and Data Items */
+.user-info-header, .user-info-data {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr); /* 9 equal columns */
+    gap: 10px; /* Space between columns */
+}
+
+/* Header Item Styling */
+.header-item {
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    white-space: nowrap; /* Prevent line break */
+}
+
+/* Data Item Styling */
+.data-item {
+    text-align: center;
+    color: #555;
+    white-space: nowrap; /* Prevent line break for data */
+}
+
+/* Profile Image Styling */
+.profile-image {
+    width: 50px; /* Set width for profile image */
+    height: 50px; /* Set height for profile image */
+    border-radius: 50%; /* Circular image */
+}
+
+/* Toggle Switch Styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Width of the toggle */
+    height: 30px; /* Height of the toggle */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Background color for off state */
+    transition: .4s; /* Smooth transition */
+    border-radius: 30px; /* Rounded corners */
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px; /* Height of the toggle knob */
+    width: 24px; /* Width of the toggle knob */
+    left: 3px; /* Space from left */
+    bottom: 3px; /* Space from bottom */
+    background-color: white; /* Toggle knob color */
+    border-radius: 50%; /* Round knob */
+    transition: .4s; /* Smooth transition */
+}
+
+input:checked + .slider {
+    background-color: #4CAF50; /* Green background for on state */
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px); /* Move knob to right on check */
+}
+/* Profile Image Styling */
+.profile-image {
+    width: 50px; /* Set width for profile image */
+    height: 50px; /* Set height for profile image */
+    border-radius: 50%; /* Circular image */
+    vertical-align: middle; /* Aligns image vertically in the middle */
+    display: inline-block; /* Ensures the image behaves like an inline element */
+}
+
+/* Adjust the data-item if needed */
+.data-item {
+    text-align: center;
+    color: #555;
+    white-space: nowrap; /* Prevent line break for data */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+
+/* homeindex page code -------------------------------------------------------------------------------------------------- */
+#subscription-info {
+    background-color: #f7f9fc; /* Light background for contrast */
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    margin: 20px auto;
+    border: 1px solid #dfe4ea; /* Light border for subtle definition */
+}
+
+.section-header {
+    font-size: 22px; /* Slightly larger for emphasis */
+    font-weight: 600;
+    color: #2b2d42; /* Dark slate color for professionalism */
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.info-card {
+    background-color: #ffffff; /* White background for cards */
+    color: #2c3e50; /* Darker text for readability */
+    padding: 16px;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #d1d9e0; /* Subtle border around cards */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.info-card:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-card h3 {
+    font-size: 12px; /* Smaller font size for subheaders */
+    color: #7d7f82; /* Soft gray color for subheader text */
+    margin-bottom: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-card strong {
+    font-size: 14px; /* Stronger emphasis on values */
+    font-weight: 600;
+    color: #2b2d42; /* Consistent professional color */
+}
+body{
+    background-color: #f5f4f4;
+}
+.info-card:hover {
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Designing the page --------------------------------------------------------------------  */
+/* styles.css */
+
+/* General styling for the container */
+.container {
+    max-width: 100%; /* Sets a maximum width */
+    margin: 0 auto; /* Center the container */
+    padding: 20px; /* Padding around the content */
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%;
+}
+
+/* Heading styles */
+h1 {
+    text-align: center; /* Center the heading */
+    color: #333; /* Dark text color */
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+h2 {
+    color: #555; /* Slightly lighter text for subheadings */
+    margin-bottom: 15px; /* Space below the subheading */
+}
+
+/* Form styling */
+form {
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack elements vertically */
+}
+
+/* Input field styling */
+input[type="text"] {
+    padding: 10px; /* Padding inside the input */
+    margin-bottom: 10px; /* Space below each input */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+}
+
+input[type="text"]:focus {
+    border-color: #007BFF; /* Change border color on focus */
+    outline: none; /* Remove default outline */
+}
+
+/* Button styling */
+button {
+    padding: 10px; /* Padding inside the button */
+    background-color: #007BFF; /* Primary color */
+    color: white; /* White text color */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Search result styling */
+.search-results {
+    display: flex; /* Use flexbox to align items in a row */
+    justify-content: space-between; /* Space between items */
+    margin-top: 15px; /* Space above results */
+}
+
+.result-item {
+    background-color: #e9ecef; /* Light background for results */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px; /* Padding inside each result item */
+    flex: 1; /* Allow items to grow equally */
+    margin: 0 5px; /* Margin between items */
+}
+
+/* Remove bullet points from the list */
+ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+}
+/* NExt css for this page ------------------------------------------------------------ */
+.plan-details {
+    margin-bottom: 30px;
+    height: 1000px;
+}
+
+.user-info-container {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr); /* 9 equal columns for each header */
+    gap: 15px;
+}
+
+.user-info-header {
+    display: contents; /* Allows headers to align properly with data */
+}
+
+.user-info-data {
+    display: contents; /* Allows data to align under headers */
+}
+
+.header-item,
+.data-item {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+   
+}
+
+.header-item {
+    font-weight: bold; /* Emphasis for header items */
+}
+
+.data-item {
+    background-color: #ffffff; /* White background for data items */
+}
+
+.custom-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-label-title {
+    font-size: 1.5rem;
+    margin-right: 24%;
+    font-weight: bold;
+}
+
+.custom-search-box {
+    padding: 8px 12px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+}
+
+.custom-search-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    margin-top: -10px;
+}
+
+.custom-search-button:hover {
+    background-color: #0056b3;
+}
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-dropbtn {
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    color: black;
+}
+
+.custom-dropbtn:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+.custom-dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.custom-dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-dropdown:hover .custom-dropdown-content {
+    display: block;
+}
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-top: -10px;
+}
+.user-info-container {
+   
+    font-size: 0.9rem;
+}
+form {
+    display: block;
+}
+
+/* Css for showing search */
+/* Apply this only to the search page container */
+.search-page-container {
+        font-family: 'Arial', sans-serif;
+        background-color: #ffffff;
+        padding: 30px;
+        color: #333;
+        border-radius: 10px;
+    }
+
+    /* Title Styling */
+    .search-page-container h1 {
+        text-align: center;
+        font-size: 36px;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    /* Paragraph Styling */
+    .search-page-container p {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Form Container Styling */
+    .search-page-container .search-form {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 30px;
+        background-color: #fffefe;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    /* Form Container Hover Effect */
+    .search-page-container .search-form:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Label Styling */
+    .search-page-container .search-form label {
+        display: block;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    /* Input Styling */
+    .search-page-container .search-form input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    /* Focus Effect on Input */
+    .search-page-container .search-form input:focus {
+        border-color: #3498db;  /* Blue border on focus */
+        outline: none;
+    }
+
+    /* Button Styling */
+    .search-page-container .search-form .search-button {
+        width: 100%;
+        padding: 14px;
+        background-color: #3498db;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Button Hover Effect */
+    .search-page-container .search-form .search-button:hover {
+        background-color: #2980b9;
+    }
+
+    /* Last Search Section Styling */
+    .search-page-container h2 {
+        font-size: 28px;
+        color: #34495e;
+        margin-top: 20px;
+    }
+
+    .search-page-container .search-form p {
+        font-size: 16px;
+        color: #555;
+        margin-top: 10px;
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 768px) {
+        .search-page-container {
+            padding: 20px;
+        }
+
+        .search-page-container h1 {
+            font-size: 28px;
+        }
+
+        .search-page-container .search-form {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .search-page-container .search-form input,
+        .search-page-container .search-form .search-button {
+            font-size: 14px;
+        }
+
+        .search-page-container h2 {
+            font-size: 24px;
+        }
+    }
+
+
+
+    .custom-search-bar{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1.2%;
+    }
+
+
+    /* saerch result css  */
+    /* Styling for the search history table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1rem;
+    text-align: left;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+/* Styling for table headers */
+table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+
+    table tr {
+        margin-bottom: 15px;
+    }
+
+    table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 15px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    /* Add some spacing between rows */
+    table td + td {
+        margin-top: 10px;
+    }
+}
+
+    </style>
+</head>
+<body>
+   
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+        <button class="toggle-btns" onclick="closeNav()" style="
+            margin: 5px; 
+            background-color: rgb(43, 68, 124); 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            padding: 10px 15px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;">
+            &#8592; Close
+        </button>
+        <button class="toggle-btns" onclick="openNav()" style="
+            margin: 5px; 
+            background-color: rgb(43, 68, 124); 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            padding: 10px 15px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;">
+            Open &#8594;
+        </button>
+        </div>
+        
+        
+        
+    <!-- Main Layout -->
+    <div style="display: flex;">
+        <!-- Sidebar -->
+        <div id="mySidebar" class="sidebar">
+            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
+                <i class="fas fa-tasks"></i> Plan Management
+            </div>
+            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white;  font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contact_search' %}'">
+                <i class="fas fa-envelope"></i> Contact Preference Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
+                <i class="fas fa-question-circle"></i> Question Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
+                <i class="fas fa-user-check"></i> Voter Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
+                <i class="fas fa-chart-pie"></i> Survey Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
+                <i class="fas fa-users"></i> Polltaker Management
+            </div>
+        </div>
+        
+    
+        <div id="main" >
+           
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
+                <div class="custom-search-bar">
+                    <label class="custom-label-title" >Contact Preference</label>
+                    <div class="try" style="display: flex;">
+                    <form  style="margin-right: 10px;" action="{% url 'download_contacts_csv' %}" method="get">
+                        <button style="background-color: #4CAF50;"  type="submit">Import</button>
+                    </form>
+                    <form action="{% url 'download_contacts_csv' %}" method="get">
+                        <button type="submit">Export</button>
+                    </form>
+                </div>
+                    
+                </div>
+            </div>
+        
+            <!-- <div class="plan-details" style="margin-bottom: 30px; height: 1000px;">
+
+                <div class="user-info-container">
+                    <div class="user-info-header">
+                        <div class="header-item">First-Name</div>
+                        <div class="header-item">Last-Name</div>
+                        <div class="header-item">Email</div>
+                        <div class="header-item">Street</div>
+                        <div class="header-item">City</div>
+                        <div class="header-item">State</div>
+                        <div class="header-item">Country</div>
+                        <div class="header-item">ZipCode</div>
+                        <div class="header-item">Party-preference</div>
+                    </div>
+                    <hr style="grid-column: 1 / -1; margin: 10px 0;">
+        
+                    {% if contacts %}
+                        {% for access in contacts %}
+                            <div class="user-info-data">
+                                <div class="data-item">{{ access.person.first_name }}</div>
+                                <div class="data-item">{{ access.person.last_name }}</div>
+                                <div class="data-item">{{ access.person.email }}</div>
+                                <div class="data-item">{{ access.person.street }}</div>
+                                <div class="data-item">{{ access.person.city }}</div>
+                                <div class="data-item">{{ access.person.state }}</div>
+                                <div class="data-item">{{ access.person.Country }}</div>
+                                <div class="data-item">{{ access.person.zip_code }}</div>
+                                <div class="data-item">{{ access.person.party_preference }}</div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No contacts found matching your search criteria.</p>
+                    {% endif %}
+                </div>
+            </div> -->
+            
+            <div class="search-page-container">
+                <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px; text-align: center;">Contacts Filter Choice</h2>
+
+
+                {% if search_history %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Country</th>
+                                <th>Search Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for search in search_history %}
+                                <tr>
+                                    <td>{{ search.city }}</td>
+                                    <td>{{ search.state }}</td>
+                                    <td>{{ search.country }}</td>
+                                    <td>{{ search.search_date }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No search history found.</p>
+                {% endif %}
+                <p style="font-size: 1rem; color: #555; margin-bottom: 8px; line-height: 1.5; text-align: center;">
+                    You can choose the city, state, or country you want and you will get to see all of the contacts from there.
+                </p>
+                <p style="font-size: 1rem; color: #555; margin-bottom: 8px; line-height: 1.5; text-align: center;">
+                    You can filter again if you want.
+                </p>
+                <p style="font-size: 1rem; color: #c0392b; font-weight: bold; margin-bottom: 20px; text-align: center;">
+                    Remember, you only have contact access based on what your plan allows.
+                </p>
+                <h1>Filter Your Contact List</h1>
+<hr style="margin-bottom: 1%;">
+                <!-- Button to toggle form visibility -->
+                <button type="button" id="showFormButton" class="show-form-button">Filter Contacts</button>
+                
+                <!-- The search form, initially hidden -->
+                <form method="post" class="search-form" id="searchForm" style="display:none;">
+                    {% csrf_token %}
+                    <label for="city">City:</label>
+                    <input type="text" name="city" id="city" value="{{ last_search.city|default:'' }}">
+                
+                    <label for="state">State:</label>
+                    <input type="text" name="state" id="state" value="{{ last_search.state|default:'' }}">
+                
+                    <label for="country">Country:</label>
+                    <input type="text" name="country" id="country" value="{{ last_search.country|default:'' }}">
+                
+                    <button type="submit" class="search-button">Search</button>
+                    <p>You can filter out your contact lists based on your requirement.</p>
+                <p>Remember, you will only have access to what your plan allows.</p>
+                <p>You can see all of your searched contacts. To see all contacts, kindly check out all contacts.</p>
+                </form>
+                
+                <!-- <p>You can filter out your contact lists based on your requirement.</p>
+                <p>Remember, you will only have access to what your plan allows.</p>
+                <p>You can see all of your searched contacts. To see all contacts, kindly check out all contacts.</p>
+             -->
+                <!-- <h2>Your Last Search</h2>
+                <p>City: {{ search.city }}</p>
+                <p>State: {{ search.state }}</p>
+                <p>Country: {{ search.country }}</p>
+                <p>Last Searched: {{ search.search_date }}</p> -->
+            </div>
+            
+           
+            
+        </div>
+        
+    </div>
+<script>
+
+function openNav() {
+    document.getElementById("mySidebar").style.width = "300px";
+    document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+    document.getElementById("mySidebar").style.width = "0";
+    document.getElementById("main").style.marginLeft = "0";
+}
+
+// Combined function to toggle the sidebar
+function toggleNav() {
+    var sidebar = document.getElementById("mySidebar");
+    if (sidebar.style.width === "300px") {
+        closeNav(); // Close if it's already open
+    } else {
+        openNav(); // Open if it's closed
+    }
+}
+
+function toggleDropdown() {
+    var dropdown = document.getElementById("dropdown");
+    dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block"; // Toggle dropdown visibility
+}
+
+function checkScreenWidth() {
+    if (window.innerWidth < 700) {
+        closeNav(); // Close the sidebar if screen width is less than 700px
+    }
+}
+
+// Add event listener for window resize
+window.addEventListener('resize', checkScreenWidth);
+
+// Initial check when the page loads
+document.addEventListener('DOMContentLoaded', checkScreenWidth);
+
+
+
+// The form 
+ // Function to show/hide the form
+ document.getElementById("showFormButton").addEventListener("click", function() {
+        var form = document.getElementById("searchForm");
+        if (form.style.display === "none" || form.style.display === "") {
+            form.style.display = "block";
+        } else {
+            form.style.display = "none";
+        }
+    });
+
+</script>
+<link rel="stylesheet" href="{% static 'css/accessed.css' %}">
+   {% endblock %}
+
+
+
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Search</title>
+</head>
+<body>
+<h2>Contact Search</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="city">City:</label>
+    <input type="text" name="city" id="city" value="{{ last_search.city|default:'' }}">
+    
+    <label for="state">State:</label>
+    <input type="text" name="state" id="state" value="{{ last_search.state|default:'' }}">
+
+    <label for="country">Country:</label>
+    <input type="text" name="country" id="country" value="{{ last_search.country|default:'' }}">
+
+    <button type="submit">Search</button>
+</form>
+
+    <h2>Your Last Search</h2>
+    <p>City: {{ search.city }}</p>
+    <p>State: {{ search.state }}</p>
+    <p>Country: {{ search.country }}</p>
+    <p>Last Searched: {{ search.search_date }}</p>
+</body>
+</html> -->

@@ -202,10 +202,11 @@
     <div class="sidebar">
         <div class="profile-picture">
             {% if profile.profile_pic %}
-                <img src="{{ profile.profile_pic.url }}" alt="Profile Picture">
-            {% else %}
-                <img src="{% static 'img/user.png' %}" alt="Default Profile Picture">
-            {% endif %}
+            <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="profile-img">
+        {% else %}
+            <img src="{% static 'img/user.png' %}" alt="Default Profile Picture" class="profile-img">
+        {% endif %}
+        
         </div>
         <h2>{{ username }}</h2>
         <ul>

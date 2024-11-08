@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'walkapp',
+    'surveyapp',
+    'surveydata',
     
 ]
 
@@ -136,3 +138,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # settings.py
 PAYPAL_CLIENT_ID = 'AaJTK49-mFNUufy1vS-yesEHUJsWiVr6H0ED-YuJmrmbarDiWb7sRXS4egPD8MZ-Zkl24YQX7Cg4_x3C'
 PAYPAL_CLIENT_SECRET = 'EPv_plEFuiMjjJZc1IRaA9wGLF2jGymucF2m4As97S6cs7scrJIZQV81fa727I1MDcYNTAnyg9sGYuJk'
+
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'criscallion@gmail.com'
+EMAIL_HOST_PASSWORD = 'gdpi idvs coiy fgdm'

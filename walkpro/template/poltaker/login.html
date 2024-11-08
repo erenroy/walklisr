@@ -132,6 +132,10 @@
             margin: 0;
             color: #666;
         }
+        form {
+            width: 450px;
+            margin-top: 4%;
+        }
     </style>
 </head>
 <body>
@@ -150,14 +154,72 @@
         </div>
     </nav>
 
-    <!-- Login form -->
     <form method="post">
+        <h1 style="font-size: 1.2rem; text-align: center;">Poltaker Login </h1>
+        <ul style="list-style-type: disc; margin: 20px auto; padding: 0; max-width: 600px; line-height: 1.6;">
+            <li>Login with the credentials you recived through email.</li>
+            <li>Change your password once you are logged In .</li>
+            <li>For more info Kindly contact the administrator </li>
+        </ul>
+        <style>
+
+.message-list {
+    list-style: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+    color: red;
+}
+
+.message-item {
+    padding: 10px; /* Add padding to each message */
+    margin-bottom: 10px; /* Space between messages */
+    border-radius: 3px; /* Slightly round corners */
+}
+
+.message-item:last-child {
+    margin-bottom: 0; /* Remove margin from the last item */
+}
+
+/* Add styles for different message types */
+.message-item.success {
+    background-color: #d4edda; /* Light green for success */
+    color: #155724; /* Dark green text */
+}
+
+.message-item.error {
+    background-color: #f8d7da; /* Light red for error */
+    color: #721c24; /* Dark red text */
+}
+
+.message-item.info {
+    background-color: #d1ecf1; /* Light blue for info */
+    color: #0c5460; /* Dark blue text */
+}
+
+.message-item.warning {
+    background-color: #fff3cd; /* Light yellow for warning */
+    color: #856404; /* Dark yellow text */
+}
+
+        </style>
+        {% if messages %}
+        <div class="message-container">
+            <ul class="message-list">
+                {% for message in messages %}
+                    <li class="message-item">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    
         {% csrf_token %}
         <label for="email">Email:</label>
-        <input type="email" name="email" required>
+        <input type="email" id="email" name="email" required><br><br>
         <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <button type="submit">Log In</button>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Login</button>
+    <p style="margin-top: 5%; color: blue;"><a href="{% url 'surveyapp:forgot_password' %}">Forget Password ?</a></p>
+
     </form>
 
     <script>
@@ -172,3 +234,4 @@
     </script>
 </body>
 </html>
+

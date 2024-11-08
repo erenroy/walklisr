@@ -4,12 +4,22 @@ from django.urls import path
 from .views import register, login_view, logout_view, home_view , cdata_view
 from .views import subscription_plans, choose_plan, process_payment, subscription_success , personal_details_plan , user_details , accessed_contacts
 from . import views
-from .views import search_person_data , add_poltaker , add_questions , view_questions , first_look
+from .views import search_person_data , add_poltaker , add_questions , view_questions , first_look , verify_otp
 from django.conf import settings
 from django.conf.urls.static import static
+
+from .views import ForgotPassword, PasswordResetSent, ResetPassword , question_search ,   poltaker_change_password , upload_contacts
+from .views import contact_list ,contact_search ,contact_search_results
+from .views import download_poltakers_csv
+
+
+# app_name = 'walkapp'  # This is the namespace for this app
+
 urlpatterns = [
     path('',first_look, name='first_look'),
+    path('login/', login_view, name='login_view'),
     path('register/', register, name='register'),
+    path('verify-otp/', verify_otp, name='verify_otp'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('home/', home_view, name='home'),
@@ -34,14 +44,37 @@ urlpatterns = [
 
     # poltaker urls 
     path('add-poltaker/', views.add_poltaker, name='add_poltaker'),
-    path('poltaker/login/', views.poltaker_login, name='poltaker_login'),
-    path('poltaker/dashboard/', views.poltaker_dashboard, name='poltaker_dashboard'),
-    path('poltaker/logout/', views.poltaker_logout, name='poltaker_logout'),
+    # path('poltaker/login/', views.poltaker_login, name='poltaker_login'),                                    0000000000
+    # path('poltaker/dashboard/', views.poltaker_dashboard, name='poltaker_dashboard'),                        0000000000
+    # path('poltaker/logout/', views.poltaker_logout, name='poltaker_logout'),                                 0000000000
     path('add-questions/', views.add_questions, name='add_questions'),
     path('view/', views.view_questions, name='view_questions'),  # New URL for viewing questions
     path('survey_work/', views.survey_work, name='survey_work'),  # New URL for viewing questions
 
+    path('forgot-password/', ForgotPassword, name='forgot-password'),
+    path('password-reset-sent/<uuid:reset_id>/', PasswordResetSent, name='password-reset-sent'),
+    path('reset-password/<uuid:reset_id>/', ResetPassword, name='reset-password'),
+    path('question-search/', question_search, name='question_search'),
+    
+    # path('test-questions/', test_model_questions, name='test_questions'),  # Add this line    0---------- No use now 
+    # path('poltaker/change-password/', poltaker_change_password, name='poltaker_change_password'),  # Add this line           00000000000
 
+    # adding contact 
+    path('upload-contacts/', upload_contacts, name='upload_contacts'),
+    path('contacts/', contact_list, name='contacts_list'),  # This should match the view name
+    # path('test/',test_details, name='test_details')
+    path('contact_search/', contact_search, name='contact_search'),
+    path('contact_search/results/', contact_search_results, name='contact_search_results'),
+
+
+    # next working download 
+    path('download-contacts/', views.download_contacts_csv, name='download_contacts_csv'),
+    path('download-poltakers/', download_poltakers_csv, name='download_poltakers_csv'),
+    
+
+    # survey data 
+    # path('my-surveys/', views.my_surveys, name='my_surveys'), 
+    # path('export-responses/<int:survey_id>/', views.export_responses_as_csv, name='export_responses'),  # Export responses
 ]
 # Serve media files during development
 if settings.DEBUG:

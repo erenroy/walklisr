@@ -135,14 +135,16 @@ body{
         font-weight: bold;
     }
 }
-
+.navbar-logo:hover{
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
      <!-- Navbar -->
      <nav class="navbar">
         <div class="navbar-logo">
-            <img src="{% static 'img/logo.png' %}" alt="Logo">
+            <img src="{% static 'img/logo.png' %}" alt="Logo" onclick="window.location.href='{% url 'home' %}'">
         </div>
         <div class="navbar-welcome">
             <h2>Welcome Manager</h2>

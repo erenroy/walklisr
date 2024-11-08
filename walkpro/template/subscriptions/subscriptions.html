@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- templates/subscriptions/subscription.html -->
+<h2>Choose Your Subscription Plan</h2>
+<div class="pricing-container">
+    {% for plan in plans %}
+        <div class="pricing-card">
+            <h3>{{ plan.name }}</h3>
+            <p class="price">${{ plan.price }}<span>/month</span></p>
+            <ul>
+                <li>{{ plan.manager_limit }} manager(s)</li>
+                <li>{{ plan.participant_limit }} participant(s)</li>
+                <li>{{ plan.survey_limit }} survey(s)</li>
+                <li>{{ plan.contact_limit }} contact(s)</li>
+            </ul>
+            <form action="{% url 'purchase_plan' plan.name %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Choose Plan</button>
+            </form>
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>

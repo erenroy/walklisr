@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Model Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .question {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #fff;
+        }
+        h2 {
+            color: #333;
+        }
+        .options {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>General Questions</h2>
+
+    <h2>General Questions</h2>
+    {% if general_questions %}
+        {% for question in general_questions %}
+            <div class="question">
+                <h3>{{ question.question_text }}</h3>
+                <div class="options">
+                    {% if question.question_type == 'mcq' %}
+                        <strong>Options:</strong>
+                        <ul>
+                            {% for option in question.options.splitlines %}
+                                <li>{{ option }}</li>
+                            {% empty %}
+                                <li>No options available</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <strong>Type:</strong> {{ question.question_type }}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No general questions available.</p>
+    {% endif %}
+
+</body>
+</html>

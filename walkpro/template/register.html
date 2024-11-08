@@ -282,6 +282,39 @@ html, body {
     font-weight: bold;
 }
 }
+
+.messages-container {
+    margin-bottom: 20px;
+}
+
+.message {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
     </style>
 </head>
 <body>
@@ -291,7 +324,7 @@ html, body {
             <img src="{% static 'img/logo.png' %}" alt="Logo">
         </div>
         <div class="navbar-welcome">
-            <h2>Welcome To Walk List Pro</h2>
+            <h2>Welcome To WLP</h2>
         </div>
         <div class="navbar-user">
             <img onclick="toggleDropdown()" src="{% static 'img/logo2.png' %}" alt="User Icon" class="user-icon" style="margin-top: 0px; vertical-align: middle; width: 40px; height: 40px;">
@@ -307,13 +340,23 @@ html, body {
         </div>
         
     </nav>
+	{% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="message{% if message.tags %} {{ message.tags }}{% endif %}">
+                <span>{{ message }}</span>
+                <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
     <div class="container" id="container" >
-       
+
         <div class="form-container sign-in-container">
 			<form action="{% url 'register' %}" method="POST"> <!-- Use the URL for registration -->
 				{% csrf_token %}
-				<h1>Create Account</h1>
+				<h1>Register</h1>
 				<div class="social-container">
 					<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
 					<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
@@ -324,6 +367,7 @@ html, body {
 				<input type="email" name="email" placeholder="Email" required />
 				<input type="password" name="password" placeholder="Password" required />
 				<button type="submit">Sign Up</button>
+<a href="{% url 'login' %}">Already have an account ? <b style="color: rgb(42, 120, 255);">Login</b> </a>
 			</form>
 			
         </div>

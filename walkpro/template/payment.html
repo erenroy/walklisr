@@ -94,10 +94,14 @@ h3 {
 }
 
 </style>
+
 <div class="confirmation-container">
     <h1>Confirm Your Subscription to {{ plan.name }}</h1>
+    
     <div class="plan-details">
-        <p>You're about to pay <strong>${{ plan.price }}</strong> for your subscription.</p>
+        <p style="margin-bottom: 5px;"><strong>Price:</strong> ${{ plan.price }} / monthly</p>
+        <p>You're about to pay <strong id="annual-price">${{ plan.price }}</strong> for your subscription </p>
+        <p>( Billed Annually )</p>
         <form action="{% url 'process_payment' %}" method="post" class="payment-form">
             {% csrf_token %}
             <input type="hidden" name="plan_id" value="{{ plan.id }}">
@@ -108,11 +112,22 @@ h3 {
     <h3>Plan Details:</h3>
     <div class="details-list">
         <p><strong>Name:</strong> {{ plan.name }}</p>
-        <p><strong>Price:</strong> ${{ plan.price }}</p>
+        <p><strong>Price:</strong> ${{ plan.price }} / monthly</p>
         <p><strong>Managers:</strong> {{ plan.managers }} manager(s)</p>
         <p><strong>Poltakers:</strong> {{ plan.poltakers }} poltaker(s)</p>
         <p><strong>Surveys:</strong> {{ plan.surveys }} survey(s)</p>
         <p><strong>Contacts:</strong> {{ plan.contacts }} contact(s)</p>
     </div>
 </div>
+
+<script>
+    // Get the price from the server and calculate the annual price
+    const planPrice = {{ plan.price }};
+    const annualPrice = (planPrice * 12).toFixed(2); // Calculate annual price
+
+    // Update the annual price in the HTML
+    document.getElementById('annual-price').textContent = '$' + annualPrice;
+</script>
+
+
 {% endblock %}

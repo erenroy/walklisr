@@ -126,12 +126,18 @@ class Poltaker(models.Model):
     email = models.EmailField(unique=True)
     zip_code = models.CharField(max_length=10)
     password = models.CharField(max_length=128)  # Store hashed password
+    Street = models.CharField(max_length=10,default='0')
+    city = models.CharField(max_length=10,default='0')
+    state = models.CharField(max_length=10,default='0')
+    password = models.CharField(max_length=128)  # Store hashed password
     # New fields for tracking survey statuses
     completed_surveys = models.IntegerField(default=0)
     inprogress_surveys = models.IntegerField(default=0)
     pending_surveys = models.IntegerField(default=0)
     total_survey = models.IntegerField(default=0)
-
+    password_changed = models.BooleanField(default=False)  # Add this field
+    password_reset_token = models.CharField(max_length=256, null=True, blank=True)
+    
     def __str__(self):
         return f"{self.name} (Poltaker for {self.user.username})"
 
@@ -141,9 +147,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Question(models.Model):
+    QUESTION_TYPES = (
+        ('mcq', 'Multiple Choice'),
+        ('text', 'Open Text'),
+        ('yesno', 'Yes/No'),
+    )
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=255)
-
+    question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
+    
+    
     def __str__(self):
         return self.question_text
 
@@ -155,3 +169,67 @@ class Option(models.Model):
         return self.option_text
 
 
+
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
+import uuid
+
+class PasswordReset(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reset_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created_when = models.DateTimeField(auto_now_add=True)
+
+
+from django.db import models
+
+class GeneralQuestion(models.Model):
+    QUESTION_TYPES = [
+        ('mcq', 'Multiple Choice'),
+        ('text', 'Open Text'),
+        ('yesno', 'Yes/No'),
+    ]
+
+    question_text = models.CharField(max_length=255)
+    question_type = models.CharField(max_length=10, choices=QUESTION_TYPES)
+    options = models.TextField(blank=True)  # Store options as newline-separated values
+
+    def __str__(self):
+        return self.question_text
+
+# Addding contact listsz 
+from django.db import models
+from django.contrib.auth.models import User
+from django.db import models
+from django.contrib.auth.models import User
+
+class UserContactList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    zipcode = models.PositiveIntegerField()  # Ensure this matches the HTML form
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    party_preference = models.CharField(max_length=50, choices=[
+        ('Republican', 'Republican'),
+        ('Democrat', 'Democrat'),
+        ('Independent', 'Independent'),
+    ])
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.email}"
+
+class UserContactSearch(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    city = models.CharField(max_length=100, null=True, blank=True)
+    state = models.CharField(max_length=100, null=True, blank=True)
+    country = models.CharField(max_length=100, null=True, blank=True)
+    search_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.search_date}"

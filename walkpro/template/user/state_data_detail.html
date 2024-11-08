@@ -1,0 +1,49 @@
+<!-- user/state_data_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Details for {{ state }}</title>
+</head>
+<body>
+    <h1>Records for {{ state }}</h1>
+
+    {% if entries %}
+        <table>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Zip Code</th>
+                    <th>Party Preference</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.first_name }}</td>
+                        <td>{{ entry.last_name }}</td>
+                        <td>{{ entry.email }}</td>
+                        <td>{{ entry.street }}</td>
+                        <td>{{ entry.city }}</td>
+                        <td>{{ entry.state }}</td>
+                        <td>{{ entry.country }}</td>
+                        <td>{{ entry.zip_code }}</td>
+                        <td>{{ entry.party_preference }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No records found for "{{ state }}".</p>
+    {% endif %}
+
+    <a href="{% url 'state_query' %}">Back to State Query</a>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ survey.title }}</title>
+</head>
+<body>
+    <h3>Assigned Contacts</h3>
+{% for contact in contacts %}
+    <div>
+        <p><strong>Full Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
+        <p><strong>Email:</strong> {{ contact.email }}</p>
+        <p><strong>Street:</strong> {{ contact.street }}</p>
+        <p><strong>City:</strong> {{ contact.city }}</p>
+        <p><strong>State:</strong> {{ contact.state }}</p>
+        <p><strong>Country:</strong> {{ contact.country }}</p>
+        <p><strong>Zipcode:</strong> {{ contact.zipcode }}</p>
+        <p><strong>Party Preference:</strong> {{ contact.party_preference }}</p>
+        <hr>
+    </div>
+{% endfor %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <!-- Display Assigned Contact Information -->
+    <h3>Assigned Contact:</h3>
+    <div>
+        <p>{{ assigned_contact.first_name }} {{ assigned_contact.last_name }} ({{ assigned_contact.email }})</p>
+    </div>
+
+    <!-- Survey Questions Loop -->
+    {% for question in questions %}
+        <div>
+            <h4>{{ question.question_text }}</h4>
+
+            {% if question.question_type == 'mcq' %}
+                {% for option in question.options.all %}
+                    <label>
+                        <input type="radio" name="option_{{ question.id }}" value="{{ option.option_text }}">
+                        {{ option.option_text }}
+                    </label><br>
+                {% endfor %}
+            {% elif question.question_type == 'text' %}
+                <textarea name="answer_{{ question.id }}" rows="2" cols="40" placeholder="Type your answer here..."></textarea>
+            {% elif question.question_type == 'yesno' %}
+                <label>
+                    <input type="radio" name="answer_{{ question.id }}" value="Yes"> Yes
+                </label>
+                <label>
+                    <input type="radio" name="answer_{{ question.id }}" value="No"> No
+                </label>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
+
+
+</body>
+</html>

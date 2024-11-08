@@ -1,0 +1,1900 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Confirm Subscription{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Link your CSS file -->
+<style>
+    /* The sidebar menu */
+    .sidebar {
+        height: 92%;
+        /* 100% Full-height */
+        width: 300px;
+        /* Set initial width */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Stay on top */
+        top: 78px;
+        left: 0;
+        background-color: #ffffff;
+        /* Black*/
+        overflow-x: hidden;
+        /* Disable horizontal scroll */
+        padding-top: 60px;
+        /* Place content 60px from the top */
+        transition: 0.5s;
+        /* 0.5 second transition effect to slide in the sidebar */
+    }
+
+    /* The sidebar links */
+    .sidebar a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+
+    /* When you mouse over the navigation links, change their color */
+    .sidebar a:hover {
+        color: #f1f1f1;
+    }
+
+    /* Position and style the close button (top right corner) */
+    .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+
+    /* The button used to open/close the sidebar */
+    .toggle-btn {
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #111;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        position: absolute;
+        bottom: 20px;
+        /* Move button to bottom */
+        left: 20px;
+        /* Position button left side */
+        width: 210px;
+        /* Match button width with sidebar */
+    }
+
+    .toggle-btn:hover {
+        background-color: #444;
+    }
+
+    /* Style page content */
+    #main {
+        transition: margin-left .5s;
+        /* If you want a transition effect */
+        padding: 20px;
+        margin-left: 250px;
+        /* Adjust margin to account for opened sidebar */
+    }
+
+    /* On smaller screens, where height is less than 450px, change the style of the sidenav */
+    @media screen and (max-height: 450px) {
+        .sidebar {
+            padding-top: 15px;
+        }
+
+        .sidebar a {
+            font-size: 18px;
+        }
+    }
+
+    /* Sidebar styling */
+
+
+    /* Sidebar item styling */
+    .sidebar-item {
+        padding: 15px 20px;
+        /* Padding for items */
+        color: rgb(0, 0, 0);
+        /* Text color */
+        display: flex;
+        /* Flex layout for icon and text */
+        align-items: center;
+        /* Center vertically */
+        cursor: pointer;
+        /* Pointer on hover */
+        transition: background 0.3s;
+        /* Background change on hover */
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .sidebar-item:hover {
+        background-color: #34495e;
+        /* Change background on hover */
+    }
+
+    .sidebar-item.active {
+        background-color: rgb(43, 68, 124);
+        /* Active item background */
+        color: white;
+    }
+
+    /* Icon styling */
+    .sidebar-item i {
+        margin-right: 10px;
+        /* Space between icon and text */
+
+    }
+
+    /* Button styling */
+    .toggle-btn {
+        margin: 20px;
+        /* Margin around the button */
+        padding: 10px 15px;
+        /* Padding for button */
+        background-color: #e74c3c;
+        /* Button background color */
+        border: none;
+        /* No border */
+        color: white;
+        /* Button text color */
+        cursor: pointer;
+        /* Pointer on hover */
+        border-radius: 5px;
+        /* Rounded corners */
+        transition: background 0.3s;
+        /* Background change on hover */
+    }
+
+    .toggle-btn:hover {
+        background-color: #c0392b;
+        /* Darker background on hover */
+    }
+
+    .toggle-btn {
+        margin: 20px;
+        /* Margin around the button */
+        padding: 12px 24px;
+        /* Padding for button */
+        background-color: #007bff;
+        /* Professional blue color */
+        border: none;
+        /* No border */
+        color: white;
+        /* Button text color */
+        font-size: 16px;
+        /* Font size */
+        font-weight: 600;
+        /* Semi-bold text */
+        border-radius: 5px;
+        /* Slightly rounded corners */
+        cursor: pointer;
+        /* Pointer on hover */
+        transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+        /* Smooth transition */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        /* Subtle shadow effect */
+    }
+
+    /* Hover effect */
+    .toggle-btn:hover {
+        background-color: #0056b3;
+        /* Darker blue on hover */
+        transform: translateY(-2px);
+        /* Slight lift effect */
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        /* Enhanced shadow on hover */
+    }
+
+    /* Active effect */
+    .toggle-btn:active {
+        transform: translateY(0);
+        /* Reset lift on click */
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        /* Reduced shadow on click */
+    }
+
+
+    /* Writting the code of the content part --------------------------------------------------------------------------------------------------- */
+    .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background-color: #ffffff;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .label-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .search-box {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .subscription-type {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .status-toggle {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 10px;
+        transition: 0.4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 12px;
+        width: 12px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        border-radius: 50%;
+        transition: 0.4s;
+    }
+
+    input:checked+.slider {
+        background-color: #4caf50;
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(14px);
+    }
+
+    .status-label {
+        font-size: 14px;
+        color: #333;
+    }
+
+    /* Search Box Container Styling */
+    /* Search Box Container Styling */
+    .search-box-container {
+        position: relative;
+        width: 200px;
+        /* Increased width */
+    }
+
+    .search-box {
+        width: 100%;
+        height: 45px;
+        /* Increased height */
+        padding: 10px 15px 10px 45px;
+        /* Adjusted padding for icon space */
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        outline: none;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    /* Search Icon Styling */
+    .search-box-container::before {
+        content: '🔍';
+        /* Unicode for magnifying glass */
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #888;
+        font-size: 18px;
+    }
+
+    .search-box:focus {
+        border-color: #007bff;
+    }
+
+    /* Dropdown Styling for Subscription Type and Status */
+    .subscription-type,
+    .status-dropdown {
+        width: 200px;
+        height: 45px;
+        /* Matching height with search box */
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: #ffffff;
+        font-size: 16px;
+        color: #333;
+        outline: none;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+
+    /* Hover and Focus Effects */
+    .subscription-type:focus,
+    .status-dropdown:focus,
+    .subscription-type:hover,
+    .status-dropdown:hover {
+        border-color: #007bff;
+        background-color: #f9f9f9;
+    }
+
+    /* Submit Button Styling */
+    .submit-btn {
+        padding: 10px 20px;
+        /* Adjusted padding for a better look */
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        /* Gradient background */
+        color: #ffffff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        /* Smooth transition for hover effects */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* Shadow for depth */
+    }
+
+    /* Hover Effect */
+    .submit-btn:hover {
+        background: linear-gradient(135deg, #0056b3, #004494);
+        /* Darker gradient on hover */
+        transform: translateY(-2px);
+        /* Slight lift effect */
+    }
+
+    /* Active Effect */
+    .submit-btn:active {
+        transform: translateY(0);
+        /* Reset lift on click */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* Reduce shadow on click */
+    }
+
+    /* Addding code for next content component ------------------------------------------------ */
+    /* User Info Container */
+    .user-info-container {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        padding: 20px;
+    }
+
+    /* Header and Data Items */
+    .user-info-header,
+    .user-info-data {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        /* 9 equal columns */
+        gap: 10px;
+        /* Space between columns */
+    }
+
+    /* Header Item Styling */
+    .header-item {
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        white-space: nowrap;
+        /* Prevent line break */
+    }
+
+    /* Data Item Styling */
+    .data-item {
+        text-align: center;
+        color: #555;
+        white-space: nowrap;
+        /* Prevent line break for data */
+    }
+
+    /* Profile Image Styling */
+    .profile-image {
+        width: 50px;
+        /* Set width for profile image */
+        height: 50px;
+        /* Set height for profile image */
+        border-radius: 50%;
+        /* Circular image */
+    }
+
+    /* Toggle Switch Styling */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        /* Width of the toggle */
+        height: 30px;
+        /* Height of the toggle */
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        /* Background color for off state */
+        transition: .4s;
+        /* Smooth transition */
+        border-radius: 30px;
+        /* Rounded corners */
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 24px;
+        /* Height of the toggle knob */
+        width: 24px;
+        /* Width of the toggle knob */
+        left: 3px;
+        /* Space from left */
+        bottom: 3px;
+        /* Space from bottom */
+        background-color: white;
+        /* Toggle knob color */
+        border-radius: 50%;
+        /* Round knob */
+        transition: .4s;
+        /* Smooth transition */
+    }
+
+    input:checked+.slider {
+        background-color: #4CAF50;
+        /* Green background for on state */
+    }
+
+    input:checked+.slider:before {
+        transform: translateX(30px);
+        /* Move knob to right on check */
+    }
+
+    /* Profile Image Styling */
+    .profile-image {
+        width: 50px;
+        /* Set width for profile image */
+        height: 50px;
+        /* Set height for profile image */
+        border-radius: 50%;
+        /* Circular image */
+        vertical-align: middle;
+        /* Aligns image vertically in the middle */
+        display: inline-block;
+        /* Ensures the image behaves like an inline element */
+    }
+
+    /* Adjust the data-item if needed */
+    .data-item {
+        text-align: center;
+        color: #555;
+        white-space: nowrap;
+        /* Prevent line break for data */
+        display: flex;
+        /* Use flexbox for alignment */
+        align-items: center;
+        /* Center items vertically */
+        justify-content: center;
+        /* Center items horizontally */
+    }
+
+    /* homeindex page code -------------------------------------------------------------------------------------------------- */
+    #subscription-info {
+        background-color: #f7f9fc;
+        /* Light background for contrast */
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        margin: 20px auto;
+        border: 1px solid #dfe4ea;
+        /* Light border for subtle definition */
+    }
+
+    .section-header {
+        font-size: 22px;
+        /* Slightly larger for emphasis */
+        font-weight: 600;
+        color: #2b2d42;
+        /* Dark slate color for professionalism */
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .info-card {
+        background-color: #ffffff;
+        /* White background for cards */
+        color: #2c3e50;
+        /* Darker text for readability */
+        padding: 16px;
+        border-radius: 6px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border: 1px solid #d1d9e0;
+        /* Subtle border around cards */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-card:hover {
+        transform: translateY(-3px);
+        /* Lift effect on hover */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-card h3 {
+        font-size: 12px;
+        /* Smaller font size for subheaders */
+        color: #7d7f82;
+        /* Soft gray color for subheader text */
+        margin-bottom: 4px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-card strong {
+        font-size: 14px;
+        /* Stronger emphasis on values */
+        font-weight: 600;
+        color: #2b2d42;
+        /* Consistent professional color */
+    }
+
+    body {
+        background-color: #f5f4f4;
+    }
+
+    .info-card:hover {
+        cursor: pointer;
+        /* Change cursor to pointer on hover */
+    }
+
+    /* Designing the page --------------------------------------------------------------------  */
+    /* styles.css */
+
+    /* General styling for the container */
+    .container {
+        max-width: 100%;
+        /* Sets a maximum width */
+        margin: 0 auto;
+        /* Center the container */
+        padding: 20px;
+        /* Padding around the content */
+        background-color: #f9f9f9;
+        /* Light background color */
+        border-radius: 8px;
+        /* Rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Subtle shadow */
+        width: 100%;
+    }
+
+    /* Heading styles */
+    h1 {
+        text-align: center;
+        /* Center the heading */
+        color: #333;
+        /* Dark text color */
+        margin-bottom: 20px;
+        /* Space below the heading */
+    }
+
+    h2 {
+        color: #555;
+        /* Slightly lighter text for subheadings */
+        margin-bottom: 15px;
+        /* Space below the subheading */
+    }
+
+    /* Form styling */
+    form {
+        display: flex;
+        /* Use flexbox for layout */
+        flex-direction: column;
+        /* Stack elements vertically */
+    }
+
+    /* Input field styling */
+    input[type="text"] {
+        padding: 10px;
+        /* Padding inside the input */
+        margin-bottom: 10px;
+        /* Space below each input */
+        border: 1px solid #ccc;
+        /* Light border */
+        border-radius: 4px;
+        /* Rounded corners */
+        font-size: 16px;
+        /* Font size */
+    }
+
+    input[type="text"]:focus {
+        border-color: #007BFF;
+        /* Change border color on focus */
+        outline: none;
+        /* Remove default outline */
+    }
+
+    /* Button styling */
+    button {
+        padding: 10px;
+        /* Padding inside the button */
+        background-color: #007BFF;
+        /* Primary color */
+        color: white;
+        /* White text color */
+        border: none;
+        /* Remove border */
+        border-radius: 4px;
+        /* Rounded corners */
+        cursor: pointer;
+        /* Pointer cursor on hover */
+        font-size: 16px;
+        /* Font size */
+    }
+
+    button:hover {
+        background-color: #0056b3;
+        /* Darker shade on hover */
+    }
+
+    /* Search result styling */
+    .search-results {
+        display: flex;
+        /* Use flexbox to align items in a row */
+        justify-content: space-between;
+        /* Space between items */
+        margin-top: 15px;
+        /* Space above results */
+    }
+
+    .result-item {
+        background-color: #e9ecef;
+        /* Light background for results */
+        border-radius: 4px;
+        /* Rounded corners */
+        padding: 10px;
+        /* Padding inside each result item */
+        flex: 1;
+        /* Allow items to grow equally */
+        margin: 0 5px;
+        /* Margin between items */
+    }
+
+    /* Remove bullet points from the list */
+    ul {
+        list-style-type: none;
+        /* Remove bullet points */
+        padding: 0;
+        /* Remove padding */
+    }
+
+    .unique-search-input {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 0.5rem;
+        width: 200px;
+        /* Adjust width as needed */
+    }
+
+    .unique-search-button {
+        padding: 0.6rem 1.5rem;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 4px;
+        /* background-color: #FF4B2B; */
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: -10px;
+    }
+
+    .unique-search-button:hover {
+        background-color: #e04326;
+    }
+
+    /* Adding css ----------------------------------------- */
+    /* Container styling */
+    .container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        margin: auto;
+        /* Centers the container */
+    }
+
+    /* Row styling */
+    .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eaeaea;
+        position: relative;
+        /* For positioning the dropdown */
+    }
+
+    /* Cell styling */
+    .cell {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        color: #333;
+        /* Dark text color */
+    }
+
+    /* Action button styling */
+    .action-btn {
+        cursor: pointer;
+        color: #007bff;
+        /* Bootstrap primary color */
+        position: relative;
+        /* For dropdown positioning */
+    }
+
+    /* Options dropdown styling */
+    .options {
+        display: none;
+        /* Hidden by default */
+        position: absolute;
+        top: 100%;
+        /* Below the action button */
+        left: 0;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        margin-top: 5px;
+        padding: 5px;
+        z-index: 1;
+        /* Ensures dropdown is above other elements */
+    }
+
+    /* Options button styling */
+    .options button {
+        border: none;
+        background: transparent;
+        color: #007bff;
+        cursor: pointer;
+        padding: 5px 10px;
+        width: 100%;
+        text-align: left;
+        /* Align text to the left */
+    }
+
+    /* Hover effect for options buttons */
+    .options button:hover {
+        background-color: #f0f0f0;
+        /* Light gray on hover */
+    }
+
+    /* Container styling */
+    .container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        margin: auto;
+        /* Centers the container */
+    }
+
+    /* Row styling */
+    .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eaeaea;
+        position: relative;
+        /* For positioning the dropdown */
+    }
+
+    /* Cell styling */
+    .cell {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        color: #333;
+        /* Dark text color */
+    }
+
+    /* Action button styling */
+    .action-btn {
+        cursor: pointer;
+        color: #007bff;
+        /* Bootstrap primary color */
+        position: relative;
+        /* For dropdown positioning */
+    }
+
+    /* Options dropdown styling */
+    .options {
+        display: none;
+        /* Hidden by default */
+        position: absolute;
+        top: 100%;
+        /* Below the action button */
+        left: 80%;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        margin-top: 5px;
+        padding: 5px;
+        z-index: 1;
+        /* Ensures dropdown is above other elements */
+    }
+
+    /* Options button styling */
+    .options button {
+        border: none;
+        background: transparent;
+        color: #007bff;
+        cursor: pointer;
+        padding: 5px 10px;
+        width: 100%;
+        text-align: left;
+        /* Align text to the left */
+    }
+
+    /* Hover effect for options buttons */
+    .options button:hover {
+        background-color: #f0f0f0;
+        /* Light gray on hover */
+    }
+
+    /* This page code  ------------------------------------------------------------------------------ */
+    /* Survey Page Specific Styles */
+    h1 {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* Form Layout */
+    form {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Form Input Fields */
+    input[type="text"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    /* Custom Question Section */
+    #custom-questions-container .custom-question {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    /* Button Styling */
+    button {
+        padding: 12px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #6e8efb;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #5a7fdb;
+    }
+
+    /* Add Another Question Button */
+    button[type="button"] {
+        background-color: #f39c12;
+        font-weight: bold;
+    }
+
+    button[type="button"]:hover {
+        background-color: #e67e22;
+    }
+
+    /* Label Styling */
+    label {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    /* Select Inputs */
+    select {
+        font-size: 16px;
+    }
+
+    /* Checkbox Layout */
+    div input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    div label {
+        font-size: 16px;
+        line-height: 1.8;
+    }
+
+    /* Responsiveness for Smaller Screens */
+    @media (max-width: 768px) {
+        form {
+            padding: 20px;
+        }
+
+        button {
+            font-size: 14px;
+            padding: 10px 15px;
+        }
+
+        h1 {
+            font-size: 28px;
+        }
+
+        label {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        form {
+            padding: 15px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        button {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        label {
+            font-size: 14px;
+        }
+    }
+
+    /* Basic reset for the form */
+    form {
+        font-family: Arial, sans-serif;
+        max-width:100%;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 12px 20px;
+        margin-top: 20px;
+        border: none;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    h3 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    /* Styling for the form steps */
+    .form-step {
+        display: none;
+        /* All steps hidden initially */
+    }
+
+    #step-1 {
+        display: block;
+        /* Step 1 visible initially */
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        font-size: 16px;
+    }
+
+    /* Styling for the navigation buttons (Back/Next) */
+    button.next-btn,
+    button.back-btn {
+        background-color: #007bff;
+        margin-right: 10px;
+    }
+
+    button.next-btn:hover,
+    button.back-btn:hover {
+        background-color: #0056b3;
+    }
+
+    button.back-btn {
+        background-color: #f44336;
+    }
+
+    button.back-btn:hover {
+        background-color: #e53935;
+    }
+
+    /* Styling for checkboxes */
+    input[type="checkbox"] {
+        margin-right: 10px;
+    }
+
+    label {
+        font-size: 16px;
+        display: block;
+    }
+
+    /* Step-specific styles */
+    #step-2,
+    #step-3,
+    #step-4,
+    #step-5 {
+        margin-top: 30px;
+    }
+
+    .mcq-options input {
+        width: calc(100% - 24px);
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    /* Custom question container */
+    #custom-questions-container {
+        margin-top: 20px;
+    }
+
+    .custom-question {
+        margin-bottom: 20px;
+    }
+
+    .custom-question input[type="text"] {
+        width: calc(100% - 24px);
+    }
+
+    button.add-custom-question {
+        background-color: #ffa500;
+        margin-top: 15px;
+    }
+
+    button.add-custom-question:hover {
+        background-color: #e68900;
+    }
+
+    /* Responsive design for small screens */
+    @media (max-width: 768px) {
+        form {
+            padding: 10px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px 18px;
+            font-size: 14px;
+        }
+    }
+
+    .container {
+        margin-top: 1%;
+    }
+
+
+
+    /* Larger checkboxes */
+    input[type="checkbox"] {
+        width: 20px;
+        /* Increased size */
+        height: 20px;
+        /* Increased size */
+        transition: transform 0.2s ease-in-out;
+    }
+
+
+    /* Custom styling for checkboxes inside question containers */
+
+
+    /* Style the container to ensure checkbox and question are aligned in a row */
+    .question-container {
+        display: flex;
+        /* Aligns children (checkbox and text) in a row */
+        align-items: center;
+        /* Vertically aligns checkbox and question text */
+        margin-bottom: 20px;
+        /* Adds 20px gap between questions */
+    }
+
+    /* Adjust the checkbox margin */
+    .question-container input[type="checkbox"] {
+        margin-right: 15px;
+        /* Adds space between the checkbox and the question text */
+    }
+
+    /* Optional: Adjust the styling for the question text */
+    .question-container p {
+        margin: 0;
+        /* Removes default margin of <p> */
+        font-size: 16px;
+        /* Customize font size as required */
+        line-height: 1.5;
+        /* Controls the spacing between lines if text wraps */
+    }
+
+    /* Style the container to ensure checkbox and contact info are aligned in a row */
+    .contact-container {
+        display: flex;
+        /* Aligns children (checkbox and contact info) in a row */
+        align-items: center;
+        /* Vertically aligns checkbox and contact info */
+        margin-bottom: 20px;
+        /* Adds 20px gap between contacts */
+    }
+
+    /* Adjust the checkbox margin */
+    .contact-container input[type="checkbox"] {
+        margin-right: 15px;
+        /* Adds space between the checkbox and the contact info */
+    }
+
+    /* Optional: Adjust the styling for the contact information */
+    .contact-container span {
+        margin: 0;
+        /* Removes default margin */
+        font-size: 16px;
+        /* Customize font size as required */
+        line-height: 1.5;
+        /* Controls the spacing between lines if text wraps */
+    }
+
+    /* Style the container to ensure checkbox and polltaker name are aligned in a row */
+    .polltaker-container {
+        display: flex;
+        /* Aligns children (checkbox and polltaker name) in a row */
+        align-items: center;
+        /* Vertically aligns checkbox and polltaker name */
+        margin-bottom: 20px;
+        /* Adds 20px gap between polltakers */
+    }
+
+    /* Adjust the checkbox margin */
+    .polltaker-container input[type="checkbox"] {
+        margin-right: 15px;
+        /* Adds space between the checkbox and the polltaker name */
+    }
+
+    /* Optional: Adjust the styling for the polltaker name */
+    .polltaker-container span {
+        margin: 0;
+        /* Removes default margin */
+        font-size: 16px;
+        /* Customize font size as required */
+        line-height: 1.5;
+        /* Controls the spacing between lines if text wraps */
+    }
+
+    /* Style the label and button to appear in the same row */
+    label,
+    .add-btn {
+        display: inline-block;
+        margin-right: 10px;
+        /* Add some space between the label and button */
+        vertical-align: middle;
+        /* Align the label and button vertically */
+    }
+
+    .add-btn {
+        margin-top: -3px;
+        padding: 5px 10px;
+        /* Add some padding to the button */
+        background-color: #00ff08;
+        /* Set a green background color */
+        color: white;
+        /* Set text color to white */
+        border: none;
+        /* Remove the default border */
+        border-radius: 5px;
+        /* Round the corners */
+        cursor: pointer;
+        /* Add a pointer cursor on hover */
+    }
+
+    .add-btn:hover {
+        background-color: #45a049;
+        /* Darken the button color on hover */
+    }
+
+    label[for="survey_date"] {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+#survey_date {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#survey_date:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+
+
+/* search filter  */
+/* Main container for filter set */
+.filet-set {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns for larger screens */
+    gap: 15px; /* Reduced space between inputs */
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1300px;
+    margin: 0 auto; /* Center horizontally */
+}
+
+/* For each filter input container */
+.filet-set div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Reduced gap between label and input/select */
+}
+
+/* Label styling */
+.filet-set label {
+    font-size: 0.9em; /* Slightly smaller label */
+    color: #333;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0px;
+}
+
+/* Input and select styling */
+.filet-set input,
+.filet-set select {
+    padding: 8px; /* Reduced padding */
+    font-size: 0.95em; /* Slightly smaller font */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: 0.3s ease-in-out;
+    box-sizing: border-box;
+    margin-top: 0px;
+}
+
+/* Hover and focus effects for input/select */
+.filet-set input:hover,
+.filet-set select:hover,
+.filet-set input:focus,
+.filet-set select:focus {
+    border-color: #6c63ff; /* Purple on hover/focus */
+    background-color: #fafafa;
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
+}
+
+/* Zip Code filter adjustments */
+#zip-filter-start,
+#zip-filter-end {
+    width: 48%; /* Display zip filters side by side */
+    display: inline-block;
+}
+
+#zip-filter-end {
+    margin-left: 0%;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .filet-set {
+        grid-template-columns: 1fr; /* Single column layout for small screens */
+        padding: 15px;
+    }
+
+    #zip-filter-start,
+    #zip-filter-end {
+        width: 100%; /* Make zip filters full width on mobile */
+        margin-left: 0;
+    }
+
+    .filet-set input,
+    .filet-set select {
+        font-size: 1em; /* Ensuring inputs are legible on smaller screens */
+    }
+}
+
+
+
+/* Additional styling for placeholder text */
+.filet-set input::placeholder,
+.filet-set select::placeholder {
+    color: #888;
+}
+
+/* Enhancing select box */
+.filet-set select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('https://img.icons8.com/ios/452/chevron-down.png') no-repeat right 10px center;
+    background-size: 12px;
+}
+
+/* Optional button styling (if needed) */
+.filet-set button {
+    background-color: #6c63ff;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+}
+
+.filet-set button:hover {
+    background-color: #5a54e5;
+}
+
+</style>
+</head>
+
+<body>
+
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
+        <button class="toggle-btns" onclick="closeNav()" style="
+            margin: 5px; 
+            background-color: rgb(43, 68, 124); 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            padding: 10px 15px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;">
+            &#8592; Close
+        </button>
+        <button class="toggle-btns" onclick="openNav()" style="
+            margin: 5px; 
+            background-color: rgb(43, 68, 124); 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            padding: 10px 15px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;">
+            Open &#8594;
+        </button>
+    </div>
+
+    <!-- Main Layout -->
+    <div style="display: flex;">
+        <!-- Sidebar -->
+        <div id="mySidebar" class="sidebar">
+            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
+            <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);"
+                onclick="location.href='{% url 'home' %}'">
+                <i class="fas fa-tasks"></i> Plan Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
+                onclick="location.href='{% url 'search_person_data' %}'">
+                <i class="fas fa-envelope"></i> Contact Preference Management
+            </div>
+            <div class="sidebar-item"
+                style="background-color:#f5f4f4;color: rgb(0, 0, 0); font-size: 0.9rem; font-weight: 200;"
+                onclick="location.href='{% url 'view_questions' %}'">
+                <i class="fas fa-question-circle"></i> Question Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
+                onclick="location.href='{% url 'accessed_contacts' %}'">
+                <i class="fas fa-user-check"></i> Voter Management
+            </div>
+            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white; font-size: 0.9rem; font-weight: 200;"
+                onclick="location.href='{% url 'survey_work' %}'">
+                <i class="fas fa-chart-pie"></i> Survey Management
+            </div>
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
+                onclick="location.href='{% url 'add_poltaker' %}'">
+                <i class="fas fa-users"></i> Polltaker Management
+            </div>
+        </div>
+
+
+        <div id="main">
+
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="plan-details">
+                <div class="search-bar">
+                    <label class="label-title">Contact Preference Details</label>
+
+                </div>
+            </div>
+
+
+
+            <div class="container">
+
+
+                <!-- user questions  -->
+                <!-- <h1>Create a Survey</h1> -->
+                <form method="POST">
+                    {% csrf_token %}
+                
+                    <!-- Step 1: Survey Title and Description -->
+                    <div id="step-1" class="form-step">
+                        <h1>Create a Survey</h1>
+                        <input type="text" name="title" placeholder="Survey Title" required>
+                        <textarea name="description" placeholder="Survey Description"></textarea>
+                        <label for="survey_date">Survey Date:</label>
+                        <input type="date" name="survey_date" id="survey_date" value="{{ today|date:'Y-m-d' }}">
+                        <button type="button" class="next-btn" onclick="nextStep(1)">Next</button>
+                    </div>
+                
+                    <!-- Step 2: Select Existing Questions -->
+                    <div id="step-2" class="form-step" style="display:none;">
+                        <div class="set-buttons" style="display: flex; justify-content: space-between; margin-bottom: 20px; margin-top: -50px">
+                            <button type="button" class="back-btn" onclick="previousStep(2)">Previous</button>
+                            <button type="button" class="next-btn" onclick="nextStep(2)">Next</button>
+                        </div>
+                        <hr style="margin-bottom: 2%;">
+                        <label>Select Existing Questions:</label>
+                        <button type="button" class="add-btn" style="background-color: #007bff;" onclick="nextStep(2)">Add Question</button>
+                        {% for question in questions %}
+                            <div class="question-container">
+                                <input type="checkbox" name="questions" value="{{ question.id }}">
+                                <p>{{ question.question_text }} <b style="color: #007bff;">( {{ question.question_type }} )</b></p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                
+                    <!-- Step 3: Add Custom Questions -->
+                    <div id="step-3" class="form-step" style="display:none;">
+                        <h3>Add Custom Questions</h3>
+                        <div id="custom-questions-container">
+                            <div class="custom-question">
+                                <input type="text" name="custom_question_text" placeholder="Question Text">
+                                <select name="custom_question_type" onchange="toggleOptions(this)">
+                                    <option value="mcq">Multiple Choice</option>
+                                    <option value="text">Open Text</option>
+                                    <option value="yesno">Yes/No</option>
+                                </select>
+                                <div class="mcq-options">
+                                    <label>Add options (comma separated):</label>
+                                    <input type="text" name="mcq_options[]" placeholder="Option 1, Option 2, Option 3">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addCustomQuestion()">Add Another Question</button>
+                        <button type="button" class="back-btn" onclick="previousStep(3)">Back</button>
+                        <button type="button" class="next-btn" onclick="nextStep(3)">Next</button>
+                    </div>
+                
+                    <!-- Step 4: Select Contacts -->
+                    <div id="step-4" class="form-step" style="display:none;">
+                        <div class="set-buttons" style="display: flex; justify-content: space-between; margin-bottom: 20px; margin-top: -50px">
+                            <button type="button" class="back-btn" onclick="previousStep(4)">Back</button>
+                            <button type="button" class="next-btn" onclick="nextStep(4)">Next</button>
+                        </div>
+                        <hr style="margin-bottom: 2%;">
+                        <label>Select Contacts:</label>
+                
+                        <!-- Filters -->
+                       <!-- Button to show the filter form -->
+<button id="show-filters-btn">Filter Contact</button>
+
+<!-- Filters (Initially hidden) -->
+<div class="filet-set" id="filter-form" style="display: none;">
+    <div>
+        <label for="zip-filter-start">Filter by Zip Code Range:</label><br>
+        <input type="number" id="zip-filter-start" placeholder="Start Zip Code">
+        <input type="number" id="zip-filter-end" placeholder="End Zip Code">
+    </div>
+
+    <div>
+        <label for="city-filter">Filter by City:</label><br>
+        <input type="text" id="city-filter" placeholder="City">
+    </div>
+
+    <div>
+        <label for="state-filter">Filter by State:</label><br>
+        <input type="text" id="state-filter" placeholder="State">
+    </div>
+
+    <div>
+        <label for="country-filter">Filter by Country:</label><br>
+        <input type="text" id="country-filter" placeholder="Country">
+    </div>
+
+    <div>
+        <label for="party-preference-filter">Filter by Party Preference:</label><br>
+        <select id="party-preference-filter">
+            <option value="">Select Party Preference</option>
+            <option value="Republican">Republican</option>
+            <option value="Democrat">Democrat</option>
+            <option value="Independent">Independent</option>
+        </select>
+    </div>
+</div>
+
+                        <!-- Contacts List -->
+                        <div id="contacts-list">
+                            {% for contact in contacts %}
+                                <div class="contact-item" 
+                                    data-zipcode="{{ contact.zipcode }}" 
+                                    data-city="{{ contact.city }}" 
+                                    data-state="{{ contact.state }}" 
+                                    data-country="{{ contact.country }}"
+                                    data-party-preference="{{ contact.party_preference }}">
+                                    <label>
+                                        <div class="contact-container">
+                                            <input type="checkbox" name="contacts" value="{{ contact.id }}">
+                                            <span>{{ contact.first_name }} {{ contact.last_name }} - {{ contact.email }} - {{ contact.zipcode }} - {{ contact.city }} - {{ contact.state }} - {{ contact.country }} - {{ contact.party_preference }}</span>
+                                        </div>
+                                    </label><br>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                
+                    <!-- Step 5: Select Polltakers -->
+                    <div id="step-5" class="form-step" style="display:none;">
+                        <div class="set-buttons" style="display: flex; justify-content: space-between; margin-bottom: 20px; margin-top: -50px">
+                            <button type="button" class="back-btn" onclick="previousStep(5)">Back</button>
+                            <button type="submit">Create Survey</button>
+                        </div>
+                        <hr style="margin-bottom: 2%;">
+                        <label>Select Polltakers:</label>
+                        <div>
+                            {% for poltaker in poltakers %}
+                                <label>
+                                    <div class="polltaker-container">
+                                        <input type="checkbox" name="polltaker" value="{{ poltaker.id }}">
+                                        <span>{{ poltaker.name }}</span>
+                                    </div>
+                                </label><br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </form>
+                
+                <script>
+                    // JavaScript to handle filtering
+                    document.getElementById("zip-filter-start").addEventListener("input", filterContacts);
+                    document.getElementById("zip-filter-end").addEventListener("input", filterContacts);
+                    document.getElementById("city-filter").addEventListener("input", filterContacts);
+                    document.getElementById("state-filter").addEventListener("input", filterContacts);
+                    document.getElementById("country-filter").addEventListener("input", filterContacts);
+                    document.getElementById("party-preference-filter").addEventListener("change", filterContacts);
+                
+                    function filterContacts() {
+                        const startZip = parseInt(document.getElementById("zip-filter-start").value);
+                        const endZip = parseInt(document.getElementById("zip-filter-end").value);
+                        const city = document.getElementById("city-filter").value.toLowerCase();
+                        const state = document.getElementById("state-filter").value.toLowerCase();
+                        const country = document.getElementById("country-filter").value.toLowerCase();
+                        const partyPreference = document.getElementById("party-preference-filter").value.toLowerCase();
+                
+                        // Get all contact items
+                        const contactItems = document.querySelectorAll(".contact-item");
+                
+                        contactItems.forEach(function(contact) {
+                            const zipCode = parseInt(contact.getAttribute("data-zipcode"));
+                            const contactCity = contact.getAttribute("data-city").toLowerCase();
+                            const contactState = contact.getAttribute("data-state").toLowerCase();
+                            const contactCountry = contact.getAttribute("data-country").toLowerCase();
+                            const contactPartyPreference = contact.getAttribute("data-party-preference").toLowerCase();
+                
+                            // Apply filters
+                            let matches = true;
+                
+                            if (!isNaN(startZip) && !isNaN(endZip) && (zipCode < startZip || zipCode > endZip)) {
+                                matches = false;  // Zip code doesn't match
+                            }
+                
+                            if (city && !contactCity.includes(city)) {
+                                matches = false;  // City doesn't match
+                            }
+                
+                            if (state && !contactState.includes(state)) {
+                                matches = false;  // State doesn't match
+                            }
+                
+                            if (country && !contactCountry.includes(country)) {
+                                matches = false;  // Country doesn't match
+                            }
+                
+                            if (partyPreference && contactPartyPreference !== partyPreference && partyPreference !== '') {
+                                matches = false;  // Party preference doesn't match
+                            }
+                
+                            // Show or hide based on filter match
+                            if (matches) {
+                                contact.style.display = 'block';
+                            } else {
+                                contact.style.display = 'none';
+                            }
+                        });
+                    }
+                    // Get the button and filter form
+const showFiltersButton = document.getElementById('show-filters-btn');
+const filterForm = document.getElementById('filter-form');
+
+// Add event listener to the button
+showFiltersButton.addEventListener('click', () => {
+    // Toggle the display of the filter form
+    if (filterForm.style.display === 'none') {
+        filterForm.style.display = 'grid'; // Show the form with grid layout
+    } else {
+        filterForm.style.display = 'none'; // Hide the form
+    }
+});
+
+                </script>
+                
+                
+
+                <!-- user questions End here   -->
+
+
+
+
+
+            </div>
+
+            <script>
+                function toggleOptions(button) {
+                    const optionsDiv = button.parentElement.nextElementSibling;
+                    optionsDiv.style.display = optionsDiv.style.display === 'block' ? 'none' : 'block';
+                }
+
+                function editQuestion(questionId) {
+                    // Implement your edit question logic here
+                    alert("Edit question with ID: " + questionId);
+                }
+
+                function deleteQuestion(questionId) {
+                    // Implement your delete question logic here
+                    alert("Delete question with ID: " + questionId);
+                }
+
+            </script>
+
+        </div>
+
+    </div>
+    <script>
+
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "300px";
+            document.getElementById("main").style.marginLeft = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+
+        function toggleDropdown() {
+            var dropdown = document.getElementById("dropdown");
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none"; // Hide the dropdown if it's already visible
+            } else {
+                dropdown.style.display = "block"; // Show the dropdown
+            }
+        }
+
+        function checkScreenWidth() {
+            if (window.innerWidth < 700) {
+                closeNav(); // Close the sidebar if screen width is less than 700px
+            }
+        }
+
+        // Add event listener for window resize
+        window.addEventListener('resize', checkScreenWidth);
+
+        // Initial check when the page loads
+        document.addEventListener('DOMContentLoaded', checkScreenWidth);
+
+
+
+
+        // adding js for this page 
+        // Step functionality
+        function nextStep(step) {
+            const currentStep = document.getElementById(`step-${step}`);
+            const nextStep = document.getElementById(`step-${step + 1}`);
+
+            currentStep.style.display = 'none';
+            nextStep.style.display = 'block';
+        }
+
+        function previousStep(step) {
+            const currentStep = document.getElementById(`step-${step}`);
+            const previousStep = document.getElementById(`step-${step - 1}`);
+
+            currentStep.style.display = 'none';
+            previousStep.style.display = 'block';
+        }
+
+        // Add Custom Question
+        function addCustomQuestion() {
+            const container = document.getElementById('custom-questions-container');
+            const newQuestion = document.createElement('div');
+            newQuestion.classList.add('custom-question');
+            newQuestion.innerHTML = `
+            <input type="text" name="custom_question_text" placeholder="Question Text" required>
+            <select name="custom_question_type" onchange="toggleOptions(this)">
+                <option value="mcq">Multiple Choice</option>
+                <option value="text">Open Text</option>
+                <option value="yesno">Yes/No</option>
+            </select>
+            <div class="mcq-options">
+                <label>Add options (comma separated):</label>
+                <input type="text" name="mcq_options[]" placeholder="Option 1, Option 2, Option 3">
+            </div>
+        `;
+            container.appendChild(newQuestion);
+        }
+
+        // Show options based on question type
+        function toggleOptions(select) {
+            const mcqOptionsDiv = select.parentElement.querySelector('.mcq-options');
+            if (select.value === 'mcq') {
+                mcqOptionsDiv.style.display = 'block';
+            } else {
+                mcqOptionsDiv.style.display = 'none';
+            }
+        }
+
+    </script>
+    <link rel="stylesheet" href="scripts.js">
+    <link rel="stylesheet" href="{% static 'css/view.css' %}">
+
+
+    {% endblock %}

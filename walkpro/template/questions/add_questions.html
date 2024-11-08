@@ -628,19 +628,19 @@ ul {
         <!-- Sidebar -->
         <div id="mySidebar" class="sidebar">
             <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'">
+            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
                 <i class="fas fa-tasks"></i> Plan Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'search_person_data' %}'">
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contact_search' %}'">
                 <i class="fas fa-envelope"></i> Contact Preference Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
+            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
                 <i class="fas fa-question-circle"></i> Question Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'accessed_contacts' %}'">
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
                 <i class="fas fa-user-check"></i> Voter Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'survey_work' %}'">
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
                 <i class="fas fa-chart-pie"></i> Survey Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
@@ -652,80 +652,109 @@ ul {
         <div id="main">
            
         </div>
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
-                <div class="search-bar">
-                    <label class="label-title" style="font-size: 1.5rem; margin-right: 42%;">Add Your Question</label>
-
-                </div>
-            </div>
-            <div class="container" style="background-color: #ffffff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); max-width: 500px; margin: 2rem auto; font-family: 'Arial', sans-serif;">
-                <h2 style="color: #333; text-align: center; margin-bottom: 1.5rem;">Add a Question</h2>
-                
-                {% if messages %}
-                <div class="message-container" style="margin-bottom: 1rem;">
-                    {% for message in messages %}
-                        <div class="message {% if message.tags %} {{ message.tags }}{% endif %}" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 0.75rem; border-radius: 5px; margin-bottom: 0.5rem; position: relative;">
-                            {{ message }}
-                            <button class="close-btn" onclick="this.parentElement.style.display='none';" style="background: none; border: none; color: #721c24; font-size: 1.25rem; position: absolute; top: 0.25rem; right: 0.5rem; cursor: pointer;">✖</button>
-                        </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                
-                <input type="text" id="questionInput" placeholder="Write your question here..." required style="width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s;" oninput="checkFormValidity()">
-                
-                <div class="options" id="optionsContainer" style="margin-bottom: 1rem;">
-                    <input type="text" name="options" placeholder="Option 1" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; transition: border-color 0.3s;" oninput="checkFormValidity()">
-                </div>
-                
-                <button class="add-option-btn" id="addOptionBtn" style="background-color: #007bff; color: white; padding: 0.75rem; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 1rem; margin-bottom: 1rem; transition: background-color 0.3s;" onclick="addOption()">Add Option</button>
-                
-                <button id="submitBtn" disabled style="background-color: #6c757d; color: white; padding: 0.75rem; border: none; border-radius: 5px; cursor: not-allowed; width: 100%; font-size: 1rem;">Submit Question</button> <!-- Disable submit button by default -->
-            
-                <script>
-                    function checkFormValidity() {
-                        const questionInput = document.getElementById('questionInput').value.trim();
-                        const optionInputs = document.querySelectorAll('#optionsContainer input[name="options"]');
-                        const submitBtn = document.getElementById('submitBtn');
-                        
-                        // Check if question is not empty and at least one option is filled
-                        const atLeastOneOptionFilled = Array.from(optionInputs).some(input => input.value.trim() !== '');
-                        if (questionInput && atLeastOneOptionFilled) {
-                            submitBtn.disabled = false;
-                            submitBtn.style.backgroundColor = "#007bff"; // Enable color
-                            submitBtn.style.cursor = "pointer"; // Change cursor
-                        } else {
-                            submitBtn.disabled = true;
-                            submitBtn.style.backgroundColor = "#6c757d"; // Disable color
-                            submitBtn.style.cursor = "not-allowed"; // Change cursor
-                        }
-                    }
-            
-                    function addOption() {
-                        const optionsContainer = document.getElementById('optionsContainer');
-                        const newOptionInput = document.createElement('input');
-                        newOptionInput.type = 'text';
-                        newOptionInput.name = 'options';
-                        newOptionInput.placeholder = `Option ${optionsContainer.children.length + 1}`;
-                        newOptionInput.style.width = '100%';
-                        newOptionInput.style.padding = '0.75rem';
-                        newOptionInput.style.marginBottom = '0.5rem';
-                        newOptionInput.style.border = '1px solid #ddd';
-                        newOptionInput.style.borderRadius = '5px';
-                        newOptionInput.style.fontSize = '1rem';
-                        newOptionInput.style.transition = 'border-color 0.3s';
-                        newOptionInput.oninput = checkFormValidity; // Check validity when input changes
-            
-                        optionsContainer.appendChild(newOptionInput);
-                        checkFormValidity(); // Check validity after adding new option
-                    }
-                </script>
-            </div>
-            
+  <!-- Main Content -->
+<div class="main-content">
+    <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
+        <div class="search-bar">
+            <label class="label-title" style="font-size: 1.5rem; margin-right: 42%;">Add Questions</label>
         </div>
+    </div>
+    <div class="container" style="background-color: #ffffff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); max-width: 500px; margin: 2rem auto; font-family: 'Arial', sans-serif;">
+        <h2 style="color: #333; text-align: center; margin-bottom: 1.5rem;">Add a Question</h2>
+
+        {% if messages %}
+        <div class="message-container" style="margin-bottom: 1rem;">
+            {% for message in messages %}
+                <div class="message {% if message.tags %} {{ message.tags }}{% endif %}" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 0.75rem; border-radius: 5px; margin-bottom: 0.5rem; position: relative;">
+                    {{ message }}
+                    <button class="close-btn" onclick="this.parentElement.style.display='none';" style="background: none; border: none; color: #721c24; font-size: 1.25rem; position: absolute; top: 0.25rem; right: 0.5rem; cursor: pointer;">✖</button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form action="{% url 'add_questions' %}" method="post" id="questionForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="question_text">Question:</label>
+                <input type="text" name="question_text" id="question_text" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 1rem;">
+            </div>
         
+            <div class="form-group">
+                <label for="question_type">Question Type:</label>
+                <select name="question_type" id="question_type" onchange="toggleOptions(this.value)" required style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 1rem;">
+                    <option value="">Select Type</option>
+                    <option value="mcq">Multiple Choice</option>
+                    <option value="text">Open Text</option>
+                    <option value="yesno">Yes/No</option>
+                </select>
+            </div>
+        
+            <div id="mcq_options" style="display: none;">
+                <label>Options (for MCQ, enter each option below):</label>
+                <div id="optionsContainer">
+                    <input type="text" name="options" placeholder="Option 1" required style="width: 100%; padding: 0.75rem; margin-bottom: 0.5rem; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <button type="button" onclick="addOption()" style="background-color: #007bff; color: white; padding: 0.75rem; border: none; border-radius: 5px; cursor: pointer; width: 100%; margin-bottom: 1rem;">Add Another Option</button>
+            </div>
+        
+            <div id="open_text_container" style="display: none;">
+                <label for="open_text_answer">Open Text Answer (optional):</label>
+                <textarea name="open_text_answer" id="open_text_answer" rows="4" placeholder="Write your answer here..." style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+            </div>
+        
+            <button type="submit" style="background-color: #28a745; color: white; padding: 0.75rem; border: none; border-radius: 5px; cursor: pointer; width: 100%;">Add Question</button>
+        </form>
+        
+        <script>
+        function toggleOptions(value) {
+            const mcqOptions = document.getElementById('mcq_options');
+            const openTextContainer = document.getElementById('open_text_container');
+            const optionInputs = document.querySelectorAll('#optionsContainer input[name="options"]');
+        
+            if (value === 'mcq') {
+                mcqOptions.style.display = 'block';
+                openTextContainer.style.display = 'none';
+                
+                // Ensure the options input is required
+                optionInputs.forEach(input => input.required = true);
+            } else if (value === 'text') {
+                mcqOptions.style.display = 'none';
+                openTextContainer.style.display = 'block';
+        
+                // Remove required attribute from options inputs when not visible
+                optionInputs.forEach(input => input.required = false);
+            } else {
+                mcqOptions.style.display = 'none';
+                openTextContainer.style.display = 'none';
+                
+                // Remove required attribute from options inputs
+                optionInputs.forEach(input => input.required = false);
+            }
+        }
+        
+        function addOption() {
+            const optionsContainer = document.getElementById('optionsContainer');
+            const newOptionInput = document.createElement('input');
+            newOptionInput.type = 'text';
+            newOptionInput.name = 'options';
+            newOptionInput.placeholder = 'Option ' + (optionsContainer.children.length + 1);
+            newOptionInput.style.width = '100%';
+            newOptionInput.style.padding = '0.75rem';
+            newOptionInput.style.marginBottom = '0.5rem';
+            newOptionInput.style.border = '1px solid #ddd';
+            newOptionInput.style.borderRadius = '5px';
+            optionsContainer.appendChild(newOptionInput);
+        }
+        </script>
+        
+        
+    </div>
+</div>
+
+
+
         
     </div>
 <script>
@@ -763,67 +792,67 @@ window.addEventListener('resize', checkScreenWidth);
 document.addEventListener('DOMContentLoaded', checkScreenWidth);
 
 
-// script for adding questions 
-let optionCount = 1; // Start with 1 option
+// // script for adding questions 
+// let optionCount = 1; // Start with 1 option
 
-    function updateSubmitButtonState() {
-        const questionInput = document.getElementById('questionInput').value.trim();
-        const options = document.getElementsByName('options');
-        const optionValues = Array.from(options).map(input => input.value.trim());
+//     function updateSubmitButtonState() {
+//         const questionInput = document.getElementById('questionInput').value.trim();
+//         const options = document.getElementsByName('options');
+//         const optionValues = Array.from(options).map(input => input.value.trim());
 
-        // Enable submit button only if there's a question and at least one option
-        document.getElementById('submitBtn').disabled = !(questionInput && optionValues.some(option => option !== ''));
-    }
+//         // Enable submit button only if there's a question and at least one option
+//         document.getElementById('submitBtn').disabled = !(questionInput && optionValues.some(option => option !== ''));
+//     }
 
-    document.getElementById('questionInput').addEventListener('input', updateSubmitButtonState);
+//     document.getElementById('questionInput').addEventListener('input', updateSubmitButtonState);
 
-    document.getElementById('addOptionBtn').addEventListener('click', function() {
-        if (optionCount < 6) {
-            optionCount++;
-            const optionInput = document.createElement('input');
-            optionInput.type = 'text';
-            optionInput.name = 'options';
-            optionInput.placeholder = `Option ${optionCount}`;
-            optionInput.addEventListener('input', updateSubmitButtonState); // Update button state on input
-            document.getElementById('optionsContainer').appendChild(optionInput);
-            updateSubmitButtonState(); // Check button state after adding an option
-        } else {
-            alert("You can only add up to 6 options.");
-        }
-    });
+//     document.getElementById('addOptionBtn').addEventListener('click', function() {
+//         if (optionCount < 6) {
+//             optionCount++;
+//             const optionInput = document.createElement('input');
+//             optionInput.type = 'text';
+//             optionInput.name = 'options';
+//             optionInput.placeholder = `Option ${optionCount}`;
+//             optionInput.addEventListener('input', updateSubmitButtonState); // Update button state on input
+//             document.getElementById('optionsContainer').appendChild(optionInput);
+//             updateSubmitButtonState(); // Check button state after adding an option
+//         } else {
+//             alert("You can only add up to 6 options.");
+//         }
+//     });
 
-    document.getElementById('submitBtn').addEventListener('click', function() {
-        const questionText = document.getElementById('questionInput').value.trim();
-        const options = document.getElementsByName('options');
+//     document.getElementById('submitBtn').addEventListener('click', function() {
+//         const questionText = document.getElementById('questionInput').value.trim();
+//         const options = document.getElementsByName('options');
         
-        // Gather option values
-        const optionValues = Array.from(options).map(input => input.value.trim()).filter(val => val !== '');
+//         // Gather option values
+//         const optionValues = Array.from(options).map(input => input.value.trim()).filter(val => val !== '');
 
-        // Check if question and at least one option are provided
-        if (!questionText || optionValues.length === 0) {
-            alert("Please enter a question and at least one option.");
-            return;
-        }
+//         // Check if question and at least one option are provided
+//         if (!questionText || optionValues.length === 0) {
+//             alert("Please enter a question and at least one option.");
+//             return;
+//         }
 
-        // Send data to server via POST request
-        const formData = new FormData();
-        formData.append('question_text', questionText);
-        optionValues.forEach(value => formData.append('options', value));
+//         // Send data to server via POST request
+//         const formData = new FormData();
+//         formData.append('question_text', questionText);
+//         optionValues.forEach(value => formData.append('options', value));
 
-        fetch('/add-questions/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-        })
-        .then(response => {
-            if (response.redirected) {
-                window.location.href = response.url;
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    });
+//         fetch('/add-questions/', {
+//             method: 'POST',
+//             body: formData,
+//             headers: {
+//                 'X-CSRFToken': '{{ csrf_token }}'
+//             },
+//         })
+//         .then(response => {
+//             if (response.redirected) {
+//                 window.location.href = response.url;
+//             }
+//         })
+//         .catch(error => console.error('Error:', error));
+//     });
 
 </script>
    <link rel="stylesheet" href="scripts.js">

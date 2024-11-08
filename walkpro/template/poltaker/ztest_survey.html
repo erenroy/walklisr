@@ -1,0 +1,20 @@
+{% extends 'poltaker/surveybase.html' %}
+
+{% block title %}Survey Page - Your Survey{% endblock %}
+
+{% block content %}
+    <h1>Welcome to the Survey</h1>
+    <p>Here is where your survey questions will be displayed.</p>
+    <!-- Add your survey form or content here -->
+    <form action="#" method="POST">
+        <!-- Example survey input -->
+        <label for="question1">How satisfied are you with our service?</label><br>
+        <input type="radio" name="satisfaction" value="Very Satisfied"> Very Satisfied<br>
+        <input type="radio" name="satisfaction" value="Satisfied"> Satisfied<br>
+        <input type="radio" name="satisfaction" value="Neutral"> Neutral<br>
+        <input type="radio" name="satisfaction" value="Dissatisfied"> Dissatisfied<br>
+        <input type="radio" name="satisfaction" value="Very Dissatisfied"> Very Dissatisfied<br>
+
+        <button type="submit">Submit Survey</button>
+    </form>
+{% endblock %}
