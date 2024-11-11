@@ -146,3 +146,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'criscallion@gmail.com'
 EMAIL_HOST_PASSWORD = 'gdpi idvs coiy fgdm'
+
+
+# Deleting data 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000  # Increase this number as needed

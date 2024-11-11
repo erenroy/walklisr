@@ -1,122 +1,1300 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/first_look.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <title>Walk List Pro</title>
 </head>
 <style>
- 
+    html {
+    scroll-behavior: smooth;
+}
 
+    /* Basic Reset */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
-        .next-page-map {
-            display: flex;
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
+    /* Body */
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    /* Navbar styles */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        /* Navbar background color */
+        padding: 10px 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Background shadow */
+        height: 90px;
+        position: relative;
+        /* Ensures navbar stays in place */
+    }
+
+    /* Logo */
+    .logo img {
+        height: 50px;
+        /* Adjust height as needed */
+    }
+
+    /* Navbar links and buttons */
+    .nav-links {
+        list-style: none;
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+    }
+
+    .nav-links li {
+        margin: 0 15px;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #2b447c;
+        /* Color for the links */
+        font-weight: bold;
+        font-size: 18px;
+        transition: color 0.3s;
+        /* Smooth color transition on hover */
+    }
+
+    .nav-links a:hover {
+        color: #ff4b2b;
+        /* Change link color on hover */
+    }
+
+    .auth-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .register,
+    .login {
+        padding: 15px 25px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .register {
+        background-color: #2b447c;
+        border-color: #2b447c;
+        color: white;
+    }
+
+    .register:hover {
+        background-color: #ffffff;
+        border: 1px solid #2b447c;
+        color: rgb(0, 0, 0);
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .login {
+        background-color: #ffffff;
+        border: 1px solid #2b447c;
+        color: rgb(0, 0, 0);
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .login:hover {
+        background-color: #2b447c;
+        color: #ebebeb;
+    }
+
+    /* Navbar for mobile screens */
+    @media (max-width: 768px) {
+
+        /* Flexbox for navbar to align logo and menu button in the same row */
+        .navbar {
+            flex-direction: row;
+            /* Ensure elements stay in the same row */
+            justify-content: space-between;
+        }
+
+        /* Hide nav links and auth buttons by default */
+        .nav-links {
+            display: none;
+            /* Hidden by default on mobile */
+            flex-direction: column;
+            /* Stack nav links vertically when visible */
+            position: absolute;
+            /* Position them below the navbar */
+            top: 100%;
+            /* Place them directly below the navbar */
+            left: 0;
+            /* Align to the left */
+            right: 0;
+            /* Extend to the full width */
+            background-color: white;
+            /* Ensure background is white */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Optional: Adds a small shadow */
+            z-index: 1;
+            /* Ensure nav links are above other content */
             gap: 20px;
+            padding-bottom: 20px;
         }
 
-        .next-map1 {
-            flex: 0 0 40%;
+        .auth-buttons {
+            display: none;
+            /* Hide auth buttons by default */
+            flex-direction: row;
+            gap: 10px;
+            position: absolute;
+            top: 320%;
+            /* Position auth buttons below the nav links */
+
         }
 
-        .next-map1 iframe {
-            width: 100%;
-            height: 400px;
+        /* Show the menu button only for mobile screens */
+        .menu-button {
+            display: block;
+            background-color: #2b447c;
+            color: white;
             border: none;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            width: auto;
         }
 
-        .next-map2 {
-            flex: 0 0 60%;
+        /* Active state to show the nav links and auth buttons */
+        .navbar.active .nav-links {
             display: flex;
+        }
+
+        .navbar.active .auth-buttons {
+            display: flex;
+        }
+
+        /* Style for the logo */
+        .logo img {
+            height: 40px;
+        }
+    }
+
+
+    /* Desktop view (menu always visible) */
+    @media (min-width: 769px) {
+        .menu-button {
+            display: none;
+            /* Hide the menu button on desktop */
+        }
+    }
+
+    .next-page-map {
+        display: flex;
+        max-width: 1400px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        gap: 20px;
+    }
+
+    .next-map1 {
+        flex: 0 0 40%;
+    }
+
+    .next-map1 iframe {
+        width: 100%;
+        height: 400px;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .next-map2 {
+        flex: 0 0 60%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .next-map2 h1 {
+        color: #3949ab;
+        margin-bottom: 15px;
+        font-size: 2rem;
+    }
+
+    .next-map2 h2 {
+        color: #3949ab;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 1.5rem;
+    }
+
+    .next-map2 p {
+        color: #555;
+        margin-bottom: 20px;
+        text-align: justify;
+    }
+
+    @media (max-width: 768px) {
+        .next-page-map {
             flex-direction: column;
         }
 
-        .next-map2 h1 {
-            color: #3949ab;
-            margin-bottom: 15px;
-            font-size: 2rem;
+        .next-map1,
+        .next-map2 {
+            flex: 1 1 100%;
         }
+    }
 
-        .next-map2 h2 {
-            color: #3949ab;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 1.5rem;
-        }
-
-        .next-map2 p {
-            color: #555;
-            margin-bottom: 20px;
-            text-align: justify;
-        }
-
-        @media (max-width: 768px) {
-            .next-page-map {
-                flex-direction: column;
-            }
-
-            .next-map1, .next-map2 {
-                flex: 1 1 100%;
-            }
-        }
+    /* get in google apple  */
 </style>
+
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
+        <!-- Logo Section -->
         <div class="logo">
             <img src="{% static 'img/logo.png' %}" alt="Logo" />
         </div>
+
+        <!-- Menu Button for Mobile -->
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+
+        <!-- Navigation Links -->
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Plans</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#plan">Plans</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact Us</a></li>
         </ul>
+
+        <!-- Authentication Buttons -->
         <div class="auth-buttons">
             <button class="register" onclick="location.href='{% url 'register' %}'">Register</button>
             <button class="login" onclick="location.href='{% url 'login' %}'">Login</button>
         </div>
     </nav>
 
-    <div class="site-content">
-      <div class="site-content-1">
-          <h1>Welcome to Walk List Pro</h1>
-          <p>Discover the power of effective data collection with Walk List Pro. Our platform enables you to create engaging surveys and polls effortlessly, analyze results in real-time, and gather actionable insights to drive your decisions. Whether you're conducting market research, gathering customer feedback, or engaging your audience, we provide the tools you need to succeed.</p>
-          <button>Learn More</button>
-      </div>
-      <div class="site-content-2">
-          <img src="{% static 'img/home.png' %}" alt="Walk List Pro">
-      </div>
-  </div>
-  
-  <div class="next-page-map">
-    <div class="next-map1">
-        <!-- Replace the src URL with the location you want to embed -->
-        <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434509427!2d144.95373531550415!3d-37.81627974202164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f11fd81%3A0xf4c6c1be7b4d7a8a!2sMelbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1635469569935!5m2!1sen!2sus" 
-            allowfullscreen="" 
-            loading="lazy">
-        </iframe>
+    <script>
+        // Toggle menu visibility on mobile screens
+        function toggleMenu() {
+            const navbar = document.querySelector('.navbar');
+            navbar.classList.toggle('active');
+        }
+    </script>
+
+    <div class="site-content" id="#home">
+        <div class="site-content-1">
+            <h1>Welcome to Walk List Pro</h1>
+            <p>Discover the power of effective data collection with Walk List Pro. Our platform enables you to create
+                engaging surveys and polls effortlessly, analyze results in real-time, and gather actionable insights to
+                drive your decisions. Whether you're conducting market research, gathering customer feedback, or
+                engaging your audience, we provide the tools you need to succeed.</p>
+            <button>Learn More</button>
+        </div>
+        <div class="site-content-2">
+            <img src="{% static 'img/home.png' %}" alt="Walk List Pro">
+        </div>
     </div>
-    <div class="next-map2">
-        <h1>Learn about WLP</h1>
-        <p>Discover the power of effective data collection with Walk List Pro. Our platform enables you to create engaging surveys and polls effortlessly, analyze results in real-time, and gather actionable insights to drive your decisions. Whether you're conducting market research, gathering customer feedback, or engaging your audience, we provide the tools you need to succeed.</p>
-        <h2>Our Vision</h2>
-        <p>Walk List Pro aims to deliver a seamless and reliable survey polling experience by focusing on user-centric design, data accuracy, and secure handling practices...</p>
-        <h2>Our Mission</h2>
-        <p>Our mission at Walk List Pro is to empower users with an intuitive and reliable platform for creating, managing, and analyzing surveys...</p>
+
+    <div class="next-page-map">
+        <div class="next-map1">
+            <!-- Replace the src URL with the location you want to embed -->
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1202.2546437263637!2d-73.98513073405888!3d40.75889631617246!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259afbb4c81a1%3A0x75e548d2885b8e72!2sTimes%20Square%2C%20New%20York%2C%20NY%2010018%2C%20USA!5e0!3m2!1sen!2sus!4v1635470024289!5m2!1sen!2sus"
+                allowfullscreen="" loading="lazy">
+            </iframe>
+
+        </div>
+        <div class="next-map2">
+            <h1>Learn about WLP</h1>
+            <p>Discover the power of effective data collection with Walk List Pro. Our platform enables you to create
+                engaging surveys and polls effortlessly, analyze results in real-time, and gather actionable insights to
+                drive your decisions. Whether you're conducting market research, gathering customer feedback, or
+                engaging your audience, we provide the tools you need to succeed.</p>
+            <h2>Our Vision</h2>
+            <p>Walk List Pro aims to deliver a seamless and reliable survey polling experience by focusing on
+                user-centric design, data accuracy, and secure handling practices...</p>
+            <h2>Our Mission</h2>
+            <p>Our mission at Walk List Pro is to empower users with an intuitive and reliable platform for creating,
+                managing, and analyzing surveys...</p>
+        </div>
     </div>
+
+    <style>
+        .why-use-wlp {
+            margin-top: 5%;
+        }
+
+        .why-use-wlp h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        .why-use-wlp p {
+            width: 50%;
+            font-size: 1rem;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            margin: 0 auto;
+            /* This centers the element horizontally */
+        }
+
+        .why-use-wlp-lists {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .point {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .point:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 1024px) {
+            .why-use-wlp-lists {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .why-use-wlp-lists {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .point {
+            font-size: 1em;
+            color: #333;
+        }
+
+        .point h2 {
+            font-size: 1.8rem;
+            color: #333;
+            font-weight: 700;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+
+        .point h6 {
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: 400;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+    </style>
+    <!-- why do we use walk list pro  -->
+    <div class="why-use-wlp" id="about">
+        <h1>Why Use Walk List Pro</h1>
+        <p>Using a political Walk List Pro for surveys can offer several benefits, especially in political campaigns,
+            advocacy work, or any scenario where understanding voter opinions or political attitudes is crucial.Here are
+            some key advantages.</p>
+        <div class="why-use-wlp-lists">
+            <div class="point">
+                <!-- Data Collection -->
+                <span class="fas fa-cloud-download-alt"
+                    style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+                <h2>Targeted Data Collection</h2>
+                <h6>Our system helps you focus on households or individuals who are likely to be engaged or have a stake
+                    in the political issues at hand. This can improve the relevance of the data collected.</h6>
+            </div>
+            <div class="point"><!-- Efficiency -->
+                <span class="fas fa-bolt" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+                <h2>Efficient Resource Use</h2>
+                <h6>With a well-constructed walk list, you can streamline your survey efforts, avoiding unnecessary
+                    visits and focusing on areas where you are more likely to get valuable responses. Efficiently
+                    targeting your survey efforts can reduce the time and costs associated with data collection.</h6>
+            </div>
+            <div class="point"><!-- Location -->
+                <span class="fas fa-map-marker-alt"
+                    style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+                <h2>Improved Data Quality</h2>
+                <h6>Engaging with a targeted list of voters or residents can lead to higher response rates, as these
+                    individuals are more likely to be interested in or affected by the issues being surveyed. By
+                    focusing on relevant respondents, you can gather more precise and actionable insights about voter
+                    preferences and opinions.</h6>
+            </div>
+            <div class="point">
+                <h2>Enhanced Campaign Strategy</h2>
+                <h6>Enhanced campaign strategy involves optimizing marketing efforts through targeted planning, data
+                    analysis, and creative tactics to reach the right audience, improve engagement, and achieve
+                    measurable results in a competitive environment.</h6>
+            </div>
+            <div class="point">
+            <span class="fas fa-bullhorn" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+
+                <h2>Community Engagement</h2>
+                <h6>Engaging specific communities through surveys builds trust and rapport, allowing campaigns to
+                    address concerns, demonstrate responsiveness, and foster a stronger connection with voters or
+                    communities.</h6>
+            </div>
+            <div class="point">
+                <!-- Strategy -->
+                <span class="fas fa-lightbulb"
+                style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+
+<h2>Strategic Planning</h2>
+<h6>Data from Walk List Pro can help in planning campaign resources more effectively, such as directing canvassers or allocating advertising budget based on survey results</h6>
 </div>
+            <div class="point">
+                           <!-- Progress Tracking -->
+            <span class="fas fa-tasks" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+            <h2>Progress Tracking</h2>
+        <h6>Monitor shifts in public opinion and assess the effectiveness of campaign strategies over time, enabling dynamic adjustments and more responsive planning.</h6>
+        </div>
+            <div class="point">
+                <!-- Web -->
+<span class="fas fa-laptop-code" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
+           <h2>   Strategic Insight</h2> 
+        <h6>Gain valuable insights that can inform campaign strategies, issue positioning, and voter outreach plans based on targeted feedback.</h6>
+        </div>
+
+        </div>
+
+    </div>
+<style>
+    .our-plans {
+        margin-top: 4%;
+    }
+    .our-plans h1{
+        color: #2b447c;
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+     /* Subscription Plan Section */
+     .subscription-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin: 40px auto;
+        max-width: 1200px;
+    }
+    .subscription-plan {
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 360px;
+        text-align: center;
+        padding: 40px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 30px;
+        overflow: hidden;
+    }
+    .subscription-plan:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    .subscription-plan h2 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 25px;
+    }
+    .subscription-plan .price {
+        font-size: 36px;
+        font-weight: bold;
+        color: #2e3a59;
+        margin-bottom: 25px;
+    }
+    .subscription-plan .price span {
+        font-size: 18px;
+        color: #777;
+    }
+    .subscription-plan .features {
+        text-align: left;
+        margin-bottom: 30px;
+        padding-left: 20px;
+    }
+    .subscription-plan .features li {
+        list-style: none;
+        font-size: 18px;
+        color: #555;
+        margin: 12px 0;
+    }
+    .subscription-plan .subscribe-btn {
+        background-color: #2e3a59;
+        color: white;
+        padding: 15px 25px;
+        border: none;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+    .subscription-plan .subscribe-btn:hover {
+        background-color: #1c2a41;
+    }
+    .subscription-plan.featured {
+        background-color: #f1f9fe;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        border: 3px solid #2e3a59;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .subscription-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+        .subscription-plan {
+            max-width: 90%;
+        }
+    }
+</style>
+    <!-- our plans  -->
+     <div class="our-plans" id="plan">
+        <h1>Our Plans</h1>
+        <div class="subscription-container">
+            <!-- Basic Plan -->
+            <div class="subscription-plan">
+                <h2>Basic Plan</h2>
+                <div class="price">$85.00 <span>/month</span></div>
+                <ul class="features">
+                    <li>1 Manager</li>
+                    <li>1 Polltaker</li>
+                    <li>12 Surveys</li>
+                    <li>10,000 Contacts</li>
+                    <li>Districting and Precinct</li>
+                    <li>CSV Download with Voter Data and Election History</li>
+                    <li>Additional Feature</li>
+                </ul>
+                <button class="subscribe-btn">Choose Plan</button>
+            </div>
+        
+            <!-- Team Plan -->
+            <div class="subscription-plan featured">
+                <h2>Team Plan</h2>
+                <div class="price">$99.00 <span>/month</span></div>
+                <ul class="features">
+                    <li>1 Manager</li>
+                    <li>10 Polltakers</li>
+                    <li>22 Surveys</li>
+                    <li>5,000 Contacts</li>
+                    <li>Districting and Precinct</li>
+                    <li>CSV Download with Voter Data and Election History</li>
+                    <li>Additional Feature</li>
+                </ul>
+                <button class="subscribe-btn">Choose Plan</button>
+            </div>
+        
+            <!-- Premium Plan -->
+            <div class="subscription-plan">
+                <h2>Premium Plan</h2>
+                <div class="price">$15,200.00 <span>/month</span></div>
+                <ul class="features">
+                    <li>999 Managers</li>
+                    <li>999 Polltakers</li>
+                    <li>999 Surveys</li>
+                    <li>15,000 Contacts</li>
+                    <li>Districting and Precinct</li>
+                    <li>CSV Download with Voter Data and Election History</li>
+                    <li>Additional Feature</li>
+                </ul>
+                <button class="subscribe-btn">Choose Plan</button>
+            </div>
+        </div>
+     </div>
+    <!-- get in google apple  -->
 
 
+    <!-- <div class="bttnGroup"><a href="/admin-wlp/" title="Play Store" target="_blank"><img
+                src="data:image/webp;base64,UklGRooFAABXRUJQVlA4WAoAAAAQAAAAmgAAIwAAQUxQSGwDAAABoFVbe9jG+iAIwg/BEMRgyiBiEDOwGDQMFAZzGQiCIPwQxEDnwbLrpFlzXyNiAvQ/0CoUUwbSEyBKwiqASbIK1RS7STV9im+KvYP5I9jTlYv2NWmPSR4lyfwRlD1E6icBKPa6/J+m16UmSXWNXtcPMmBAsVc9s2611j8ZuCaX3fMR3dw+B4fFXpOrglmPuWh/wVp39RZda/0sYwAUe0Xoq8K367rgm7S5RZdq/xwDYLDf7DpZg2rK3f3PJbJKr6adfRAYR/hml71l0McdAxiMsQPfftEHHuwHjAn47d+B+eCsZ/tnGAPGOaDYP8LxOAXF/h0GFxb7BxgnBmOcwX/fkuLLvpK9agAMgMHp+pOQSil3e6tMuWTJ+7vtnPSSMYAxYAwGZz3qh/fO9Pv3JebfrxtMxwAGJ/2mn25Q7+leoX6AHmO8d/KbDBic9Zt+HCFrnyHvYnGvt1nYqrdis616u9uj3k7E4l5vp1ySVvqJe/WW7V5v2mqZLLUGGLOzfQv6eaVo/pW+JG1M3SQtznSVFBp7b+SjjWkLP4lwEBp7r2RFCLsnRczHGAc9B10YIB5MEzwsJKdJ5rQYlidE6Qk5hNQ5kSAHRaf8JOEHT8gWUocsdbIkA9OYDA77FnRpBEkhzYOcIkkGUQk3SapUGaySFM80viUpQjgR49fWecwMVkmKk4xLSlSJsTvsW9DFM2MeF1h2qhRVHtp/0fVF19SPAuS0h3Q0f2r2Rde07QJEqXGTBif7FnT5AiaFlFJaIUbQ9Ml/ctIkgmV8Vo+Mkyd6zvkedZDw2XOnykOGS2LA2PUt6JWdrHmCYBAmfylq5COlax55vhy5jmd9VieRHp4USQMGQA56babbJDhF6qw7c256UCdPmhaIO+NInVWSQozhqgXizpio88cxSUyL6dXB8Zuk2HCTMt2k0HDTApukO9ykiptkfibjJoWG6ypV3CRrB5lO0UExvaE54B3cJIUGrXX6ImkFrx0eksyhNrqfCA1q7XS7zhxagzYLQNx9j7roTVMDPAftw8OBatqnBrRVe6tAXeoJKTtQTdfJ/gI1PmequH6hBZ01CzoOZjoOZtLkpFnQi4OZTjo3hfd7xzUv2ju3U28ewfSRK26SNrDf86ToM1uHWhpk/VoD+1CyCtBX/d4nVZ87xLjoMwJWUDgg+AEAADANAJ0BKpsAJAA+KRSHQyGhCRYCTgwBQllAHiF854enaftfk0/K59m2gD+oboD9QP2ZywD0APKb9gj9oP2d9lijtH4GZxXiB6MwGZ+jNyVhdj87mR5fd+3gA4ojbtXhZ5lpoLpJ/yKL7CypfyFsqrEgAAD+wrJ2+fC8/8e48m4Gp+//0+rwwNAGlDhXvzKjN6LxPmPYp+gSpTiR7Ca/5OGF/VZYevA//rcslLjvB47N6iv63Y//z7W7iTmtT//+xshbOj59oSCIjiFSK2i+J2bud//26mbVpPbEj//58RGT6zCCLlCqLgU6oz0TzrWFCvfplirMxMuWvlinQcQMpz/y3BqH8ucJuO8j8Sc2jB9n86X4XTiYrl/9uPSAN71+NcUUXkjLtKWKUAImiGMb6oi8lLxS/jqgU2FXgNgQLH18c/mfinY0el9kJGaYpY0kn+Pn6vRmrzF6MnT7MZV5o7eKr7DXwKpVTpz0FtcMcNaRoODC1BDHUSezAeoX+GoGInb8SBq/saOFo88/1BS/9r68JW1km3970RMH+rKKYFB7dbv3L2mOhu3cXlkGAihAlLrpku6fEEiuSYQ3acnR0HfHta6IEv8Q6OXn++kUcnYAghnZPrurGQtDHwa8GvUVivnLgIugFZzy9P4s8yIAteGA7P9a5AAAAA=="
+                alt="Play Store Icon"></a><a href="/admin-wlp/" title="App Store" target="_blank"><img
+                src="data:image/webp;base64,UklGRtgDAABXRUJQVlA4WAoAAAAQAAAAhwAAIwAAQUxQSH0DAAABoFTbdh1JOhAE4UEwBDGoYBBikGYQZlBmYDPIZPAgGMKD8CDcgWSH6989i4gJ4C+7SukG5pIbPoM77FtLA2+m7iMVry4cCOl4DswlN1oaeANCkogKy0ZIuqW53xIwp1kshSXK/IUpC/GtpV94xYTFDDVUICpTzIDFUliitPQTkHGhcmdx6TbWtTmAz1Py+IpqornPZ1GBmrCvPg+oCTQH8Lm5zz/PIel52/K1bN2+kHV/rktzmlvYiQwwQVrzkclg2bp9aW5h1yRpIyR/r0kKbtvX2Tt/ss9hD9+fNGf2k6xADVq2WdNgEjB758/mzH6twrIRlRsPSY/bqqzEC15htDgoGdbhOZrDsFj49G2LpbNjBUq84BXWHDx/Eikq9yjSK5gr3aBoBT8YWBfxjSUiZ0wGNYnMWOjNM93o7JaMuGK1AB8VrJYbLhd+aOH2ws9Z1pTkT6NuKSk+7Af81qfU+2F/IkvdGX+i0J1hf6CmW40/8Oct3/kTH7dMfyTdyr0tYv4FJnf77YTkv0CVfpq8xW6ZJKleKVO5ZFN5wyZ7r0zTJStdsamcHLcst+xy1zJY5JNLikcn1Y+UtNmFekiKByzqHaguKb8XoCmmUAXzlLTZYL0lpztCz1l5Eqk4JM2DQ3mEFOVkktJDqnykFPEJH1IeIUXpMqSKhfJwKaxrtyim96pkRaojRQU7lKXTWmCWtpNVB+D6gioZYNJeoKW2TvGwgisM7JB3JW+Rtrd2fYFrPTEAS83dQb8oy2iXF5ja48KuoF+k0k3AJE0AkzQBrDd9vZV6wqwsg4Phrq/uOTBpGlUptkp/4loHRfpGUwI0aRlKrbOb6jtNCZRUHfiZd3WAVEc8DknxuhJaBkiNpugWXRyw3rLxrivd3SUfxOhTX10bTFfAmkvLhUProEj1rEnt1AYlbgh7x3SepVPtTHp2PviuZPxoE7AoL6yKwYdUzkyqAKXWMmDK95682xTWT6l5EAYWCuv0MviQtpNPhcFLASZVwKTN4CmtnOEKAws5p22UkaOFt10bw13eReoISQ+6Q3mkFOVkSqUf0gKkFBvMUnpKR7liIfmRCjtjOhRrBaY95A/eNqmOqlRY5OaSvDKoS0i5FM7NJeUMYC458Dgk5VK4gu2S5MYvu8ihWGEoVTArXC9mvF3MuNGs8AsPLg7+0P9fWJ0u1Vp+BwBWUDggNAAAABAEAJ0BKogAJAA+KRSJQyGhIRCUABgChLSAAARaiVq1atWrVq1atV0AAP7+0BwAAAAAAAA="
+                alt="App Store Icon"></a></div> -->
 
+    <!-- get in google - apple button  -->
+    <style>
+        .google-apple {
+            height: 360px;
+            border-radius: 50px;
+            width: 90%;
+            margin: 0 auto;
+            background-color: #dedede;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .google-apple-1 {
+            width: 65%;
+            /* background-color: red; */
+            padding: 20px;
+        }
+
+        .google-apple-1 h1 {
+            font-size: 1.8rem;
+            text-align: center;
+            font-weight: 700;
+            margin-top: 5%;
+        }
+
+        .google-apple-1 p {
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 4%;
+        }
+
+        .google-apple-2 {
+            width: 35%;
+            /* background-color: blue */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .google-apple-2 img {
+            height: 100%;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        /* Style for the button group */
+        .bttnGroup {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        /* Common button styles */
+        .bttnGroup .button {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        /* Button icon styling */
+        .bttnGroup .button img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Play Store button */
+        .bttnGroup .button.playStore {
+            border-color: #34b7f1;
+        }
+
+        .bttnGroup .button.playStore:hover {
+            background-color: #34b7f1;
+            border-color: #34b7f1;
+            box-shadow: 0 6px 15px rgba(52, 183, 241, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .bttnGroup .button.playStore:hover img {
+            transform: scale(1.1);
+        }
+
+        /* App Store button */
+        .bttnGroup .button.appStore {
+            border-color: #2d2d2d;
+        }
+
+        .bttnGroup .button.appStore:hover {
+            background-color: #2d2d2d;
+            border-color: #2d2d2d;
+            box-shadow: 0 6px 15px rgba(45, 45, 45, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .bttnGroup .button.appStore:hover img {
+            transform: scale(1.1);
+        }
+
+        .bttnGroup {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .buttonss {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .buttonss a {
+            display: inline-block;
+            background: white;
+            padding: 20px;
+            border-radius: 120px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease-in-out;
+        }
+
+        .buttonss a:hover {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .google-apple {
+                flex-direction: column;
+                height: auto;
+                margin-bottom: 100px;
+            }
+
+            .google-apple-1,
+            .google-apple-2 {
+                width: 100%;
+            }
+
+            .google-apple-2 img {
+                height: 250px;
+                /* Adjusting image size for mobile */
+                width: 80%;
+            }
+
+            .bttnGroup {
+                gap: 10px;
+            }
+
+            .bttnGroup .button img {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .google-apple-1 h1 {
+                font-size: 1.5rem;
+            }
+
+            .google-apple-1 p {
+                font-size: 0.9rem;
+            }
+
+            .buttonss a {
+                padding: 15px;
+            }
+        }
+    </style>
+    <div class="google-apple">
+        <div class="google-apple-1">
+            <h1>Check out more about application</h1>
+            <p>Click below to download the live iOS & Android applications.</p>
+            <div class="bttnGroup">
+                <div class="buttonss">
+                    <a href="/admin-wlp/" title="Play Store" target="_blank"><img
+                            src="data:image/webp;base64,UklGRooFAABXRUJQVlA4WAoAAAAQAAAAmgAAIwAAQUxQSGwDAAABoFVbe9jG+iAIwg/BEMRgyiBiEDOwGDQMFAZzGQiCIPwQxEDnwbLrpFlzXyNiAvQ/0CoUUwbSEyBKwiqASbIK1RS7STV9im+KvYP5I9jTlYv2NWmPSR4lyfwRlD1E6icBKPa6/J+m16UmSXWNXtcPMmBAsVc9s2611j8ZuCaX3fMR3dw+B4fFXpOrglmPuWh/wVp39RZda/0sYwAUe0Xoq8K367rgm7S5RZdq/xwDYLDf7DpZg2rK3f3PJbJKr6adfRAYR/hml71l0McdAxiMsQPfftEHHuwHjAn47d+B+eCsZ/tnGAPGOaDYP8LxOAXF/h0GFxb7BxgnBmOcwX/fkuLLvpK9agAMgMHp+pOQSil3e6tMuWTJ+7vtnPSSMYAxYAwGZz3qh/fO9Pv3JebfrxtMxwAGJ/2mn25Q7+leoX6AHmO8d/KbDBic9Zt+HCFrnyHvYnGvt1nYqrdis616u9uj3k7E4l5vp1ySVvqJe/WW7V5v2mqZLLUGGLOzfQv6eaVo/pW+JG1M3SQtznSVFBp7b+SjjWkLP4lwEBp7r2RFCLsnRczHGAc9B10YIB5MEzwsJKdJ5rQYlidE6Qk5hNQ5kSAHRaf8JOEHT8gWUocsdbIkA9OYDA77FnRpBEkhzYOcIkkGUQk3SapUGaySFM80viUpQjgR49fWecwMVkmKk4xLSlSJsTvsW9DFM2MeF1h2qhRVHtp/0fVF19SPAuS0h3Q0f2r2Rde07QJEqXGTBif7FnT5AiaFlFJaIUbQ9Ml/ctIkgmV8Vo+Mkyd6zvkedZDw2XOnykOGS2LA2PUt6JWdrHmCYBAmfylq5COlax55vhy5jmd9VieRHp4USQMGQA56babbJDhF6qw7c256UCdPmhaIO+NInVWSQozhqgXizpio88cxSUyL6dXB8Zuk2HCTMt2k0HDTApukO9ykiptkfibjJoWG6ypV3CRrB5lO0UExvaE54B3cJIUGrXX6ImkFrx0eksyhNrqfCA1q7XS7zhxagzYLQNx9j7roTVMDPAftw8OBatqnBrRVe6tAXeoJKTtQTdfJ/gI1PmequH6hBZ01CzoOZjoOZtLkpFnQi4OZTjo3hfd7xzUv2ju3U28ewfSRK26SNrDf86ToM1uHWhpk/VoD+1CyCtBX/d4nVZ87xLjoMwJWUDgg+AEAADANAJ0BKpsAJAA+KRSHQyGhCRYCTgwBQllAHiF854enaftfk0/K59m2gD+oboD9QP2ZywD0APKb9gj9oP2d9lijtH4GZxXiB6MwGZ+jNyVhdj87mR5fd+3gA4ojbtXhZ5lpoLpJ/yKL7CypfyFsqrEgAAD+wrJ2+fC8/8e48m4Gp+//0+rwwNAGlDhXvzKjN6LxPmPYp+gSpTiR7Ca/5OGF/VZYevA//rcslLjvB47N6iv63Y//z7W7iTmtT//+xshbOj59oSCIjiFSK2i+J2bud//26mbVpPbEj//58RGT6zCCLlCqLgU6oz0TzrWFCvfplirMxMuWvlinQcQMpz/y3BqH8ucJuO8j8Sc2jB9n86X4XTiYrl/9uPSAN71+NcUUXkjLtKWKUAImiGMb6oi8lLxS/jqgU2FXgNgQLH18c/mfinY0el9kJGaYpY0kn+Pn6vRmrzF6MnT7MZV5o7eKr7DXwKpVTpz0FtcMcNaRoODC1BDHUSezAeoX+GoGInb8SBq/saOFo88/1BS/9r68JW1km3970RMH+rKKYFB7dbv3L2mOhu3cXlkGAihAlLrpku6fEEiuSYQ3acnR0HfHta6IEv8Q6OXn++kUcnYAghnZPrurGQtDHwa8GvUVivnLgIugFZzy9P4s8yIAteGA7P9a5AAAAA=="
+                            alt="Play Store Icon"></a>
+                </div>
+                <div class="buttonss">
+                    <a href="/admin-wlp/" title="App Store" target="_blank"><img
+                            src="data:image/webp;base64,UklGRtgDAABXRUJQVlA4WAoAAAAQAAAAhwAAIwAAQUxQSH0DAAABoFTbdh1JOhAE4UEwBDGoYBBikGYQZlBmYDPIZPAgGMKD8CDcgWSH6989i4gJ4C+7SukG5pIbPoM77FtLA2+m7iMVry4cCOl4DswlN1oaeANCkogKy0ZIuqW53xIwp1kshSXK/IUpC/GtpV94xYTFDDVUICpTzIDFUliitPQTkHGhcmdx6TbWtTmAz1Py+IpqornPZ1GBmrCvPg+oCTQH8Lm5zz/PIel52/K1bN2+kHV/rktzmlvYiQwwQVrzkclg2bp9aW5h1yRpIyR/r0kKbtvX2Tt/ss9hD9+fNGf2k6xADVq2WdNgEjB758/mzH6twrIRlRsPSY/bqqzEC15htDgoGdbhOZrDsFj49G2LpbNjBUq84BXWHDx/Eikq9yjSK5gr3aBoBT8YWBfxjSUiZ0wGNYnMWOjNM93o7JaMuGK1AB8VrJYbLhd+aOH2ws9Z1pTkT6NuKSk+7Af81qfU+2F/IkvdGX+i0J1hf6CmW40/8Oct3/kTH7dMfyTdyr0tYv4FJnf77YTkv0CVfpq8xW6ZJKleKVO5ZFN5wyZ7r0zTJStdsamcHLcst+xy1zJY5JNLikcn1Y+UtNmFekiKByzqHaguKb8XoCmmUAXzlLTZYL0lpztCz1l5Eqk4JM2DQ3mEFOVkktJDqnykFPEJH1IeIUXpMqSKhfJwKaxrtyim96pkRaojRQU7lKXTWmCWtpNVB+D6gioZYNJeoKW2TvGwgisM7JB3JW+Rtrd2fYFrPTEAS83dQb8oy2iXF5ja48KuoF+k0k3AJE0AkzQBrDd9vZV6wqwsg4Phrq/uOTBpGlUptkp/4loHRfpGUwI0aRlKrbOb6jtNCZRUHfiZd3WAVEc8DknxuhJaBkiNpugWXRyw3rLxrivd3SUfxOhTX10bTFfAmkvLhUProEj1rEnt1AYlbgh7x3SepVPtTHp2PviuZPxoE7AoL6yKwYdUzkyqAKXWMmDK95682xTWT6l5EAYWCuv0MviQtpNPhcFLASZVwKTN4CmtnOEKAws5p22UkaOFt10bw13eReoISQ+6Q3mkFOVkSqUf0gKkFBvMUnpKR7liIfmRCjtjOhRrBaY95A/eNqmOqlRY5OaSvDKoS0i5FM7NJeUMYC458Dgk5VK4gu2S5MYvu8ihWGEoVTArXC9mvF3MuNGs8AsPLg7+0P9fWJ0u1Vp+BwBWUDggNAAAABAEAJ0BKogAJAA+KRSJQyGhIRCUABgChLSAAARaiVq1atWrVq1atV0AAP7+0BwAAAAAAAA="
+                            alt="App Store Icon"></a>
+                </div>
+            </div>
+        </div>
+        <div class="google-apple-2">
+            <img src="{% static 'img/google-apple.png' %}" alt="">
+        </div>
+
+    </div>
+    <style>
+        .contact-form {
+            height: 500px;
+            width: 100%;
+            background-color: #f6f6f6;
+            margin-top: 5%;
+            display: flex;
+        }
+
+        .contact-form-1 {
+            width: 45%;
+        }
+
+        .contact-form-2 {
+            width: 55%;
+        }
+
+        .all-details {
+            margin-top: 10%;
+            margin-left: 10%;
+        }
+
+        .all-details h1 {
+            font-size: 2rem;
+            margin-bottom: 4%;
+            font-weight: 600;
+        }
+
+        .all-details p {
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size: 1.2rem;
+            margin-bottom: 4%;
+            font-weight: 200;
+        }
+
+
+        /* For smaller devices (tablets and below) */
+        @media (max-width: 1024px) {
+            .contact-form {
+                flex-direction: column;
+                height: auto;
+                margin-top: 3%;
+            }
+
+            .contact-form-1,
+            .contact-form-2 {
+                width: 100%;
+            }
+
+            .all-details {
+                margin-top: 5%;
+                margin-left: 5%;
+            }
+
+            .all-details h1 {
+                font-size: 1.8rem;
+            }
+
+            .all-details p {
+                font-size: 1rem;
+            }
+
+
+            .firstset {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .firstset input {
+                width: 100%;
+            }
+
+            #message {
+                width: 100%;
+            }
+
+            #submit-button {
+                width: 100%;
+            }
+        }
+
+        /* For mobile devices */
+        @media (max-width: 768px) {
+            .contact-form {
+                flex-direction: column;
+                padding: 10px;
+            }
+
+            .contact-form-1,
+            .contact-form-2 {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+
+            .all-details h1 {
+                font-size: 1.6rem;
+            }
+
+            .all-details p {
+                font-size: 0.95rem;
+            }
+
+
+            .firstset {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .firstset input {
+                width: 100%;
+                padding: 10px;
+            }
+
+            #message {
+                width: 100%;
+                padding: 12px;
+            }
+
+            #submit-button {
+                width: 100%;
+            }
+        }
+    </style>
+    <div class="contact-form" id="contact">
+        <div class="contact-form-1">
+            <p style="color: #dedede; ;">.</p>
+            <div class="all-details">
+                <h1>Get in Touch</h1>
+                <p>Sometimes you need a little help from your friends.
+                    Or a WLP support representative. Don’t worry… we are here for you!</p>
+                <p>Experience seamless access to all our features on the go. Download our app for instant updates and a
+                    smoother user experience. Available on the Play Store for Android and the App Store for iOS.</p>
+                <div class="bttnGroups" style="margin-left: -100ox;">
+                    <div class="buttonss">
+                        <a href="/admin-wlp/" title="Play Store" target="_blank"><img
+                                src="data:image/webp;base64,UklGRooFAABXRUJQVlA4WAoAAAAQAAAAmgAAIwAAQUxQSGwDAAABoFVbe9jG+iAIwg/BEMRgyiBiEDOwGDQMFAZzGQiCIPwQxEDnwbLrpFlzXyNiAvQ/0CoUUwbSEyBKwiqASbIK1RS7STV9im+KvYP5I9jTlYv2NWmPSR4lyfwRlD1E6icBKPa6/J+m16UmSXWNXtcPMmBAsVc9s2611j8ZuCaX3fMR3dw+B4fFXpOrglmPuWh/wVp39RZda/0sYwAUe0Xoq8K367rgm7S5RZdq/xwDYLDf7DpZg2rK3f3PJbJKr6adfRAYR/hml71l0McdAxiMsQPfftEHHuwHjAn47d+B+eCsZ/tnGAPGOaDYP8LxOAXF/h0GFxb7BxgnBmOcwX/fkuLLvpK9agAMgMHp+pOQSil3e6tMuWTJ+7vtnPSSMYAxYAwGZz3qh/fO9Pv3JebfrxtMxwAGJ/2mn25Q7+leoX6AHmO8d/KbDBic9Zt+HCFrnyHvYnGvt1nYqrdis616u9uj3k7E4l5vp1ySVvqJe/WW7V5v2mqZLLUGGLOzfQv6eaVo/pW+JG1M3SQtznSVFBp7b+SjjWkLP4lwEBp7r2RFCLsnRczHGAc9B10YIB5MEzwsJKdJ5rQYlidE6Qk5hNQ5kSAHRaf8JOEHT8gWUocsdbIkA9OYDA77FnRpBEkhzYOcIkkGUQk3SapUGaySFM80viUpQjgR49fWecwMVkmKk4xLSlSJsTvsW9DFM2MeF1h2qhRVHtp/0fVF19SPAuS0h3Q0f2r2Rde07QJEqXGTBif7FnT5AiaFlFJaIUbQ9Ml/ctIkgmV8Vo+Mkyd6zvkedZDw2XOnykOGS2LA2PUt6JWdrHmCYBAmfylq5COlax55vhy5jmd9VieRHp4USQMGQA56babbJDhF6qw7c256UCdPmhaIO+NInVWSQozhqgXizpio88cxSUyL6dXB8Zuk2HCTMt2k0HDTApukO9ykiptkfibjJoWG6ypV3CRrB5lO0UExvaE54B3cJIUGrXX6ImkFrx0eksyhNrqfCA1q7XS7zhxagzYLQNx9j7roTVMDPAftw8OBatqnBrRVe6tAXeoJKTtQTdfJ/gI1PmequH6hBZ01CzoOZjoOZtLkpFnQi4OZTjo3hfd7xzUv2ju3U28ewfSRK26SNrDf86ToM1uHWhpk/VoD+1CyCtBX/d4nVZ87xLjoMwJWUDgg+AEAADANAJ0BKpsAJAA+KRSHQyGhCRYCTgwBQllAHiF854enaftfk0/K59m2gD+oboD9QP2ZywD0APKb9gj9oP2d9lijtH4GZxXiB6MwGZ+jNyVhdj87mR5fd+3gA4ojbtXhZ5lpoLpJ/yKL7CypfyFsqrEgAAD+wrJ2+fC8/8e48m4Gp+//0+rwwNAGlDhXvzKjN6LxPmPYp+gSpTiR7Ca/5OGF/VZYevA//rcslLjvB47N6iv63Y//z7W7iTmtT//+xshbOj59oSCIjiFSK2i+J2bud//26mbVpPbEj//58RGT6zCCLlCqLgU6oz0TzrWFCvfplirMxMuWvlinQcQMpz/y3BqH8ucJuO8j8Sc2jB9n86X4XTiYrl/9uPSAN71+NcUUXkjLtKWKUAImiGMb6oi8lLxS/jqgU2FXgNgQLH18c/mfinY0el9kJGaYpY0kn+Pn6vRmrzF6MnT7MZV5o7eKr7DXwKpVTpz0FtcMcNaRoODC1BDHUSezAeoX+GoGInb8SBq/saOFo88/1BS/9r68JW1km3970RMH+rKKYFB7dbv3L2mOhu3cXlkGAihAlLrpku6fEEiuSYQ3acnR0HfHta6IEv8Q6OXn++kUcnYAghnZPrurGQtDHwa8GvUVivnLgIugFZzy9P4s8yIAteGA7P9a5AAAAA=="
+                                alt="Play Store Icon"></a>
+                    </div>
+                    <div class="buttonss">
+                        <a href="/admin-wlp/" title="App Store" target="_blank"><img
+                                src="data:image/webp;base64,UklGRtgDAABXRUJQVlA4WAoAAAAQAAAAhwAAIwAAQUxQSH0DAAABoFTbdh1JOhAE4UEwBDGoYBBikGYQZlBmYDPIZPAgGMKD8CDcgWSH6989i4gJ4C+7SukG5pIbPoM77FtLA2+m7iMVry4cCOl4DswlN1oaeANCkogKy0ZIuqW53xIwp1kshSXK/IUpC/GtpV94xYTFDDVUICpTzIDFUliitPQTkHGhcmdx6TbWtTmAz1Py+IpqornPZ1GBmrCvPg+oCTQH8Lm5zz/PIel52/K1bN2+kHV/rktzmlvYiQwwQVrzkclg2bp9aW5h1yRpIyR/r0kKbtvX2Tt/ss9hD9+fNGf2k6xADVq2WdNgEjB758/mzH6twrIRlRsPSY/bqqzEC15htDgoGdbhOZrDsFj49G2LpbNjBUq84BXWHDx/Eikq9yjSK5gr3aBoBT8YWBfxjSUiZ0wGNYnMWOjNM93o7JaMuGK1AB8VrJYbLhd+aOH2ws9Z1pTkT6NuKSk+7Af81qfU+2F/IkvdGX+i0J1hf6CmW40/8Oct3/kTH7dMfyTdyr0tYv4FJnf77YTkv0CVfpq8xW6ZJKleKVO5ZFN5wyZ7r0zTJStdsamcHLcst+xy1zJY5JNLikcn1Y+UtNmFekiKByzqHaguKb8XoCmmUAXzlLTZYL0lpztCz1l5Eqk4JM2DQ3mEFOVkktJDqnykFPEJH1IeIUXpMqSKhfJwKaxrtyim96pkRaojRQU7lKXTWmCWtpNVB+D6gioZYNJeoKW2TvGwgisM7JB3JW+Rtrd2fYFrPTEAS83dQb8oy2iXF5ja48KuoF+k0k3AJE0AkzQBrDd9vZV6wqwsg4Phrq/uOTBpGlUptkp/4loHRfpGUwI0aRlKrbOb6jtNCZRUHfiZd3WAVEc8DknxuhJaBkiNpugWXRyw3rLxrivd3SUfxOhTX10bTFfAmkvLhUProEj1rEnt1AYlbgh7x3SepVPtTHp2PviuZPxoE7AoL6yKwYdUzkyqAKXWMmDK95682xTWT6l5EAYWCuv0MviQtpNPhcFLASZVwKTN4CmtnOEKAws5p22UkaOFt10bw13eReoISQ+6Q3mkFOVkSqUf0gKkFBvMUnpKR7liIfmRCjtjOhRrBaY95A/eNqmOqlRY5OaSvDKoS0i5FM7NJeUMYC458Dgk5VK4gu2S5MYvu8ihWGEoVTArXC9mvF3MuNGs8AsPLg7+0P9fWJ0u1Vp+BwBWUDggNAAAABAEAJ0BKogAJAA+KRSJQyGhIRCUABgChLSAAARaiVq1atWrVq1atV0AAP7+0BwAAAAAAAA="
+                                alt="App Store Icon"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contact-form-2">
+            <style>
+                .firstset {
+                    display: flex;
+                    gap: 20px;
+
+                }
+
+                .firstset h2 {
+                    font-size: 1rem;
+                    font-family: 200;
+                }
+
+                .firstset input {
+                    width: 300px;
+                    height: 45px;
+                    border-radius: 10px;
+                    border: 1px solid rgb(0, 0, 0);
+                }
+
+                form {
+                    margin-top: 10%;
+                    margin-left: 5%;
+                }
+
+                form h2 {
+                    font-size: 1rem;
+                    margin-bottom: 10px;
+                    margin-top: 20px;
+                    font-family: 200;
+                }
+
+                #message {
+                    width: 80%;
+                    height: 120px;
+                    border-radius: 10px;
+                    border: 1px solid rgb(0, 0, 0);
+                }
+
+                #submit-button {
+                    display: block;
+                    margin-top: 20px;
+                    width: 80%;
+                    height: 60px;
+                    border-radius: 20px;
+                    transition: all 0.4s ease-in-out;
+                }
+
+                #submit-button:hover {
+                    background-color: white;
+                    color: black;
+                    border: 1px solid black;
+                    font-size: 1.5rem;
+                }
+            </style>
+            <form action="">
+                <div class="firstset">
+                    <div class="name">
+                        <h2>Full Name</h2>
+                        <input type="text">
+                    </div>
+                    <div class="email">
+                        <h2>Email Address</h2>
+                        <input type="text">
+                    </div>
+                </div>
+                <h2>Message</h2>
+                <input type="text" id="message">
+                <button id="submit-button">Submit</button>
+            </form>
+        </div>
+
+
+    </div>
+
+    <style>
+        /* FOOTER */
+        footer {
+            background: linear-gradient(135deg, #f6f6f6, #e0e0e0, #d1d1d1, #b0b0b0);
+            /* Soft, premium gradient */
+            color: #333;
+            /* Dark text for readability */
+            margin-top: 0;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0px -2px 15px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for depth */
+        }
+
+        footer a {
+            color: #333;
+            /* Dark text color for links */
+            font-size: 16px;
+            font-weight: 500;
+            /* Slightly bolder for readability */
+            text-decoration: none;
+            transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        footer a:hover {
+            color: #44BCDD;
+            /* Soft teal hover effect */
+            text-decoration: none;
+            transform: scale(1.05);
+            /* Subtle scale effect on hover */
+        }
+
+        .copy {
+            font-size: 14px;
+            padding: 20px;
+            border-top: 1px solid #000000;
+            /* Light gray border to separate footer content */
+            color: #000000;
+            /* Lighter color for the copyright text */
+        }
+
+        .footer-middle {
+            padding-top: 2em;
+            color: #333;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        /* SOCIAL ICONS */
+        ul.social-network {
+            list-style: none;
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        ul.social-network li {
+            display: inline-block;
+            margin: 0;
+            /* Removed margin between icons */
+        }
+
+        .social-network a {
+            display: inline-block;
+            position: relative;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #f6f6f6;
+            /* Light gray background for social icons */
+            color: #333;
+            /* Dark icon color */
+            font-size: 20px;
+            line-height: 45px;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-network a:hover {
+            background-color: #44BCDD;
+            /* Teal background when hovered */
+            transform: scale(1.1);
+            /* Slight zoom effect */
+        }
+
+        .social-network a:hover i {
+            color: #fff;
+            /* Change icon color to white on hover */
+        }
+
+        .social-network a.icoFacebook:hover {
+            background-color: #3B5998;
+            /* Facebook blue */
+        }
+
+        .social-network a.icoLinkedin:hover {
+            background-color: #007bb7;
+            /* LinkedIn blue */
+        }
+
+        .social-network a.icoTwitter:hover {
+            background-color: #1DA1F2;
+            /* Twitter blue */
+        }
+
+        .social-network a.icoInstagram:hover {
+            background-color: #E4405F;
+            /* Instagram pink */
+        }
+
+        .social-network a.icoFacebook i,
+        .social-network a.icoLinkedin i,
+        .social-network a.icoTwitter i,
+        .social-network a.icoInstagram i {
+            color: #000000;
+            /* Dark icon color by default */
+        }
+
+        .social-circle li {
+            display: inline-block;
+            margin: 0;
+            /* Removed margin between items */
+        }
+
+        .social-circle li a {
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+
+        .social-circle li a:hover {
+            background-color: #44BCDD;
+            transform: rotate(360deg);
+            /* Spin effect for a more interactive look */
+        }
+
+        .social-circle li i {
+            font-size: 20px;
+            line-height: 45px;
+        }
+
+        .social-network a:hover i {
+            color: #fff;
+            /* Icon color changes on hover */
+        }
+    </style>
+    <footer class="mainfooter" role="contentinfo">
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Site Pages</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#"></a></li>
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">Subscriptions</a></li>
+                                <li><a href="#">Surveys</a></li>
+                                <li><a href="#">Visits</a></li>
+                                <li><a href="#">FAQs</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Features</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Survey Operations</a></li>
+                                <li><a href="#">Accessibility</a></li>
+                                <li><a href="#">Content Manegement</a></li>
+                                <li><a href="">Maping</a></li>
+                                <li><a href="">Data Management</a></li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Administrator</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">123-456-7890</a></li>
+                                <li><a href="mailto:example@example.com">example@example.com</a></li>
+                                <li><a href="#">1234 Elm Street, Springfield, IL</a></li>
+                                <li><a href="#">5678 Oak Avenue</a></li>
+                                <li><a href="https://www.example.com" target="_blank">www.example.com</a></li>
+                                
+                                <li>
+                                    <a href="#"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>Follow Us</h4>
+                        <ul class="social-network social-circle" >
+
+                            <li ><a href="#" class="icoFacebook" title="Facebook"  style="background-color: transparent;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" width="30" height="30">
+                            </a></li>
+                            
+              
+                            
+                            <li><a href="#" class="icoInstagram" title="Instagram"  style="background-color: transparent;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="30" height="30">
+                            </a></li>
+    <!-- Twitter -->
+    <li><a href="#" class="icoTwitter" title="Twitter">
+        <i class="fa-brands fa-twitter"></i>
+    </a></li>
+    
+                                
+                                <!-- Twitter -->
+                                <li><a href="#" class="icoTwitter" title="Twitter">
+                                    <img src="https://cdn.iconscout.com/icon/free/png-256/twitter-262-721968.png" alt="Twitter" width="30" height="30">
+                                </a></li>
+                                
+                      
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 copy">
+                        <p class="text-center">&copy; 2024©WLP All rights reserved</p>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </footer>
 </body>
+
 </html>

@@ -203,26 +203,26 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.auth.models import User
 
-class UserContactList(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField()
-    street = models.CharField(max_length=255)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
-    zipcode = models.PositiveIntegerField()  # Ensure this matches the HTML form
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
-    party_preference = models.CharField(max_length=50, choices=[
-        ('Republican', 'Republican'),
-        ('Democrat', 'Democrat'),
-        ('Independent', 'Independent'),
-    ])
+# class UserContactList(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     first_name = models.CharField(max_length=100)
+#     last_name = models.CharField(max_length=100)
+#     email = models.EmailField()
+#     street = models.CharField(max_length=255)
+#     city = models.CharField(max_length=100)
+#     state = models.CharField(max_length=100)
+#     country = models.CharField(max_length=100)
+#     zipcode = models.PositiveIntegerField()  # Ensure this matches the HTML form
+#     latitude = models.FloatField(null=True, blank=True)
+#     longitude = models.FloatField(null=True, blank=True)
+#     party_preference = models.CharField(max_length=50, choices=[
+#         ('Republican', 'Republican'),
+#         ('Democrat', 'Democrat'),
+#         ('Independent', 'Independent'),
+#     ])
 
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} - {self.email}"
+#     def __str__(self):
+#         return f"{self.first_name} {self.last_name} - {self.email}"
 
 class UserContactSearch(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -233,3 +233,47 @@ class UserContactSearch(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.search_date}"
+    
+
+
+# next trail 
+from django.db import models
+from django.contrib.auth.models import User
+from django.db import models
+from django.contrib.auth.models import User
+
+class UserContactList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    street = models.CharField(max_length=255, blank=True, default='NA')
+    city = models.CharField(max_length=100, blank=True, default='NA')
+    state = models.CharField(max_length=100, blank=True, default='NA')
+    country = models.CharField(max_length=100, blank=True, default='NA')
+    zipcode = models.CharField(max_length=20, blank=True, default='NA')  # Updated to CharField
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+    party_preference = models.CharField(max_length=50, choices=[
+        ('Republican', 'Republican'),
+        ('Democrat', 'Democrat'),
+        ('Independent', 'Independent'),
+        ('NA', 'NA'),  # Added 'NA' as a choice
+    ], blank=True, default='NA')
+
+    # New fields added with `null=True` and `blank=True`
+    state_id = models.CharField(max_length=50, null=True, blank=True, default='NA')
+    voter_nbr = models.CharField(max_length=50, null=True, blank=True, default='NA')
+    title = models.CharField(max_length=50, null=True, blank=True, default='NA')
+    address = models.CharField(max_length=255, null=True, blank=True, default='NA')
+    address2 = models.CharField(max_length=255, null=True, blank=True, default='NA')
+    phone = models.CharField(max_length=15, null=True, blank=True, default='NA')
+    dob = models.DateField(null=True, blank=True)
+    reg_date = models.DateField(null=True, blank=True)
+    district = models.CharField(max_length=50, null=True, blank=True, default='NA')
+    pct_nbr = models.CharField(max_length=50, null=True, blank=True, default='NA')
+    ward = models.CharField(max_length=50, null=True, blank=True, default='NA')
+    # New 'status' field added
+    status = models.CharField(max_length=50, choices=[('pending', 'Pending'), ('completed', 'Completed'), ('denied', 'Denied')],default='pending' )
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.email}"

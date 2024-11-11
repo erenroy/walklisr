@@ -14,3 +14,5 @@ pip install django-paypal
 
 
 last night - did till survay crrate ui page 
+
+tommror - complete pending button fix 

@@ -141,6 +141,10 @@ body{
     </style>
 </head>
 <body>
+   
+    
+   
+    
      <!-- Navbar -->
      <nav class="navbar">
         <div class="navbar-logo">
@@ -150,24 +154,63 @@ body{
             <h2>Welcome Manager</h2>
         </div>
         <div class="navbar-user">
-            <img onclick="toggleDropdown()" src="{% static 'img/logo2.png' %}" alt="User Icon" class="user-icon" style="margin-top: 0px; vertical-align: middle; width: 40px; height: 40px;">
-
-            <span class="user-name" onclick="toggleDropdown()">{{ username }} ↓</span>
-            
-            <!-- Image added here -->
-        
-            <div class="dropdown-menu" id="dropdown">
+            <!-- <img onclick="toggleDropdown()" src="{% static 'img/logo2.png' %}" alt="User Icon" class="user-icon" style="margin-top: 0px; vertical-align: middle; width: 40px; height: 40px;">
+     -->
+            <!-- <span class="user-name" onclick="toggleDropdown()">{{ username }} ↓</span> -->
+    
+            <!-- Dropdown Menu -->
+            <!-- <div class="dropdown-menu" id="dropdown">
                 <a href="{% url 'user_details' %}" class="dropdown-option" style="text-align: center;">My Account</a>
                 <form action="{% url 'logout' %}" method="POST">
                     {% csrf_token %}
                     <button id="logout_button" type="submit" class="dropdown-option">Logout</button>
                 </form>
-            </div>
-            
+            </div> -->
+        </div>
+    
+        <!-- Toggle Button for Sidebar -->
+        <div class="toggle-btn-container" style="position: absolute; top: 20px; right: 20px; z-index: 9999;">
+            <button id="toggleBtn" onclick="toggleNav()" style="
+                background-color: rgb(43, 68, 124); 
+                color: white; 
+                border: none; 
+                border-radius: 5px; 
+                padding: 8px 12px; 
+                font-size: 14px; 
+                cursor: pointer; 
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                transition: background-color 0.3s, transform 0.3s;">
+                <!-- Smaller Hamburger Bars -->
+                <div style="width: 25px; height: 3px; background-color: white; margin: 4px 0;"></div>
+                <div style="width: 25px; height: 3px; background-color: white; margin: 4px 0;"></div>
+                <div style="width: 25px; height: 3px; background-color: white; margin: 4px 0;"></div>
+            </button>
         </div>
         
     </nav>
-
+    <script>
+        // Set the default width of the sidebar to 0px (closed) initially
+        document.getElementById("mySidebar").style.width = "0px";
+    
+        function toggleNav() {
+            var sidebar = document.getElementById("mySidebar");
+    
+            // Toggle sidebar visibility
+            if (sidebar.style.width === "0px") {
+                openNav(); // Open the sidebar
+            } else {
+                closeNav(); // Close the sidebar
+            }
+        }
+    
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px"; // Set desired width
+        }
+    
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0px"; // Hide sidebar
+        }
+    </script>
     {% block content %}{% endblock %}
       
     <script>
@@ -187,5 +230,30 @@ body{
         }
         
               </script>
+
+<style>
+    @media screen and (max-width: 500px) {
+    .navbar-logo img {
+    width: 82px;
+    margin-left: -20px;
+}
+.navbar-welcome h2 {
+
+    margin-left: -20%;
+    font-size: 18px;
+}
+}
+@media screen and (max-width: 380px) {
+    .navbar-logo img {
+    width: 75px;
+    margin-left: -30px;
+}
+.navbar-welcome h2 {
+    font-size: 12px;
+    color: #000000;
+    font-weight: bold;
+}
+}
+</style>
 </body>
 </html>

@@ -169,16 +169,17 @@
                 </h2>
                 <p class="survey-description">{{ survey.description }}</p>
                 <div>
-                <p >Survey Date - {{ survey.survey_date }}</p>
-                <p >Created on - {{survey.created_at}}</p>
-            </div>
+                    <p>Survey Date - {{ survey.survey_date }}</p>
+                    <p>Created on - {{ survey.created_at }}</p>
+                </div>
 
-
-                <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey</a>
+                <!-- Link to all surveys for that token -->
+                <a href="{% url 'surveyapp:all_token_survey' survey.survey_token %}" class="take-survey-btn">View Servey </a>
             </div>
         {% endfor %}
     </div>
 </div>
+
 
 {% endblock %}
 

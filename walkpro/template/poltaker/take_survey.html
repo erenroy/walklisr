@@ -207,44 +207,80 @@ h1 {
 
             <script>
                 // Function to show the location on the map
-                function showLocation(zipCode, country, mapId) {
-                    axios.get(`https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&country=${country}&format=json&limit=1`)
+                function showLocation(street, zipCode, city, mapId, status) {
+                    // Build the query string with street and postal code, include city if available
+                    let query = `street=${street}&postalcode=${zipCode}`;
+                    if (city) {
+                        query += `&city=${city}`;
+                    }
+            
+                    axios.get(`https://nominatim.openstreetmap.org/search?${query}&format=json&limit=1`)
                         .then(response => {
                             if (response.data.length > 0) {
                                 var location = response.data[0];
                                 var lat = location.lat;
                                 var lon = location.lon;
-
+            
                                 // Initialize the map for each contact
                                 var map = L.map(mapId).setView([lat, lon], 15);
-
+            
                                 // Add the OpenStreetMap tiles
                                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                                     maxZoom: 18,
                                     attribution: '© OpenStreetMap contributors'
                                 }).addTo(map);
-
-                                // Add a marker to the map
-                                L.marker([lat, lon]).addTo(map)
-                                    .bindPopup(`Location for Zip Code: ${zipCode}`)
+            
+                                // Define URLs for different status markers
+                                var markerUrl;
+                                switch (status) {
+                                    case 'pending':
+                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png';
+                                        break;
+                                    case 'denied':
+                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
+                                        break;
+                                    case 'completed':
+                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png';
+                                        break;
+                                    default:
+                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png';
+                                }
+            
+                                // Create the custom icon
+                                var customIcon = L.icon({
+                                    iconUrl: markerUrl,
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                });
+            
+                                // Add a marker to the map with the appropriate icon
+                                L.marker([lat, lon], { icon: customIcon }).addTo(map)
+                                    .bindPopup(`Location for Street: ${street}, Zip Code: ${zipCode}${city ? `, City: ${city}` : ''}`)
                                     .openPopup();
                             } else {
-                                console.error('No location found for this zip code.');
+                                console.error('No location found for this query.');
                             }
                         })
                         .catch(error => {
                             console.error('Error fetching geolocation:', error);
                         });
                 }
-
+            
                 // Get data for the current contact
+                var street = "{{ contact.street }}";
                 var zipCode = "{{ contact.zipcode }}";
-                var country = "{{ contact.country }}";
+                var city = "{{ contact.city }}"; // Optional
+                var status = "{{ contact.status }}"; // Contact status
                 var mapId = "map_{{ forloop.counter }}";
-
+            
                 // Call the function to show the location on the map
-                showLocation(zipCode, country, mapId);
+                showLocation(street, zipCode, city, mapId, status);
             </script>
+            
+            
         </div>
     {% endfor %}
 
@@ -260,7 +296,7 @@ h1 {
                 <p><strong>Zipcode:</strong> {{ contact.zipcode }}</p>
                 <p><strong>Party Preference:</strong> {{ contact.party_preference }}</p>
             </div>
-            <form id="survey-completion-form" action="{% url 'surveyapp:complete_survey' survey.id %}" method="post">
+            <!-- <form id="survey-completion-form" action="{% url 'surveyapp:complete_survey' survey.id %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success" style="
                 display: inline-block;
@@ -276,20 +312,201 @@ h1 {
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 text-transform: uppercase;
             " onclick="enableTakeSurveyButton()">Varify</button>
-            </form>
+            </form> -->
+
+           
     <button class="take-survey-button" onclick="showSurveyForm()" style="  display: inline-block;
     padding: 12px 24px;
     font-size: 16px;
     font-weight: bold;
     color: #fff;
-    background-color: #dcdcdc;
+    background-color: rgb(43, 68, 124);
     border: none;
     border-radius: 25px;
-    cursor: not-allowed;
     text-transform: uppercase;
-    pointer-events: none;
-    opacity: 0.6;">Take Survey</button>
-    <p>Please verify your identity as a human before taking the survey</p>
+">Take Survey</button>
+<!-- denied survey start  -->
+<p>Contact Denied for Survey? <a href="#" id="toggle-content" style="color: #007bff; text-decoration: none; font-weight: bold;"> click here</a></p>
+<div id="content" style="display: none; opacity: 0; transition: opacity 0.5s;">
+    <ul class="survey-info">
+        <li>
+            <b>{{ contact.first_name }} {{ contact.last_name }} denied the survey for some reason, so this survey cannot be completed for this contact. Here is my confirmation. This survey will be marked as Denied.</b>
+        </li>
+        <li>Contact Name :  {{ contact.first_name }} {{ contact.last_name }}</li>
+        <li>Contact Email : {{ contact.email }}</li>
+        <li>Contact Address : {{ contact.address }}</li>
+    </ul>
+    
+    <form id="survey-deny-form" action="{% url 'surveyapp:deny_survey' survey.id %}" method="post" style="margin-top: 20px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" style="
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(135deg, #e57373, #f44336);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+        ">
+            Deny Survey
+        </button>
+    </form>
+    <button class="close-btn" onclick="document.getElementById('content').style.display = 'none';">x</button>
+
+</div>
+
+<script>
+    document.getElementById('toggle-content').addEventListener('click', function(event) {
+        event.preventDefault();
+        const content = document.getElementById('content');
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            setTimeout(() => {
+                content.style.opacity = '1';
+            }, 10); // Small delay to ensure the transition effect
+        } else {
+            content.style.opacity = '0';
+            setTimeout(() => {
+                content.style.display = 'none';
+            }, 500); // Match this duration to the transition duration
+        }
+    });
+</script>
+<style>
+#toggle-content {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#content {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px;
+    padding: 30px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    z-index: 1000;
+    text-align: center;
+}
+
+#content ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 20px;
+}
+
+#content li {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+#survey-deny-form {
+    margin-top: 20px;
+}
+
+#survey-deny-form .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(135deg, #ff4b2b, #ff416c);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+}
+
+#survey-deny-form .btn:hover {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    transform: scale(1.05);
+}
+
+/* Close button styles */
+#content .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+#content .close-btn:hover {
+    color: #ff4b2b;
+}
+.survey-info {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    font-size: 16px;
+}
+
+.survey-info li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.survey-info li b {
+    color: #ff4b2b;
+    font-weight: bold;
+}
+
+.survey-info li:nth-child(odd) {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.survey-info li:nth-child(even) {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.survey-info li b {
+    color: #007bff;
+}
+
+.survey-info li:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-5px);
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.survey-info li:last-child {
+    margin-bottom: 0;
+}
+
+</style>
+<!-- denied survey start  -->
+
     <script>
         // This function enables the "Take Survey" button when "Verify as Human" is clicked
         function enableTakeSurveyButton() {
@@ -314,43 +531,80 @@ h1 {
     <!-- <button class="take-survey-button" onclick="showSurveyForm()">Take Survey</button> -->
 
     <!-- Survey Form -->
-    <form method="POST" class="survey-form" id="survey-form" style="display: none;">
-        {% csrf_token %}
-        <h3>Assigned Contact:</h3>
+<!-- Hidden First Form -->
+<form id="survey-completion-form" action="{% url 'surveyapp:complete_survey' survey.id %}" method="post" style="display: none;">
+    {% csrf_token %}
+    <input type="hidden" name="first_form_data" value="value_from_first_form">
+</form>
+
+<!-- Visible Second Form -->
+<form method="POST" class="survey-form" id="survey-form" onsubmit="submitBothForms(event)">
+    {% csrf_token %}
+    <h3>Assigned Contact:</h3>
+    <div>
+        <p>{{ assigned_contact.first_name }} {{ assigned_contact.last_name }} ({{ assigned_contact.email }})</p>
+    </div>
+
+    <!-- Survey Questions Loop -->
+    {% for question in questions %}
         <div>
-            <p>{{ assigned_contact.first_name }} {{ assigned_contact.last_name }} ({{ assigned_contact.email }})</p>
+            <h4>{{ question.question_text }}</h4>
+
+            {% if question.question_type == 'mcq' %}
+                {% for option in question.options.all %}
+                    <label>
+                        <input type="radio" name="option_{{ question.id }}" value="{{ option.option_text }}" required>
+                        {{ option.option_text }}
+                    </label><br>
+                {% endfor %}
+            {% elif question.question_type == 'text' %}
+                <textarea name="answer_{{ question.id }}" rows="3" placeholder="Type your answer here..." required></textarea>
+            {% elif question.question_type == 'yesno' %}
+                <label>
+                    <input type="radio" name="answer_{{ question.id }}" value="Yes" required> Yes
+                </label>
+                <label>
+                    <input type="radio" name="answer_{{ question.id }}" value="No" required> No
+                </label>
+            {% endif %}
         </div>
+    {% endfor %}
 
-        <!-- Survey Questions Loop -->
-        {% for question in questions %}
-            <div>
-                <h4>{{ question.question_text }}</h4>
-
-                {% if question.question_type == 'mcq' %}
-                    {% for option in question.options.all %}
-                        <label>
-                            <input type="radio" name="option_{{ question.id }}" value="{{ option.option_text }}">
-                            {{ option.option_text }}
-                        </label><br>
-                    {% endfor %}
-                {% elif question.question_type == 'text' %}
-                    <textarea name="answer_{{ question.id }}" rows="3" placeholder="Type your answer here..."></textarea>
-                {% elif question.question_type == 'yesno' %}
-                    <label>
-                        <input type="radio" name="answer_{{ question.id }}" value="Yes"> Yes
-                    </label>
-                    <label>
-                        <input type="radio" name="answer_{{ question.id }}" value="No"> No
-                    </label>
-                {% endif %}
-            </div>
-        {% endfor %}
-
-        <button type="submit">Submit Survey</button>
-    </form>
-    <!-- Add this button to mark the survey as completed -->
+    <button type="submit">Submit Survey</button>
+</form>
 
 <script>
+function submitBothForms(event) {
+    event.preventDefault();  // Prevent the default form submission
+
+    // Submit the first form
+    const firstForm = document.getElementById('survey-completion-form');
+    const secondForm = document.getElementById('survey-form');
+    
+    // Create a new FormData object for the first form
+    const formData = new FormData(firstForm);
+
+    // Create an XMLHttpRequest to submit the first form without reloading the page
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", firstForm.action, true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // After the first form is successfully submitted, submit the second form
+            secondForm.submit();
+        } else {
+            console.error('First form submission failed');
+        }
+    };
+
+    // Send the form data
+    xhr.send(formData);
+}
+</script>
+
+    <!-- Add this button to mark the survey as completed -->
+<!-- Survey Completion Form (Second Form) -->
+
+<!-- <script>
     document.getElementById('survey-completion-form').addEventListener('submit', function(e) {
         e.preventDefault();  // Prevents the default form submission
     
@@ -379,7 +633,7 @@ h1 {
             alert('There was an error processing your request.');
         });
     });
-    </script>
+    </script> -->
     
 <!-- Success message container -->
 <div id="success-message" style="display: none;"></div>

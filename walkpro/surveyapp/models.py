@@ -6,8 +6,13 @@ from walkapp.models import Poltaker  # Assuming Poltaker model is in walkapp
 from walkapp.models import Question  # Assuming Question model is in walkapp
 from walkapp.models import UserContactList
 from django.utils import timezone
+
+import uuid
+import random
+import string
+from django.db import models
+
 class Survey(models.Model):
-    
     title = models.CharField(max_length=255)
     description = models.TextField()
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='surveys')
@@ -17,6 +22,22 @@ class Survey(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     survey_date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='pending')
+    
+    # Add the survey_token field to store the random token
+    survey_token = models.CharField(max_length=15)  # Unique constraint here
+    def generate_token(self):
+        """Generate a random token with letters and numbers."""
+        characters = string.ascii_letters + string.digits  # Letters and numbers
+        token = ''.join(random.choice(characters) for _ in range(10))  # 10-character token
+        return token
+
+    def save(self, *args, **kwargs):
+        """Override save method to generate token before saving."""
+        if not self.survey_token:  # If the token doesn't exist, generate it
+            self.survey_token = self.generate_token()
+
+        # Proceed with saving the survey
+        super().save(*args, **kwargs)
 
     def update_polltaker_counts(self):
         """Update the Poltaker's counts based on the current status of the Survey."""
@@ -48,9 +69,6 @@ class Survey(models.Model):
                 self.update_polltaker_counts()
 
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.title
 
     def __str__(self):
         return self.title

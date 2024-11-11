@@ -16,15 +16,25 @@ from walkapp.models import Poltaker  # Import Poltaker model
 
 
 
-# View to display surveys created by the logged-in user
 def my_surveys(request):
     # Ensure the user is logged in and filter surveys based on user (created_by)
     surveys = Survey.objects.filter(created_by=request.user)
+
+    # Manually filter surveys by unique survey_token
+    seen_tokens = set()
+    unique_surveys = []
+
+    # Loop through the surveys and ensure only one survey per survey_token is added
+    for survey in surveys:
+        if survey.survey_token not in seen_tokens:
+            unique_surveys.append(survey)
+            seen_tokens.add(survey.survey_token)
+
     username = request.user.username if request.user.is_authenticated else None
     
     context = {
-        'surveys': surveys,
-        'username':username
+        'surveys': unique_surveys,
+        'username': username
     }
     return render(request, 'surveydata/my_surveys.html', context)
 
@@ -33,13 +43,16 @@ from django.http import HttpResponse
 from surveyapp.models import SurveyResponse, Survey  # Import from surveyapp
 from walkapp.models import Question, Option  # Import from walkapp
 from walkapp.models import Poltaker  # Import Poltaker model
+import csv
+from django.http import HttpResponse
+from surveyapp.models import Survey, SurveyResponse
 
 def export_responses_as_csv(request, survey_id):
-    # Get the survey object
+    # Get the selected survey object
     survey = Survey.objects.get(id=survey_id)
 
-    # Fetch all responses for this survey
-    responses = SurveyResponse.objects.filter(survey=survey)
+    # Fetch all surveys with the same token
+    surveys_with_same_token = Survey.objects.filter(survey_token=survey.survey_token)
 
     # Create the HttpResponse with CSV content type
     response = HttpResponse(content_type='text/csv')
@@ -61,43 +74,47 @@ def export_responses_as_csv(request, survey_id):
 
     writer.writerow(header)  # Write the header row to the CSV
 
-    # Loop through each survey response and write data to the CSV
-    for response_data in responses:
-        row = [survey.title, survey.survey_date]  # Survey name and date
-        
-        # Polltaker Data
-        polltaker = response_data.polltaker
-        row.append(f'{polltaker.name}')  # Polltaker's name
-        row.append(polltaker.mobile)  # Polltaker's mobile
-        row.append(polltaker.email)  # Polltaker's email
-        
-        # Contact Name and Email (Ensure the contact is assigned to the survey)
-        contact = response_data.contact  # ForeignKey reference
-        row.append(f'{contact.first_name} {contact.last_name}' if contact else '')  # Full name of the contact
-        row.append(contact.email if contact else '')  # Contact's email
-        
-        # Loop through each question and its corresponding answer
-        for question in questions:
-            answer = ''
-            # If the question is of type 'mcq' (Multiple Choice)
-            if question.question_type == 'mcq':
-                selected_option = response_data.responses.get(question.question_text, {}).get('selected_option', '')
-                answer = selected_option  # Get the selected option
+    # Loop through each survey with the same token and export responses
+    for survey in surveys_with_same_token:
+        # Fetch all responses for this survey
+        responses = SurveyResponse.objects.filter(survey=survey)
 
-            # If the question is of type 'text' (Open Text)
-            elif question.question_type == 'text':
-                answer = response_data.responses.get(question.question_text, {}).get('answer_text', '')
+        # Loop through each survey response and write data to the CSV
+        for response_data in responses:
+            row = [survey.title, survey.survey_date]  # Survey name and date
 
-            # If the question is of type 'yesno' (Yes/No)
-            elif question.question_type == 'yesno':
-                answer = response_data.responses.get(question.question_text, {}).get('answer_text', '')
+            # Polltaker Data
+            polltaker = response_data.polltaker
+            row.append(f'{polltaker.name}')  # Polltaker's name
+            row.append(polltaker.mobile)  # Polltaker's mobile
+            row.append(polltaker.email)  # Polltaker's email
 
-            row.append(answer)  # Append the answer to the row
-        
-        writer.writerow(row)  # Write the row to the CSV
+            # Contact Name and Email (Ensure the contact is assigned to the survey)
+            contact = response_data.contact  # ForeignKey reference
+            row.append(f'{contact.first_name} {contact.last_name}' if contact else '')  # Full name of the contact
+            row.append(contact.email if contact else '')  # Contact's email
+
+            # Loop through each question and its corresponding answer
+            for question in questions:
+                answer = ''
+                # If the question is of type 'mcq' (Multiple Choice)
+                if question.question_type == 'mcq':
+                    selected_option = response_data.responses.get(question.question_text, {}).get('selected_option', '')
+                    answer = selected_option  # Get the selected option
+
+                # If the question is of type 'text' (Open Text)
+                elif question.question_type == 'text':
+                    answer = response_data.responses.get(question.question_text, {}).get('answer_text', '')
+
+                # If the question is of type 'yesno' (Yes/No)
+                elif question.question_type == 'yesno':
+                    answer = response_data.responses.get(question.question_text, {}).get('answer_text', '')
+
+                row.append(answer)  # Append the answer to the row
+
+            writer.writerow(row)  # Write the row to the CSV
 
     return response
-
 
 # views.py
 from django.shortcuts import render, redirect, get_object_or_404

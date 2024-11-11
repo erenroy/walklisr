@@ -34,8 +34,11 @@ urlpatterns = [
     path('complete-survey/<int:survey_id>/', views.complete_survey, name='complete_survey'),
 
     path('poltaker_account/', views.poltaker_account, name='poltaker_account' ),
-    path('all_the_survey',views.all_the_survey, name='all_the_survey')
-    # survay data 
+    path('all_the_survey',views.all_the_survey, name='all_the_survey'),
+
+    # new survay data 
+    path('survey/all_token_survey/<str:survey_token>/', views.all_token_survey, name='all_token_survey'),
+    path('survey/<int:survey_id>/deny/', views.deny_survey, name='deny_survey'),
     
 
 ]

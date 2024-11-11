@@ -1,0 +1,649 @@
+{% extends 'poltaker/surveybase.html' %}
+{% load static %}
+{% block title %}Survey Dashboard{% endblock %}
+
+{% block content %}
+    <!-- Leaflet CSS for the map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Axios for making HTTP requests -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<!-- Include CSS styles in your HTML head or a separate CSS file -->
+<style>
+  
+.survey-details{
+    width: 70%;
+    margin: 0 auto;
+    background-color: white;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+#survey-map {
+    margin-bottom: 30px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.survey-item {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.survey-item:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.survey-title {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.survey-description {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.survey-item p {
+    margin: 5px 0;
+}
+
+.contact-details {
+    background-color: #f1f3f5;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.contact-details p {
+    margin: 5px 0;
+}
+
+.contact-survey {
+    margin-top: 20px;
+}
+
+.take-survey-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color:  rgb(43, 68, 124);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.take-survey-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+body{
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f3f4f6, #e0e7ff);
+}
+
+/* survey  */
+/* Survey Details Container */
+.survey-details {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Survey Item */
+.survey-item {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    animation: slideIn 0.5s ease-out;
+}
+
+.survey-item:last-child {
+    border-bottom: none;
+}
+
+/* Survey Title */
+.survey-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* Survey Description */
+.survey-description {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Contact Details */
+.contact-details {
+    margin-bottom: 10px;
+    padding-left: 15px;
+    border-left: 3px solid #6e8efb;
+}
+
+.contact-details p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #444;
+}
+
+.contact-details strong {
+    color: #333;
+}
+
+/* Status */
+.survey-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #444;
+}
+
+.survey-item p strong {
+    color: #333;
+}
+
+/* Take Survey Button */
+.take-survey-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #6e8efb;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.take-survey-btn:hover {
+    background-color: #5571db;
+    transform: translateY(-3px);
+}
+
+/* Map Container */
+#survey-map {
+    height: 500px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Zipcode Label */
+.zipcode-label {
+    background-color: #fff;
+    border: 1px solid #333;
+    padding: 5px;
+    font-size: 12px;
+    color: #333;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .survey-details {
+        padding: 10px;
+    }
+    .survey-item {
+        padding: 10px;
+    }
+    .take-survey-btn {
+        padding: 8px 15px;
+        font-size: 13px;
+    }
+}
+
+</style>
+<body>
+   
+    <div class="survey-details">
+    
+        <!-- Container for the map -->
+        <div id="survey-map" style="height: 500px; width: 100%;"></div>
+        <h1 style="
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 20px;
+    animation: fadeInDown 1s ease-in-out;
+">
+    Contacts have been shown below for this survey. Kindly go through them
+</h1>
+<ul style="
+    list-style: none;
+    padding: 0;
+    margin: 20px auto;
+    max-width: 800px;
+    animation: fadeIn 1s ease-in-out;
+">
+    <li style="
+        margin-bottom: 10px;
+        font-size: 1rem;
+        color: #555;
+        padding: 10px;
+        border-left: 4px solid #6e8efb;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    ">
+        In top of map you can see location of all contacts
+    </li>
+    <li style="
+        margin-bottom: 10px;
+        font-size: 1rem;
+        color: #555;
+        padding: 10px;
+        border-left: 4px solid #6e8efb;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    ">
+        Red stands for Denied surveys, Green stands for completed, and Yellow stands for Pending surveys
+    </li>
+    <li style="
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #555;
+        padding: 10px;
+        border-left: 4px solid #6e8efb;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    ">
+        You can search the zipcode of the surveys by looking at the map
+    </li>
+</ul>
+
+<!-- Keyframe animations -->
+<style>
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* for searching  */
+/* Container for search options */
+.search-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0;
+    padding: 10px 30px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradient background */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Search bar styling */
+.search-bar input {
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: 2px solid #6e8efb; /* Matching border to the gradient */
+    outline: none;
+    width: 250px;
+    transition: all 0.3s ease; /* Smooth transition on focus */
+    box-sizing: border-box;
+}
+
+/* Search input placeholder styling */
+.search-bar input::placeholder {
+    color: #aaa; /* Lighter color for placeholder text */
+}
+
+/* Search input focus effect */
+.search-bar input:focus {
+    border-color: #a777e3; /* Change border color on focus */
+    box-shadow: 0 0 10px rgba(167, 119, 227, 0.6); /* Glowing effect on focus */
+}
+
+/* Status filter buttons container */
+.status-filter {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: flex-start; /* Align buttons to the left */
+}
+
+/* Styling for status filter buttons */
+.status-filter button {
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 500;
+    border: none;
+    border-radius: 50px; /* Rounded corners for buttons */
+    background-color: #ffffff;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s ease; /* Smooth transition */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for buttons */
+}
+
+/* Hover effect for buttons */
+.status-filter button:hover {
+    background-color: #6e8efb;
+    color: white;
+    transform: translateY(-3px); /* Button lift effect */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* More prominent shadow on hover */
+}
+
+/* Active effect when button is clicked */
+.status-filter button:active {
+    transform: translateY(1px); /* Slight push-down effect */
+}
+
+/* Focus effect to highlight selected button */
+.status-filter button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(167, 119, 227, 0.6); /* Glowing outline */
+}
+
+/* Media Query for smaller screens */
+@media (max-width: 1024px) {
+    .search-options {
+        flex-direction: column; /* Stack items vertically */
+        gap: 20px; /* Space between stacked elements */
+    }
+
+    .search-bar input {
+        width: 100%; /* Full width for the search bar */
+        max-width: 350px; /* Max width for better control */
+        margin: 0 auto; /* Center the search bar */
+    }
+
+    .status-filter {
+        width: 100%;
+        justify-content: center; /* Center the buttons */
+    }
+
+    .status-filter button {
+        flex: 1 1 100%; /* Make buttons stack and occupy full width on smaller screens */
+        margin: 5px 0; /* Spacing between buttons */
+        max-width: 200px; /* Maximum button width for better control */
+    }
+}
+
+@media (max-width: 768px) {
+    .search-options {
+        padding: 10px; /* Less padding on smaller screens */
+    }
+
+    .search-bar input {
+        font-size: 14px; /* Smaller font size for input */
+        padding: 10px 15px; /* Adjust padding */
+    }
+
+    .status-filter button {
+        font-size: 14px; /* Smaller button text */
+        padding: 10px 15px; /* Adjust padding */
+    }
+}
+
+@media (max-width: 480px) {
+    .search-options {
+        padding: 10px 15px; /* Less padding on very small screens */
+        flex-direction: column;
+        gap: 15px; /* Adjust gap between search bar and buttons */
+    }
+
+    .search-bar input {
+        width: 100%; /* Full width for the search bar */
+        max-width: 300px; /* Max width for better control */
+        margin: 0 auto; /* Center the search bar */
+    }
+
+    .status-filter button {
+        font-size: 12px; /* Even smaller font size */
+        padding: 8px 12px; /* Smaller button padding */
+        max-width: 150px; /* Limit the button width */
+    }
+}
+
+</style>
+
+    <!-- seach bar zipcode search start  -->
+
+    
+    <!-- seach bar zipcode search End -->
+
+<!-- Search bar for zipcode -->
+<!-- Search bar for filtering by zipcode -->
+ <div class="search-options">
+<div class="search-bar">
+    <input type="text" id="zipcode-search" placeholder="Search by Zipcode" oninput="searchSurveys()">
+</div>
+<!-- Status filter buttons -->
+<div class="status-filter">
+    <button onclick="filterByStatus('completed')">Completed</button>
+    <button onclick="filterByStatus('pending')">Pending</button>
+    <button onclick="filterByStatus('denied')">Denied</button>
+    <button onclick="filterByStatus('all')">Show All</button>
+</div>
+</div>
+<div id="survey-list">
+        {% for survey in surveys %}
+            <div class="survey-item" data-zipcode="{% for contact in survey.contacts.all %}{{ contact.zipcode }}{% endfor %}" data-status="{% for contact in survey.contacts.all %}{{ contact.status }}{% endfor %}"> 
+                <!-- <div class="heading">
+                <h2 class="survey-title">{{ survey.title }}</h2>
+
+            </div> -->
+                <!-- <p class="survey-description">{{ survey.description }}</p> -->
+                
+                <!-- <p>Created on: {{ survey.created_at }}</p> -->
+    
+                <!-- Displaying contact details -->
+                {% for contact in survey.contacts.all %}
+                    <div class="contact-details">
+                        <p><strong>Contact Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
+                        <p><strong>Zipcode:</strong> {{ contact.email }}</p>
+                        <p><strong>City:</strong> {{ contact.city }} || Contact Street:</strong> {{ contact.street }}</p>
+                        <p><strong>Telephone:</strong> {{ contact.phone}}</p>
+                        <p><strong>Address:</strong> {{ contact.address }}</p>
+
+                        <p><strong>Contact Zipcode:</strong> {{ contact.zipcode }}</p>
+                    </div>
+                    <p style="font-size: 1.2rem;">
+                        <strong>Status:</strong> 
+                        <b style="{% if contact.status == 'completed' %}color: green;{% elif contact.status == 'pending' %}color: darkorange;{% else %}color: red;{% endif %}">
+                            {% if contact.status == 'completed' %}
+                                Completed
+                            {% elif contact.status == 'pending' %}
+                                Pending
+                            {% else %}
+                                Denied
+                            {% endif %}
+                        </b>
+                    </p>
+                    
+                {% endfor %}
+                <p>Survey Date: {{ survey.survey_date }}</p>
+    
+                <!-- Link to take the individual survey -->
+                <div class="contact-survey">
+                    <!-- <p>Survey for Contact: {{ survey.contacts.all|join:", " }}</p> -->
+                    <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey for Contact</a>
+                </div>
+            </div>
+        {% endfor %}
+    
+        <!-- JavaScript for showing map with zip codes and status-based markers -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            // Initialize the map with a slightly zoomed-in view
+            var map = L.map('survey-map').setView([51.505, -0.09], 2); // Zoom level set to 3
+        
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        
+            // Function to add markers with different icons based on survey status
+            function addLocationMarker(zipCode, city, street, status) {
+                let query = `postalcode=${zipCode}`;
+                if (city) query += `&city=${city}`;
+                if (street) query += `&street=${street}`;
+        
+                // Define URLs for different status markers
+                var markerUrl;
+                switch (status) {
+                    case 'completed':
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png';
+                        break;
+                    case 'pending':
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png';
+                        break;
+                    case 'denied':
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
+                        break;
+                    default:
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png';
+                }
+        
+                axios.get(`https://nominatim.openstreetmap.org/search?${query}&format=json&limit=1`)
+                    .then(response => {
+                        if (response.data.length > 0) {
+                            var location = response.data[0];
+                            var lat = location.lat;
+                            var lon = location.lon;
+        
+                            // Create the custom icon
+                            var customIcon = L.icon({
+                                iconUrl: markerUrl,
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            });
+        
+                            // Add a marker to the map with the appropriate icon
+                            var marker = L.marker([lat, lon], { icon: customIcon }).addTo(map)
+                                // .bindPopup(`Zip Code: ${zipCode}`)
+                                .openPopup();
+        
+                            // Add a label with the zipcode above the marker
+                            marker.bindTooltip(zipCode, {
+                                permanent: true,   // Make the label permanent
+                                direction: 'bottom', // Position below the marker
+                                className: 'zipcode-label' // Add custom CSS class for styling
+                            }).openTooltip();
+                        } else {
+                            console.error('Location not found for zipcode: ' + zipCode);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching location:', error);
+                    });
+            }
+        
+            // Loop through all surveys and contacts to add their locations to the map
+            {% for survey in surveys %}
+                {% for contact in survey.contacts.all %}
+                    // Pass the status of the survey to the function
+                    addLocationMarker("{{ contact.zipcode }}", "{{ contact.city }}", "{{ contact.street }}", "{{ contact.status }}");
+                {% endfor %}
+            {% endfor %}
+        </script>
+        
+    
+        <!-- Custom CSS for the zipcode labels -->
+        <style>
+            .zipcode-label {
+                background-color: #fff;
+                border: 1px solid #333;
+                padding: 5px;
+                font-size: 12px;
+                color: #333;
+                font-weight: bold;
+            }
+        </style>
+    </div>
+</div>
+<script>
+    function searchSurveys() {
+        var searchQuery = document.getElementById("zipcode-search").value.toLowerCase();
+        var surveyItems = document.querySelectorAll('.survey-item');
+    
+        // Iterate through each survey item
+        surveyItems.forEach(function(surveyItem) {
+            // Get all the zipcodes for contacts in this survey
+            var zipcodes = surveyItem.getAttribute('data-zipcode').toLowerCase();
+    
+            // Check if any zipcode in this survey matches the search query
+            if (zipcodes.includes(searchQuery)) {
+                surveyItem.style.display = 'block';  // Show the survey item
+            } else {
+                surveyItem.style.display = 'none';   // Hide the survey item
+            }
+        });
+    }
+
+    // Function to filter surveys by status
+function filterByStatus(status) {
+    var surveyItems = document.querySelectorAll('.survey-item');
+
+    surveyItems.forEach(function(surveyItem) {
+        var itemStatus = surveyItem.getAttribute('data-status').toLowerCase();
+
+        // Show or hide the survey item based on the selected status
+        if (status === 'all' || itemStatus === status) {
+            surveyItem.style.display = 'block';  // Show the survey item
+        } else {
+            surveyItem.style.display = 'none';   // Hide the survey item
+        }
+    });
+}
+    </script>
+    
+    {% endblock %}

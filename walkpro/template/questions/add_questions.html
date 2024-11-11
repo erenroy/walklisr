@@ -594,35 +594,7 @@ ul {
 </head>
 <body>
    
-    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
-        <button class="toggle-btns" onclick="closeNav()" style="
-            margin: 5px; 
-            background-color: rgb(43, 68, 124); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px 15px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;">
-            &#8592; Close
-        </button>
-        <button class="toggle-btns" onclick="openNav()" style="
-            margin: 5px; 
-            background-color: rgb(43, 68, 124); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px 15px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;">
-            Open &#8594;
-        </button>
-        </div>
-        
+    
     <!-- Main Layout -->
     <div style="display: flex;">
         <!-- Sidebar -->
@@ -638,7 +610,7 @@ ul {
                 <i class="fas fa-question-circle"></i> Question Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
-                <i class="fas fa-user-check"></i> Voter Management
+                <i class="fas fa-user-check"></i> Contact Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
                 <i class="fas fa-chart-pie"></i> Survey Management
@@ -646,6 +618,15 @@ ul {
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
                 <i class="fas fa-users"></i> Polltaker Management
             </div>
+            <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
+    <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
+        <i class="fas fa-user-circle"></i> User Details
+    </div>
+
+    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
+    <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </div>
         </div>
         
     

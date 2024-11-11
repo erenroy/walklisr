@@ -312,6 +312,49 @@ body {
             text-align: center;
         }
     }
+
+    /* survey status  */
+    /* Style for the status tag */
+    .status-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;  /* Adjusted padding for a better look */
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 20px;  /* Larger rounded corners */
+    color: white;  /* White text for contrast */
+    text-transform: capitalize;  /* Capitalize status text */
+    min-width: 100px;  /* Ensure a minimum width for consistency */
+    text-align: center;
+    transition: background-color 0.3s ease;  /* Smooth background color transition */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);  /* Subtle shadow for 3D effect */
+    border: 1px solid black;
+}
+
+/* Completed status */
+.status-tag.completed {
+    color: green;
+}
+
+/* Pending status */
+.status-tag.pending {
+    color: red;
+}
+
+/* In Progress status */
+.status-tag.in-progress {
+    color: darkorange;
+}
+
+/* Default status (optional) */
+.status-tag.default {
+    color: gray;
+}
+
+
+
+
     </style>
 </head>
 <body>
@@ -346,7 +389,11 @@ body {
                 <div class="survey-item">
                     <h2 class="survey-title">
                         {{ survey.title }}
-                        <span class="pending-tag">Pending</span>
+                        <!-- <span class="pending-tag">{{survey.status}}</span> -->
+                        <span  class="status-tag {% if survey.status == 'completed' %}completed{% elif survey.status == 'pending' %}pending{% elif survey.status == 'in_progress' %}in-progress{% else %}default{% endif %}">
+                            {{ survey.status|capfirst }}
+                        </span>
+                        
                     </h2>
                     <p class="survey-description">{{ survey.description }}</p>
                     <div>

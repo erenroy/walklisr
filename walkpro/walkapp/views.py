@@ -1310,6 +1310,31 @@ from .models import UserContactList
 import csv
 import io
 from django.contrib.auth.decorators import login_required
+import csv
+import io
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserContactList
+
+import csv
+import io
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserContactList
+
+import csv
+import io
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserContactList
+
+import csv
+import io
+from datetime import datetime
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from .models import UserContactList
 
 @login_required
 def upload_contacts(request):
@@ -1323,18 +1348,44 @@ def upload_contacts(request):
             next(csv_reader)  # Skip the header row
             
             for row in csv_reader:
-                UserContactList.objects.create(
-                    user=request.user,
-                    first_name=row[0],
-                    last_name=row[1],
-                    email=row[2],
-                    street=row[3],
-                    city=row[4],
-                    state=row[5],
-                    country=row[6],
-                    zipcode=row[7],
-                    party_preference=row[8],
-                )
+                try:
+                    dob = row[11] if len(row) > 11 else None
+                    reg_date = row[12] if len(row) > 12 else None
+                    
+                    # Convert dates to YYYY-MM-DD format
+                    if dob:
+                        dob = datetime.strptime(dob, '%m/%d/%Y').strftime('%Y-%m-%d')
+                    if reg_date:
+                        reg_date = datetime.strptime(reg_date, '%m/%d/%Y').strftime('%Y-%m-%d')
+
+                    UserContactList.objects.create(
+                        user=request.user,
+                        first_name=row[3] if len(row) > 3 else 'NA',  # FNAME
+                        last_name=row[2] if len(row) > 2 else 'NA',   # LNAME
+                        email=row[19] if len(row) > 19 else 'NA',     # EMAIL
+                        street=row[6] if len(row) > 6 else 'NA',      # ADDRESS
+                        city=row[7] if len(row) > 7 else 'NA',        # CITY
+                        state=row[8] if len(row) > 8 else 'NA',       # STATE
+                        country='NA',  # Default to 'NA' since it is not in CSV
+                        zipcode=row[9] if len(row) > 9 else 'NA',     # ZIP
+                        party_preference='NA',  # Default to 'NA' since it is not in CSV
+                        state_id=row[0] if len(row) > 0 else 'NA',    # STATE_ID
+                        voter_nbr=row[1] if len(row) > 1 else 'NA',   # VOTER_NBR
+                        title=row[4] if len(row) > 4 else 'NA',       # TITLE
+                        address=row[5] if len(row) > 5 else 'NA',     # ADDRESS2
+                        address2=row[6] if len(row) > 6 else 'NA',    # ADDRESS2
+                        phone=row[10] if len(row) > 10 else 'NA',     # PHONE
+                        dob=dob,       # DOB
+                        reg_date=reg_date,  # REG_DATE
+                        district=row[13] if len(row) > 13 else 'NA',  # DISTRICT
+                        pct_nbr=row[14] if len(row) > 14 else 'NA',   # PCT_NBR
+                        ward=row[15] if len(row) > 15 else 'NA',      # WARD
+                    )
+                except ValueError as e:
+                    # Log error or handle as needed
+                    print(f"Error parsing row: {row} - {e}")
+                    continue  # Skip this row and proceed with the next one
+
             return redirect('contacts_list')  # Redirect to a page that lists contacts
 
         # Handle manual entry
@@ -1349,12 +1400,22 @@ def upload_contacts(request):
                 state=request.POST['state'],
                 country=request.POST['country'],
                 zipcode=request.POST['zipcode'],
-                party_preference=request.POST['party_preference'],
+                party_preference=request.POST.get('party_preference', 'NA'),  # Handle party preference
+                state_id=request.POST.get('state_id', 'NA'),  # Added new fields
+                voter_nbr=request.POST.get('voter_nbr', 'NA'),
+                title=request.POST.get('title', 'NA'),
+                address=request.POST.get('address', 'NA'),
+                address2=request.POST.get('address2', 'NA'),
+                phone=request.POST.get('phone', 'NA'),
+                dob=request.POST.get('dob', None),
+                reg_date=request.POST.get('reg_date', None),
+                district=request.POST.get('district', 'NA'),
+                pct_nbr=request.POST.get('pct_nbr', 'NA'),
+                ward=request.POST.get('ward', 'NA'),
             )
-            return redirect('upload_contacts')  # Redirect to a page that lists contacts
-
-    return render(request, 'contactlists/upload_contacts.html')
-
+            return redirect('contacts_list')  # Redirect to a page that lists contacts
+    username = request.user.username
+    return render(request, 'contactlists/upload_contacts.html',{'username':username})
 
 # views.py
 
@@ -1367,30 +1428,27 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import UserContactList, UserSubscription
 
+from django.db.models import Prefetch
+
 @login_required
 def contact_list(request):
-    # Ensure the user is authenticated
-    if not request.user.is_authenticated:
-        return redirect('login')  # Redirect to login page if not authenticated
-
-    user_contacts = UserContactList.objects.filter(user=request.user)
+    # Fetch user subscription and contacts limit
     user_subscription = get_object_or_404(UserSubscription, user=request.user)
-
-    # Determine the maximum number of contacts to display based on subscription plan
     contacts_limit = user_subscription.plan.contacts  # Ensure this attribute exists
 
-    # Slice the queryset based on contacts_limit
-    if contacts_limit is not None:
-        user_contacts = user_contacts[:contacts_limit]
+    # Optimize query by limiting contacts directly in the query and using prefetch_related if needed
+    user_contacts = UserContactList.objects.filter(user=request.user)[:contacts_limit]  # Limit contacts in the query itself
+
+    # Optionally, if you have related fields (e.g., User model), use select_related or prefetch_related to optimize
+    # user_contacts = user_contacts.select_related('related_field')  # Example if you have related fields
     
-    username = request.user.username if request.user.is_authenticated else None
-    
+    # Pass contacts and username to the template
+    username = request.user.username
 
     # Print the contacts limit to the terminal
     print(f"User {request.user.username} can see up to {contacts_limit} contacts.")
-
-    # Render the template with the user contacts
-    return render(request, 'contactlists/contact_list.html', {'contacts': user_contacts,'username':username})
+    
+    return render(request, 'contactlists/contact_list.html', {'contacts': user_contacts, 'username': username})
 
 # Adding contact list feature End here ---------------------------------------------------------------------------------------
 
@@ -1488,27 +1546,46 @@ def contact_search_results(request):
 import csv
 from django.http import HttpResponse
 
+from django.http import HttpResponse
+import csv
+from .models import UserContactList, UserSubscription
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+
 @login_required
 def download_contacts_csv(request):
+    # Fetch the user's contacts from the database
     user_contacts = UserContactList.objects.filter(user=request.user)
+    
+    # Get the user's subscription plan to enforce the contact limit
     user_subscription = get_object_or_404(UserSubscription, user=request.user)
     contacts_limit = user_subscription.plan.contacts
 
     if contacts_limit is not None:
-        user_contacts = user_contacts[:contacts_limit]
+        user_contacts = user_contacts[:contacts_limit]  # Limit the contacts based on the subscription plan
 
     # Create the HttpResponse object with CSV headers
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="user_contacts.csv"'
 
+    # Initialize the CSV writer
     writer = csv.writer(response)
-    writer.writerow([ 'First Name', 'Last Name', 'Email', 'Street', 'City', 'State', 'Country','Zipcode', 'Party Preference'])  # Header row
 
+    # Write the header row based on the format you provided
+    writer.writerow([
+        'STATE_ID', 'VOTER_NBR', 'LNAME', 'FNAME', 'TITLE', 'ADDRESS', 'ADDRESS2', 'CITY', 'STATE', 'ZIP',
+        'PHONE', 'DOB', 'REG_DATE', 'DISTRICT', 'PCT_NBR', 'WARD', 'EMAIL'
+    ])
+
+    # Loop through each contact and write the respective data to the CSV file
     for contact in user_contacts:
         writer.writerow([
-            contact.first_name, contact.last_name, contact.email, contact.street,
-            contact.city, contact.state, contact.country, contact.zipcode,contact.party_preference
+            contact.state_id, contact.voter_nbr, contact.last_name, contact.first_name, contact.title,
+            contact.address, contact.address2, contact.city, contact.state, contact.zipcode,
+            contact.phone, contact.dob, contact.reg_date, contact.district, contact.pct_nbr,
+            contact.ward, contact.email
         ])
+
     return response
 
 

@@ -174,8 +174,8 @@ body {
         </div>
         <nav class="nav-links" id="nav-links">
             <a href="#" onclick="window.location.href='{% url 'surveyapp:poltaker_dashboard' %}'" style="color: red;">Dashboard</a>
-            <a href="#survey" onclick="window.location.href='{% url 'surveyapp:poltaker_account' %}'" >Survey</a>
-            <a href="#account" onclick="window.location.href='{% url 'surveyapp:all_the_survey' %}'" >Account</a>
+            <a href="#survey" onclick="window.location.href='{% url 'surveyapp:all_the_survey' %}'" >Survey</a>
+            <a href="#account" onclick="window.location.href='{% url 'surveyapp:poltaker_account' %}'" >Account</a>
             
            <!-- Logout Button -->
 <form method="post" action="{% url 'surveyapp:poltaker_logout' %}" style="display: inline;">

@@ -855,39 +855,65 @@ body {
     }
 }
 
+/* css for date  */
+/* Overlay CSS */
+.upload-overlay {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* Spinner CSS */
+/* Spinner CSS */
+.spinner {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
     </style>
 </head>
 <body>
-   
-    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
-        <button class="toggle-btns" onclick="closeNav()" style="
-            margin: 5px; 
-            background-color: rgb(43, 68, 124); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px 15px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;">
-            &#8592; Close
-        </button>
-        <button class="toggle-btns" onclick="openNav()" style="
-            margin: 5px; 
-            background-color: rgb(43, 68, 124); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px 15px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;">
-            Open &#8594;
-        </button>
-        </div>
-        
+   <!-- Spinner HTML -->
+<!-- Spinner and Progress Percentage HTML -->
+<!-- Spinner HTML -->
+<div class="spinner" id="spinner"></div>
+
+
+<!-- JavaScript to handle form submit and show spinner -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.upload-form');
+        form.addEventListener('submit', function() {
+            document.getElementById('spinner').style.display = 'block';
+        });
+    });
+</script>
+
+
         
         
     <!-- Main Layout -->
@@ -895,24 +921,33 @@ body {
         <!-- Sidebar -->
         <div id="mySidebar" class="sidebar">
             <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);" onclick="location.href='{% url 'home' %}'">
+            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
                 <i class="fas fa-tasks"></i> Plan Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'search_person_data' %}'">
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contact_search' %}'">
                 <i class="fas fa-envelope"></i> Contact Preference Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
                 <i class="fas fa-question-circle"></i> Question Management
             </div>
-            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white;  font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'accessed_contacts' %}'">
-                <i class="fas fa-user-check"></i> Voter Management
+            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white;   font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
+                <i class="fas fa-user-check"></i> Contact Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'survey_work' %}'">
+            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
                 <i class="fas fa-chart-pie"></i> Survey Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
                 <i class="fas fa-users"></i> Polltaker Management
             </div>
+            <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
+    <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
+        <i class="fas fa-user-circle"></i> User Details
+    </div>
+
+    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
+    <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </div>
         </div>
         
     
@@ -984,44 +1019,231 @@ body {
         <input type="file" id="contact_file" name="contact_file" accept=".csv" required>
         <button type="submit">Upload</button>
     </form>
+<style>
+    /* Styling for the custom upload form */
+.custom-upload-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
+    gap: 20px; /* Adds space between fields */
+    max-width: 900px; /* Restrict the width to prevent stretching */
+    margin: 0 auto; /* Center the form */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+/* Style for individual rows within the form */
+.custom-upload-form .form-row {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Label styling */
+.custom-upload-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Input and select fields styling */
+.custom-upload-form input[type="text"],
+.custom-upload-form input[type="email"],
+.custom-upload-form input[type="number"],
+.custom-upload-form input[type="date"],
+.custom-upload-form select {
+    width: 100%; /* Make inputs fill the column */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    transition: all 0.3s ease;
+}
+
+/* Focus effect */
+.custom-upload-form input[type="text"]:focus,
+.custom-upload-form input[type="email"]:focus,
+.custom-upload-form input[type="number"]:focus,
+.custom-upload-form input[type="date"]:focus,
+.custom-upload-form select:focus {
+    outline: none;
+    border-color: #4CAF50; /* Green border on focus */
+    background-color: #e8f5e9; /* Light green background on focus */
+}
+
+/* Styling for the submit button */
+.custom-upload-form button[type="submit"] {
+    grid-column: span 3; /* Makes the submit button span across all 3 columns */
+    padding: 12px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.custom-upload-form button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design */
+
+/* For screens smaller than 768px (tablets and larger phones) */
+@media (max-width: 768px) {
+    .custom-upload-form {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for smaller screens */
+    }
+
+    .custom-upload-form button[type="submit"] {
+        grid-column: span 2; /* Span the button across two columns */
+    }
+}
+
+/* For screens smaller than 480px (phones) */
+@media (max-width: 480px) {
+    .custom-upload-form {
+        grid-template-columns: 1fr; /* One column for very small screens */
+    }
+
+    .custom-upload-form button[type="submit"] {
+        grid-column: span 1; /* Make the button span one column */
+    }
+}
+
+</style>
     <!-- Manual Entry Form -->
     <h2 class="upload-header">Manual Entry</h2>
-    <form class="upload-form" method="post">
+    <form class="custom-upload-form" method="post">
         {% csrf_token %}
-        <label for="first_name">First Name:</label>
-        <input type="text" id="first_name" name="first_name" required>
         
-        <label for="last_name">Last Name:</label>
-        <input type="text" id="last_name" name="last_name" required>
+        <!-- First Name -->
+        <div class="form-row">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
         
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <!-- Last Name -->
+        <div class="form-row">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
         
-        <label for="street">Street:</label>
-        <input type="text" id="street" name="street" required>
+        <!-- Email -->
+        <div class="form-row">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
         
-        <label for="city">City:</label>
-        <input type="text" id="city" name="city" required>
+        <!-- Street -->
+        <div class="form-row">
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street" required>
+        </div>
         
-        <label for="state">State:</label>
-        <input type="text" id="state" name="state" required>
+        <!-- City -->
+        <div class="form-row">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+        </div>
         
-        <label for="country">Country:</label>
-        <input type="text" id="country" name="country" required>
+        <!-- State -->
+        <div class="form-row">
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required>
+        </div>
         
-        <label for="zipcode">Zipcode:</label>
-        <input type="number" id="zipcode" name="zipcode" required>
+        <!-- Country -->
+        <div class="form-row">
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required>
+        </div>
         
-        <label for="party_preference">Party Preference:</label>
-        <select id="party_preference" name="party_preference" required>
-            <option value="Republican">Republican</option>
-            <option value="Democrat">Democrat</option>
-            <option value="Independent">Independent</option>
-        </select>
-
+        <!-- Zipcode -->
+        <div class="form-row">
+            <label for="zipcode">Zipcode:</label>
+            <input type="number" id="zipcode" name="zipcode" required>
+        </div>
+        
+        <!-- Party Preference -->
+        <div class="form-row">
+            <label for="party_preference">Party Preference:</label>
+            <select id="party_preference" name="party_preference" required>
+                <option value="Republican">Republican</option>
+                <option value="Democrat">Democrat</option>
+                <option value="Independent">Independent</option>
+            </select>
+        </div>
+        
+        <!-- State ID -->
+        <div class="form-row">
+            <label for="state_id">State ID:</label>
+            <input type="text" id="state_id" name="state_id" required>
+        </div>
+        
+        <!-- Voter Number -->
+        <div class="form-row">
+            <label for="voter_nbr">Voter Number:</label>
+            <input type="text" id="voter_nbr" name="voter_nbr" required>
+        </div>
+        
+        <!-- Title -->
+        <div class="form-row">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title">
+        </div>
+        
+        <!-- Address Line 2 -->
+        <div class="form-row">
+            <label for="address2">Address Line 2:</label>
+            <input type="text" id="address2" name="address2">
+        </div>
+        
+        <!-- Phone -->
+        <div class="form-row">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" name="phone">
+        </div>
+        
+        <!-- Date of Birth -->
+        <div class="form-row">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob">
+        </div>
+        
+        <!-- Registration Date -->
+        <div class="form-row">
+            <label for="reg_date">Registration Date:</label>
+            <input type="date" id="reg_date" name="reg_date">
+        </div>
+        
+        <!-- District -->
+        <div class="form-row">
+            <label for="district">District:</label>
+            <input type="text" id="district" name="district">
+        </div>
+        
+        <!-- Precinct Number -->
+        <div class="form-row">
+            <label for="pct_nbr">Precinct Number:</label>
+            <input type="text" id="pct_nbr" name="pct_nbr">
+        </div>
+        
+        <!-- Ward -->
+        <div class="form-row">
+            <label for="ward">Ward:</label>
+            <input type="text" id="ward" name="ward">
+        </div>
+        
+        <!-- Submit Button -->
         <button type="submit" name="manual_entry">Add Contact</button>
     </form>
+    
 
     <!-- Contact Guidelines -->
     <h2 class="upload-header">Contact Guidelines</h2>
