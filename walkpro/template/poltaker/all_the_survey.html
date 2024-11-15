@@ -1,177 +1,10 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Navbar Example</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% extends 'poltaker/surveybase.html' %}
+
+{% block title %}Survey Dashboard{% endblock %}
+
+{% block content %}
     <style>
-/* General styles for body */
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f1f3f6; /* Light background for the page */
-}
 
-/* Navbar Styles */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff; /* White background for the navbar */
-    padding: 15px 30px;
-    color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for navbar */
-    position: relative;
-}
-
-/* Logo in the navbar */
-.navbar .logo img {
-    height: 40px;
-    width: auto;
-    transition: transform 0.3s ease-in-out; /* Logo hover effect */
-}
-
-.navbar .logo img:hover {
-    transform: scale(1.1); /* Slight zoom effect on hover */
-}
-
-/* Center the nav options */
-.navbar .center-nav {
-    flex: 1;
-    display: flex;
-    justify-content: center;  /* Center the navigation options */
-}
-
-/* Navigation links */
-.navbar .nav-links {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    justify-content: center;  /* This ensures that the items are centered */
-    transition: opacity 0.3s ease;
-}
-
-/* Style for links */
-.navbar .nav-links a {
-    color: #333;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
-    transition: color 0.3s, transform 0.3s;
-    font-weight: bold;
-}
-
-.navbar .nav-links a:hover {
-    color: #ff4b2b;
-    transform: translateY(-2px); /* Lift effect on hover */
-}
-
-/* Style for logout button */
-#navbutton {
-    position: absolute;
-    right: 20px; /* Position logout button to the right */
-    top: 50%;
-    transform: translateY(-50%); /* Vertically center logout button */
-    background-color: #ff4b2b;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#navbutton:hover {
-    background-color: #e03e1a; /* Darker shade on hover */
-    transform: translateY(-3px); /* Lift effect on hover */
-}
-
-/* Hamburger Menu Icon for mobile screens */
-.navbar .menu-icon {
-    display: none;
-    font-size: 28px;
-    cursor: pointer;
-    color: #333;
-    transition: color 0.3s;
-}
-
-.navbar .menu-icon:hover {
-    color: #ff4b2b; /* Change icon color on hover */
-}
-
-/* Media Queries for responsiveness */
-
-/* When screen width is less than 800px */
-@media (max-width: 800px) {
-    .navbar .center-nav,
-    .navbar .logout {
-        display: none;
-    }
-
-    .navbar .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        background-color: #ffffff;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        padding: 10px 0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar .nav-links.active {
-        display: flex;
-    }
-
-    .navbar .nav-links a,
-    #navbutton {
-        width: 100%;
-        padding: 12px 20px;
-        box-sizing: border-box;
-        text-align: left;
-        font-size: 16px;
-    }
-
-    /* Display menu icon for small screens */
-    .navbar .menu-icon {
-        display: block;
-    }
-
-    /* Adjust the logout button position */
-    #navbutton {
-        position: relative;
-        top: 0;
-        right: 0;
-        width: 100%;
-        text-align: center;
-    }
-}
-
-/* When screen width is larger than 800px */
-@media (min-width: 801px) {
-    /* Show the logout button on larger screens */
-    #navbutton {
-        display: inline-block;
-    }
-}
-
-/* own page code  */
-/* General Styles */
-body {
-        margin: 0;
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #f3f4f6, #e0e7ff); /* Soft gradient from light grey to light blue */
-        color: #333; /* Dark text for readability */
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
 
     /* Survey Dashboard */
     .survey-dashboard {
@@ -356,33 +189,11 @@ body {
 
 
     </style>
-</head>
-<body>
-    <div class="navbar">
-        <div class="logo">
-            <img src="{% static 'img/logo.png' %}" alt="Logo">
-        </div>
-        <div class="menu-icon" id="menu-icon">
-            <i class="fas fa-bars"></i>
-        </div>
-        <nav class="nav-links" id="nav-links">
-            <a href="#home" onclick="window.location.href='{% url 'surveyapp:poltaker_dashboard' %}'" >Dashboard</a>
-            <a href="#survey" onclick="window.location.href='{% url 'surveyapp:all_the_survey' %}'" style="color: red;">Survey</a>
-            <a href="#account" onclick="window.location.href='{% url 'surveyapp:poltaker_account' %}'" >Account</a>
-            
-           <!-- Logout Button -->
-<form method="post" action="{% url 'surveyapp:poltaker_logout' %}" style="display: inline;">
-    {% csrf_token %}
-    <button class="logout" id="navbutton" type="submit">
-        Logout
-    </button>
-</form>
 
-        </nav>
-    </div>
+
 
     <div class="survey-dashboard">
-        <p class="survey-intro">All of your assigned surveys have been shown below</p>
+        <p class="survey-intro">This page is just to show complete , pending , denied surveys . No action required here</p>
     
         <div class="survey-list">
             {% for survey in surveys %}
@@ -402,7 +213,7 @@ body {
                 </div>
     
     
-                    <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey</a>
+                    <!-- <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey</a> -->
                 </div>
             {% endfor %}
         </div>
@@ -417,8 +228,7 @@ body {
             navLinks.classList.toggle('active');
         });
     </script>
-</body>
-</html>
+
 
 
     
@@ -445,3 +255,4 @@ body {
     {% endfor %}
 </body>
 </html> -->
+{% endblock content %}

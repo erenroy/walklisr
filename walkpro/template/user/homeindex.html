@@ -498,9 +498,7 @@ body{
             <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'">
                 <i class="fas fa-tasks"></i> Plan Management
             </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contact_search' %}'">
-                <i class="fas fa-envelope"></i> Contact Preference Management
-            </div>
+           
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
                 <i class="fas fa-question-circle"></i> Question Management
             </div>
@@ -706,6 +704,19 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
     color: #000000;
     font-weight: bold;
 }
+}
+</style>
+<style>
+    .container {
+        padding-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    position: relative;
+    overflow: hidden;
+    width: 2000px;
+    max-width: 100%;
+    min-height: 480px;
 }
 </style>
    {% endblock %}

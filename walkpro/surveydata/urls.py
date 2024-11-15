@@ -9,4 +9,6 @@ urlpatterns = [
     path('export-responses/<int:survey_id>/', views.export_responses_as_csv, name='export_responses'),  # Export CSV
 
     path('delete_survey/<int:survey_id>/', views.delete_survey, name='delete_survey'),
+    path('edit_survey/<int:survey_id>/', views.edit_survey, name='edit_survey'),
+
 ]

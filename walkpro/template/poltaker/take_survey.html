@@ -205,79 +205,108 @@ h1 {
 
             <div id="map_{{ forloop.counter }}" style="height: 400px; width: 100%;"></div>
 
+<!-- Button for directions (this can be placed inside your HTML body) -->
+<!-- Button for directions (this can be placed anywhere in your HTML body) -->
+<div class="directions-container">
+    <button id="directionsButton_{{ forloop.counter }}" class="directions-button">Get Directions</button>
+</div>
             <script>
-                // Function to show the location on the map
-                function showLocation(street, zipCode, city, mapId, status) {
-                    // Build the query string with street and postal code, include city if available
-                    let query = `street=${street}&postalcode=${zipCode}`;
-                    if (city) {
-                        query += `&city=${city}`;
-                    }
-            
-                    axios.get(`https://nominatim.openstreetmap.org/search?${query}&format=json&limit=1`)
-                        .then(response => {
-                            if (response.data.length > 0) {
-                                var location = response.data[0];
-                                var lat = location.lat;
-                                var lon = location.lon;
-            
-                                // Initialize the map for each contact
-                                var map = L.map(mapId).setView([lat, lon], 15);
-            
-                                // Add the OpenStreetMap tiles
-                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                    maxZoom: 18,
-                                    attribution: '© OpenStreetMap contributors'
-                                }).addTo(map);
-            
-                                // Define URLs for different status markers
-                                var markerUrl;
-                                switch (status) {
-                                    case 'pending':
-                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png';
-                                        break;
-                                    case 'denied':
-                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
-                                        break;
-                                    case 'completed':
-                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png';
-                                        break;
-                                    default:
-                                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png';
-                                }
-            
-                                // Create the custom icon
-                                var customIcon = L.icon({
-                                    iconUrl: markerUrl,
-                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-                                    iconSize: [25, 41],
-                                    iconAnchor: [12, 41],
-                                    popupAnchor: [1, -34],
-                                    shadowSize: [41, 41]
-                                });
-            
-                                // Add a marker to the map with the appropriate icon
-                                L.marker([lat, lon], { icon: customIcon }).addTo(map)
-                                    .bindPopup(`Location for Street: ${street}, Zip Code: ${zipCode}${city ? `, City: ${city}` : ''}`)
-                                    .openPopup();
-                            } else {
-                                console.error('No location found for this query.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error fetching geolocation:', error);
-                        });
+               // Function to show the location on the map and the driving directions button
+function showLocation(street, zipCode, city, mapId, status) {
+    // Handle zip codes with a range, taking only the first part before the hyphen
+    zipCode = zipCode.split('-')[0];  // Get the part before the hyphen
+
+    // Build the query string with street and postal code, include city if available
+    let query = `${street} ${zipCode}`;
+    if (city) {
+        query += ` ${city}`;
+    }
+
+    axios.get(`https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=1`)
+        .then(response => {
+            if (response.data.length > 0) {
+                var location = response.data[0];
+                var lat = location.lat;
+                var lon = location.lon;
+
+                // Initialize the map for each contact
+                var map = L.map(mapId).setView([lat, lon], 15);
+
+                // Add the OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // Define URLs for different status markers
+                var markerUrl;
+                switch (status) {
+                    case 'pending':
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png';
+                        break;
+                    case 'denied':
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png';
+                        break;
+                    case 'completed':
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png';
+                        break;
+                    default:
+                        markerUrl = 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png';
                 }
-            
-                // Get data for the current contact
-                var street = "{{ contact.street }}";
-                var zipCode = "{{ contact.zipcode }}";
-                var city = "{{ contact.city }}"; // Optional
-                var status = "{{ contact.status }}"; // Contact status
-                var mapId = "map_{{ forloop.counter }}";
-            
-                // Call the function to show the location on the map
-                showLocation(street, zipCode, city, mapId, status);
+
+                // Create the custom icon
+                var customIcon = L.icon({
+                    iconUrl: markerUrl,
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
+
+                // Add a marker to the map with the appropriate icon
+                var marker = L.marker([lat, lon], { icon: customIcon }).addTo(map)
+                    .bindPopup(`Location for Street: ${street}, Zip Code: ${zipCode}${city ? `, City: ${city}` : ''}`)
+                    .openPopup();
+
+                // Event listener for the driving directions button (Now inside HTML)
+                var directionsButton = document.getElementById(`directionsButton_${mapId.split('_')[1]}`);
+                directionsButton.addEventListener('click', function() {
+                    // Get current location
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            var userLat = position.coords.latitude;
+                            var userLon = position.coords.longitude;
+
+                            // Construct the URL to OpenStreetMap with directions (using OSM's "Routing" page)
+                            var directionsUrl = `https://www.openstreetmap.org/directions?from=${userLat},${userLon}&to=${lat},${lon}&route=11`;
+
+                            // Open the directions URL in a new tab
+                            window.open(directionsUrl, '_blank');
+                        });
+                    } else {
+                        alert('Geolocation is not supported by this browser.');
+                    }
+                });
+            } else {
+                console.error('No location found for this query.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching geolocation:', error);
+        });
+}
+
+// Get data for the current contact
+var street = "{{ contact.street }}";
+var zipCode = "{{ contact.zipcode }}";
+var city = "{{ contact.city }}"; // Optional
+var status = "{{ contact.status }}"; // Contact status
+var mapId = "map_{{ forloop.counter }}";
+
+// Call the function to show the location on the map
+showLocation(street, zipCode, city, mapId, status);
+
             </script>
             
             
@@ -286,15 +315,17 @@ h1 {
 
     <div id="contact-map-container">
         {% for contact in contacts %}
-            <div class="contact-info">
-                <p><strong>Full Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
-                <p><strong>Email:</strong> {{ contact.email }}</p>
-                <p><strong>Street:</strong> {{ contact.street }}</p>
+            <div class="contact-info" style="background-color: transparent;">
+                <div style="display: flex; align-items: center; gap: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+                    <p style="margin: 0;"><strong>Full Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
+                    <p style="margin: 0;"><strong>Email:</strong> {{ contact.email }}</p>
+                </div>
+                <!-- <p><strong>Street:</strong> {{ contact.street }}</p>
                 <p><strong>City:</strong> {{ contact.city }}</p>
                 <p><strong>State:</strong> {{ contact.state }}</p>
                 <p><strong>Country:</strong> {{ contact.country }}</p>
                 <p><strong>Zipcode:</strong> {{ contact.zipcode }}</p>
-                <p><strong>Party Preference:</strong> {{ contact.party_preference }}</p>
+                <p><strong>Party Preference:</strong> {{ contact.party_preference }}</p> -->
             </div>
             <!-- <form id="survey-completion-form" action="{% url 'surveyapp:complete_survey' survey.id %}" method="post">
                 {% csrf_token %}
@@ -651,7 +682,30 @@ function submitBothForms(event) {
 </script>
 
     
+<style>
+  .directions-container {
+    position: relative;
+    margin-top: 10px; /* Adjust to add space if needed */
+    text-align: center; /* Center the button if needed */
+}
 
+.directions-button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.directions-button:hover {
+    background-color: #0056b3;
+}
+
+.survey-form {
+    max-width: 92%;
+}
+</style>
 
 {% endblock %}
 

@@ -1140,6 +1140,7 @@
     .search-bar form,
     .unique-search-button {
         width: 100%;
+        margin-left: 0px;
         margin-right: 0; /* Remove margin on smaller screens */
     }
 
@@ -1151,6 +1152,9 @@
     .search-button {
         width: 100%;
         margin-right: 0; /* Remove margin on smaller screens */
+    }
+    .container {
+        margin-top: 10px;
     }
 }
 .search-button {
@@ -1174,10 +1178,6 @@
             <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);"
                 onclick="location.href='{% url 'home' %}'">
                 <i class="fas fa-tasks"></i> Plan Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
-                onclick="location.href='{% url 'contact_search' %}'">
-                <i class="fas fa-envelope"></i> Contact Preference Management
             </div>
             <div class="sidebar-item"
                 style="background-color: rgb(43, 68, 124); color: white; font-size: 0.9rem; font-weight: 200;"
@@ -1236,25 +1236,25 @@
                 </div>
                 <hr>
 
-                <!-- user questions  -->
-                {% if questions %}
-                {% for question in questions %}
-                <div class="row">
-                    <div class="cell">{{ question.question_text }}</div>
-                    <div class="cell">{{ question.question_type }}</div>
-                    <div class="cell action-btn">
-                        <button onclick="toggleOptions(this)">...</button>
-                    </div>
-                    <div class="options" style="display: none;">
-                        <button onclick="editQuestion('{{ question.id }}')">Edit</button>
-                        <button onclick="deleteQuestion('{{ question.id }}')">Delete</button>
-                    </div>
-                </div>
-                {% endfor %}
-                {% else %}
-                <p>You have not added any questions yet.</p>
-                {% endif %}
-                <!-- user questions End here   -->
+<!-- user questions -->
+{% if questions %}
+{% for question in questions %}
+<div class="row">
+    <div class="cell">{{ question.question_text }}</div>
+    <div class="cell">{{ question.question_type }}</div>
+    <div class="cell action-btn">
+        <button onclick="toggleOptions(this)">...</button>
+    </div>
+    <div class="options" style="display: none;">
+        <button onclick="deleteQuestion('{{ question.id }}')">Delete</button>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<p>You have not added any questions yet.</p>
+{% endif %}
+<!-- user questions End here -->
+
 
                
 
@@ -1319,8 +1319,128 @@
 
 
     </script>
+
+    <!-- script to delete questions  -->
+    <script>
+        function toggleOptions(button) {
+            var optionsDiv = button.parentElement.nextElementSibling;
+            if (optionsDiv.style.display === "none") {
+                optionsDiv.style.display = "block";
+            } else {
+                optionsDiv.style.display = "none";
+            }
+        }
+    
+        function deleteQuestion(questionId) {
+            if (confirm('Are you sure you want to delete this question?')) {
+                fetch(`/delete_question/${questionId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to delete the question.');
+                    }
+                });
+            }
+        }
+    
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    
     <link rel="stylesheet" href="scripts.js">
     <link rel="stylesheet" href="{% static 'css/view.css' %}">
 
+<style>
+    /* responsive code  */
 
+    
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .label-title {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .search-bar form,
+    .unique-search-button {
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0; /* Remove margin on smaller screens */
+    }
+
+    .unique-search-input {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .search-button {
+        width: 100%;
+        margin-right: 0; /* Remove margin on smaller screens */
+    }
+    .container {
+        margin-top: 10px;
+    }
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .label-title {
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .search-bar form,
+    .unique-search-button {
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0; /* Remove margin on smaller screens */
+    }
+
+    .unique-search-input {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .search-button {
+        width: 100%;
+        margin-right: 0; /* Remove margin on smaller screens */
+    }
+    .container {
+        margin-top: 10px;
+    }
+    .main-content {
+    flex: 1;
+    padding: 0px;
+}
+}
+</style>
     {% endblock %}

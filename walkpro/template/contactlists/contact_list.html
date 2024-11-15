@@ -789,6 +789,8 @@ form {
     }
 
     
+    /* operation butons  */
+    
     </style>
 </head>
 <body>
@@ -801,9 +803,6 @@ form {
             <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
             <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
                 <i class="fas fa-tasks"></i> Plan Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contact_search' %}'">
-                <i class="fas fa-envelope"></i> Contact Preference Management
             </div>
             <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
                 <i class="fas fa-question-circle"></i> Question Management
@@ -833,9 +832,10 @@ form {
         </div>
         <!-- Main Content -->
         <div class="main-content">
-            <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
-                <div class="custom-search-bars" style="display: flex; align-items: center; gap: 20px; padding: 10px; border-radius: 8px;">
+            <div class="plan-details" style="margin-bottom: 30px;">
+                <div class="custom-search-bars" style="gap: 20px; padding: 10px; border-radius: 8px;">
                     <label class="custom-label-title" style="font-size: 1.5rem; font-weight: bold; margin-right: auto;">Contact Management</label>
+                    <!-- operation start  -->
                     <div class="importexportbuttons" style="display: flex; gap: 15px;">
                         <form action="{% url 'upload_contacts' %}" method="get" style="margin: 0;">
                             <button type="submit" style="padding: 8px 16px; font-size: 1rem; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Import</button>
@@ -843,7 +843,19 @@ form {
                         <form action="{% url 'download_contacts_csv' %}" method="get" style="margin: 0;">
                             <button type="submit" style="padding: 8px 16px; font-size: 1rem; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer;">Export</button>
                         </form>
+                        {% if contacts %}
+                        <button style="background-color: red; height: 38px;" type="button" onclick="confirmAndSubmit();">Delete</button>
+                    {% endif %}
+                    <form action="{% url 'contact_search' %}" method="get">
+                        <button style="background-color: rgb(43, 68, 124); height: 38px;" type="submit">Filter</button>
+                    </form>
+                  
                     </div>
+                    <style>
+                        
+                    </style>
+                    <!-- operation End  -->
+
                 </div>
                 
             </div>
@@ -883,49 +895,140 @@ form {
                     {% endif %}
                 </div>
             </div> -->
+            {% if error_message %}
+            <div class="error-message">
+                <p>{{ error_message }}</p>
+            </div>
+        {% endif %}
         
 
             {% if message %}
                 <p style="color: red;">{{ message }}</p>
             {% endif %}
+            <form id="delete-form" method="POST" action="{% url 'delete_contacts' %}">
+                {% csrf_token %}
+                {% if contacts %}
+                    <div class="contact-list-container">
+                        <table class="contact-list-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all"></th>
+                                    <th>State ID</th>
+                                    <th>Voter NBR</th>
+                                    <th>First Name</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Zipcode</th>
+                                    <th>Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contact in contacts %}
+                                <tr>
+                                    <td><input type="checkbox" name="selected_contacts" value="{{ contact.id }}"></td>
+                                    <td>{{ contact.state_id }}</td>
+                                    <td>{{ contact.voter_nbr }}</td>
+                                    <td>{{ contact.first_name }}</td>
+                                    <td>{{ contact.address }}</td>
+                                    <td>{{ contact.city }}</td>
+                                    <td>{{ contact.state }}</td>
+                                    <td>{{ contact.zipcode }}</td>
+                                    <td>{{ contact.phone }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if contacts.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ contacts.previous_page_number }}">previous</a>
+                            {% endif %}
             
-            {% if contacts %}
-                <div class="contact-list-container">
-                    <table class="contact-list-table">
-                        <thead>
-                            <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Street</th>
-                                <th>City</th>
-                                <th>State</th>
-                                <th>Country</th>
-                                <th>Zipcode</th>
-                                <th>Party Preference</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for contact in contacts %}
-                            <tr>
-                                <td>{{ contact.first_name }}</td>
-                                <td>{{ contact.last_name }}</td>
-                                <td>{{ contact.email }}</td>
-                                <td>{{ contact.street }}</td>
-                                <td>{{ contact.city }}</td>
-                                <td>{{ contact.state }}</td>
-                                <td>{{ contact.country }}</td>
-                                <td>{{ contact.zipcode }}</td>
-                                <td>{{ contact.party_preference }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p>You have no contacts to display.</p>
-            {% endif %}
+                            <span class="current">
+                                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.
+                            </span>
             
+                            {% if contacts.has_next %}
+                                <a href="?page={{ contacts.next_page_number }}">next</a>
+                                <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% else %}
+                    <p>You have no contacts to display.</p>
+                {% endif %}
+            </form>
+            
+            <script>
+                // Select/Deselect all checkboxes
+                document.getElementById('select-all').onclick = function() {
+                    var checkboxes = document.querySelectorAll('input[name="selected_contacts"]');
+                    for (var checkbox of checkboxes) {
+                        checkbox.checked = this.checked;
+                    }
+                }
+            </script>
+            
+            <style>
+                .contact-list-container {
+                    margin: 20px 0;
+                }
+                .contact-list-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .contact-list-table th, .contact-list-table td {
+                    border: 1px solid #ddd;
+                    padding: 8px;
+                    text-align: left;
+                }
+                .contact-list-table th {
+                    background-color: #4CAF50; /* Changed to green */
+                    color: white;
+                }
+                .pagination {
+                    margin: 20px 0;
+                    text-align: center;
+                }
+                .pagination .step-links a {
+                    margin: 0 5px;
+                    padding: 5px 10px;
+                    text-decoration: none;
+                    border: 1px solid #ddd;
+                    color: #333;
+                }
+                .pagination .step-links .current {
+                    margin: 0 5px;
+                    padding: 5px 10px;
+                    border: 1px solid #ddd;
+                    background-color: #f2f2f2;
+                }
+            </style>
+            
+            
+          
+            
+            <script>
+                document.getElementById('select-all').addEventListener('change', function() {
+                    var checkboxes = document.querySelectorAll('input[name="selected_contacts"]');
+                    for (var checkbox of checkboxes) {
+                        checkbox.checked = this.checked;
+                    }
+                });
+            
+                function confirmAndSubmit() {
+                    var selected = document.querySelectorAll('input[name="selected_contacts"]:checked');
+                    if (selected.length === 0) {
+                        alert("Please select contacts to delete.");
+                    } else if (confirm("Are you sure you want to delete the selected contacts?")) {
+                        document.getElementById('delete-form').submit();
+                    }
+                }
+            </script>
             
         </div>
         
@@ -972,6 +1075,33 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
 
 </script>
 <link rel="stylesheet" href="{% static 'css/accessed.css' %}">
+<style>
+    /* Responsive code  */
+    .custom-search-bars{
+        display: flex;
+        align-items: center;
+    } 
+    .plan-details{
+        height: 100px;
+    }
+       @media (max-width: 768px) {
+
+        .custom-search-bars{
+        display: block;
+        align-items: center;
+        height: 100px;
+    } 
+    .plan-details{
+        height: 150px;
+    }
+    .navbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        width: 400px;
+    }
+    }
+</style>
    {% endblock %}
 
 

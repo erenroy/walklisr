@@ -1,32 +1,4 @@
-<!-- subscription_plans.html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Plans</title>
-</head>
-<body>
-    <h1>Choose a Subscription Plan</h1>
-    <div class="pricing-container">
-        {% for plan in plans %}
-        <div class="pricing-card">
-            <h3>{{ plan.name }}</h3>
-            <p class="price">${{ plan.price }}<span>/month</span></p>
-            <ul>
-                <li>{{ plan.managers }} manager(s)</li>
-                <li>{{ plan.poltakers }} poltaker(s)</li>
-                <li>{{ plan.surveys }} survey(s)</li>
-                <li>{{ plan.contacts }} contact(s)</li>
-            </ul>
-            <form action="{% url 'choose_plan' plan.id %}" method="get">
-                <button type="submit">Choose Plan</button>
-            </form>
-        </div>
-        {% endfor %}
-    </div>
-</body>
-</html> -->
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
@@ -35,6 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscription Plans</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/first_look.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
 
 
@@ -146,7 +125,7 @@ body{
    
     
      <!-- Navbar -->
-     <nav class="navbar">
+     <nav class="navbar" style="position: sticky;">
         <div class="navbar-logo">
             <img src="{% static 'img/logo.png' %}" alt="Logo" onclick="window.location.href='{% url 'home' %}'">
         </div>
@@ -255,5 +234,249 @@ body{
 }
 }
 </style>
+
+
+ <!-- footer starts Here -->
+ <style>
+
+    /* FOOTER */
+    footer {
+        /* background: linear-gradient(135deg, #f6f6f6, #e0e0e0, #d1d1d1, #b0b0b0); */
+        /* Soft, premium gradient */
+        color: #333;
+        /* Dark text for readability */
+        margin-top: 0;
+        /* padding: 40px 0; */
+        text-align: center;
+        /* box-shadow: 0px -2px 15px rgba(0, 0, 0, 0.1); */
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        /* margin-bottom: 0px; */
+        /* Subtle shadow for depth */
+    }
+
+    footer a {
+        color: #333;
+        /* Dark text color for links */
+        font-size: 16px;
+        font-weight: 500;
+        /* Slightly bolder for readability */
+        text-decoration: none;
+        transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    footer a:hover {
+        color: #44BCDD;
+        /* Soft teal hover effect */
+        text-decoration: none;
+        transform: scale(1.05);
+        /* Subtle scale effect on hover */
+    }
+
+    .copy {
+        font-size: 14px;
+        padding: 20px;
+        border-top: 1px solid #000000;
+        /* Light gray border to separate footer content */
+        color: #000000;
+        /* Lighter color for the copyright text */
+    }
+
+    .footer-middle {
+        padding-top: 2em;
+        color: #333;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    /* SOCIAL ICONS */
+    ul.social-network {
+        list-style: none;
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+
+    ul.social-network li {
+        display: inline-block;
+        margin: 0;
+        /* Removed margin between icons */
+    }
+
+    .social-network a {
+        display: inline-block;
+        position: relative;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: #f6f6f6;
+        /* Light gray background for social icons */
+        color: #333;
+        /* Dark icon color */
+        font-size: 20px;
+        line-height: 45px;
+        text-align: center;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .social-network a:hover {
+        background-color: #44BCDD;
+        /* Teal background when hovered */
+        transform: scale(1.1);
+        /* Slight zoom effect */
+    }
+
+    .social-network a:hover i {
+        color: #fff;
+        /* Change icon color to white on hover */
+    }
+
+    .social-network a.icoFacebook:hover {
+        background-color: #3B5998;
+        /* Facebook blue */
+    }
+
+    .social-network a.icoLinkedin:hover {
+        background-color: #007bb7;
+        /* LinkedIn blue */
+    }
+
+    .social-network a.icoTwitter:hover {
+        background-color: #1DA1F2;
+        /* Twitter blue */
+    }
+
+    .social-network a.icoInstagram:hover {
+        background-color: #E4405F;
+        /* Instagram pink */
+    }
+
+    .social-network a.icoFacebook i,
+    .social-network a.icoLinkedin i,
+    .social-network a.icoTwitter i,
+    .social-network a.icoInstagram i {
+        color: #000000;
+        /* Dark icon color by default */
+    }
+
+    .social-circle li {
+        display: inline-block;
+        margin: 0;
+        /* Removed margin between items */
+    }
+
+    .social-circle li a {
+        transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    }
+
+    .social-circle li a:hover {
+        background-color: #44BCDD;
+        transform: rotate(360deg);
+        /* Spin effect for a more interactive look */
+    }
+
+    .social-circle li i {
+        font-size: 20px;
+        line-height: 45px;
+    }
+
+    .social-network a:hover i {
+        color: #fff;
+        /* Icon color changes on hover */
+    }
+</style>
+<footer class="mainfooter" role="contentinfo" >
+    <div class="footer-middle">
+        <div class="container" id="footer-containers" style="height: 100%; min-height: 0px;">
+            <div class="row">
+                <div class="col-md-3 col-sm-6">
+                    <!--Column1-->
+                    <div class="footer-pad">
+                        <h4>Site Pages</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="#"></a></li>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">Subscriptions</a></li>
+                            <li><a href="#">Surveys</a></li>
+                            <li><a href="#">Visits</a></li>
+                            <li><a href="#">FAQs</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <!--Column1-->
+                    <div class="footer-pad">
+                        <h4>Features</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="#">Survey Operations</a></li>
+                            <li><a href="#">Accessibility</a></li>
+                            <li><a href="#">Content Manegement</a></li>
+                            <li><a href="">Maping</a></li>
+                            <li><a href="">Data Management</a></li>
+
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <!--Column1-->
+                    <div class="footer-pad">
+                        <h4>Administrator</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="#">123-456-7890</a></li>
+                            <li><a href="mailto:example@example.com">example@example.com</a></li>
+                            <li><a href="#">1234 Elm Street, Springfield, IL</a></li>
+                            <li><a href="#">5678 Oak Avenue</a></li>
+                            <li><a href="https://www.example.com" target="_blank">www.example.com</a></li>
+                            
+                            <li>
+                                <a href="#"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h4>Follow Us</h4>
+                    <ul class="social-network social-circle" >
+
+                        <li ><a href="#" class="icoFacebook" title="Facebook"  style="background-color: transparent;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" width="30" height="30">
+                        </a></li>
+                        
+          
+                      
+                           
+                            <li>
+                                <a href="https://www.instagram.com" class="icoInstagram" title="Instagram" style="background-color: transparent;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="30" height="30">
+                                </a>
+                            </li>
+                           
+                            <li>
+                                <a href="https://www.linkedin.com" class="icoLinkedIn" title="LinkedIn" style="background-color: transparent;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="30" height="30">
+                                </a>
+                            </li>
+                            
+                            <li>
+                                <a href="https://www.pinterest.com" class="icoPinterest" title="Pinterest" style="background-color: transparent;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest" width="30" height="30">
+                                </a>
+                            </li>
+                           
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 copy">
+                    <p class="text-center">&copy; 2024©WLP All rights reserved</p>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</footer>
+<!-- footer ends here  -->
 </body>
 </html>

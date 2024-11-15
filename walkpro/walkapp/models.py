@@ -125,7 +125,7 @@ class Poltaker(models.Model):
     mobile = models.IntegerField(default=0)
     email = models.EmailField(unique=True)
     zip_code = models.CharField(max_length=10)
-    password = models.CharField(max_length=128)  # Store hashed password
+    # password = models.CharField(max_length=128)  # Store hashed password
     Street = models.CharField(max_length=10,default='0')
     city = models.CharField(max_length=10,default='0')
     state = models.CharField(max_length=10,default='0')

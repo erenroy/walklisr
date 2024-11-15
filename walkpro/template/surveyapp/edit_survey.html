@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+  <h2>Edit Survey: {{ survey.title }}</h2>
+
+  <form method="POST">
+    {% csrf_token %}
+    
+    <div>
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="{{ survey.title }}" required>
+    </div>
+
+    <div>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required>{{ survey.description }}</textarea>
+    </div>
+
+    <div>
+        <label for="survey_date">Survey Date:</label>
+        <!-- Set the current survey's date as the value -->
+        <input type="date" id="survey_date" name="survey_date" value="{{ survey.survey_date|date:'Y-m-d' }}" required>
+    </div>
+
+    <div>
+        <label>Select Questions:</label>
+        <div class="question-selection">
+            {% for question in questions %}
+                <label class="question-box">
+                    <input type="checkbox" name="questions" value="{{ question.id }}"
+                           {% if question in survey.questions.all %}checked{% endif %}>
+                    <span class="question-text">{{ question.question_text }}</span>
+                </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button type="submit">Update Survey</button>
+</form>
+
+
+
+</body>
+</html>

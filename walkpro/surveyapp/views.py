@@ -772,3 +772,61 @@ def all_token_survey(request, survey_token):
 
     context = {'poltaker': poltaker, 'surveys': surveys}
     return render(request, 'poltaker/all_token_survey.html', context)
+
+
+# Poltaker information edit start -----------------------------------------
+# views.py
+from django.shortcuts import render, redirect
+from walkapp.models import Poltaker
+from django.contrib.auth.models import User
+from django.db import IntegrityError
+
+def edit_poltaker_profile(request):
+    try:
+        # Retrieve the Poltaker ID from the session
+        poltaker_id = request.session.get('poltaker_id')
+        if not poltaker_id:
+            return redirect('surveyapp:poltaker_login')  # Redirect to login if no Poltaker is logged in
+
+        # Fetch the Poltaker instance by ID
+        poltaker = Poltaker.objects.get(id=poltaker_id)
+
+        # Check if it's a POST request (form submission)
+        if request.method == 'POST':
+            # Get form data
+            name = request.POST.get('name')
+            mobile = request.POST.get('mobile')
+            email = request.POST.get('email')
+            zip_code = request.POST.get('zip_code')
+            street = request.POST.get('Street')
+            city = request.POST.get('city')
+            state = request.POST.get('state')
+
+            # Check for duplicate email
+            if Poltaker.objects.filter(email=email).exclude(id=poltaker.id).exists():
+                messages.error(request, "The email is already in use. Please choose a different email.")
+                return render(request, 'poltaker/edit_poltaker_profile.html', {'poltaker': poltaker})
+
+            # Update the Poltaker details
+            poltaker.name = name
+            poltaker.mobile = mobile
+            poltaker.email = email
+            poltaker.zip_code = zip_code
+            poltaker.Street = street
+            poltaker.city = city
+            poltaker.state = state
+
+            poltaker.save()  # Save the updated Poltaker object to the database
+
+            messages.success(request, "Your profile has been updated successfully!")
+            return redirect('surveyapp:edit_poltaker_profile')  # Reload the page to show success message
+
+        return render(request, 'poltaker/edit_poltaker_profile.html', {'poltaker': poltaker})
+
+    except Poltaker.DoesNotExist:
+        messages.error(request, "Poltaker not found.")
+        return redirect('surveyapp:poltaker_login')  # Redirect to login page if Poltaker doesn't exist
+
+# Poltaker information edit start -----------------------------------------
+
+

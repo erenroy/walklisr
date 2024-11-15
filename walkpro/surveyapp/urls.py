@@ -39,6 +39,9 @@ urlpatterns = [
     # new survay data 
     path('survey/all_token_survey/<str:survey_token>/', views.all_token_survey, name='all_token_survey'),
     path('survey/<int:survey_id>/deny/', views.deny_survey, name='deny_survey'),
-    
+
+
+    path('edit-poltaker-profile/', views.edit_poltaker_profile, name='edit_poltaker_profile'),
+
 
 ]

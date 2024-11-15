@@ -1339,26 +1339,26 @@ from .models import UserContactList
 @login_required
 def upload_contacts(request):
     if request.method == 'POST':
-        # Handle file upload
         if request.FILES.get('contact_file'):
             file = request.FILES['contact_file']
             decoded_file = file.read().decode('utf-8')
             io_string = io.StringIO(decoded_file)
             csv_reader = csv.reader(io_string, delimiter=',')
             next(csv_reader)  # Skip the header row
-            
+
+            contacts = []
             for row in csv_reader:
                 try:
                     dob = row[11] if len(row) > 11 else None
                     reg_date = row[12] if len(row) > 12 else None
-                    
+
                     # Convert dates to YYYY-MM-DD format
                     if dob:
                         dob = datetime.strptime(dob, '%m/%d/%Y').strftime('%Y-%m-%d')
                     if reg_date:
                         reg_date = datetime.strptime(reg_date, '%m/%d/%Y').strftime('%Y-%m-%d')
 
-                    UserContactList.objects.create(
+                    contacts.append(UserContactList(
                         user=request.user,
                         first_name=row[3] if len(row) > 3 else 'NA',  # FNAME
                         last_name=row[2] if len(row) > 2 else 'NA',   # LNAME
@@ -1380,16 +1380,16 @@ def upload_contacts(request):
                         district=row[13] if len(row) > 13 else 'NA',  # DISTRICT
                         pct_nbr=row[14] if len(row) > 14 else 'NA',   # PCT_NBR
                         ward=row[15] if len(row) > 15 else 'NA',      # WARD
-                    )
+                    ))
                 except ValueError as e:
-                    # Log error or handle as needed
                     print(f"Error parsing row: {row} - {e}")
                     continue  # Skip this row and proceed with the next one
 
+            UserContactList.objects.bulk_create(contacts)
+
             return redirect('contacts_list')  # Redirect to a page that lists contacts
 
-        # Handle manual entry
-        elif 'manual_entry' in request.POST:  # Check if the manual entry button was clicked
+        elif 'manual_entry' in request.POST:
             UserContactList.objects.create(
                 user=request.user,
                 first_name=request.POST['first_name'],
@@ -1400,8 +1400,8 @@ def upload_contacts(request):
                 state=request.POST['state'],
                 country=request.POST['country'],
                 zipcode=request.POST['zipcode'],
-                party_preference=request.POST.get('party_preference', 'NA'),  # Handle party preference
-                state_id=request.POST.get('state_id', 'NA'),  # Added new fields
+                party_preference=request.POST.get('party_preference', 'NA'),
+                state_id=request.POST.get('state_id', 'NA'),
                 voter_nbr=request.POST.get('voter_nbr', 'NA'),
                 title=request.POST.get('title', 'NA'),
                 address=request.POST.get('address', 'NA'),
@@ -1414,8 +1414,9 @@ def upload_contacts(request):
                 ward=request.POST.get('ward', 'NA'),
             )
             return redirect('contacts_list')  # Redirect to a page that lists contacts
+
     username = request.user.username
-    return render(request, 'contactlists/upload_contacts.html',{'username':username})
+    return render(request, 'contactlists/upload_contacts.html', {'username': username})
 
 # views.py
 
@@ -1430,6 +1431,8 @@ from .models import UserContactList, UserSubscription
 
 from django.db.models import Prefetch
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 @login_required
 def contact_list(request):
     # Fetch user subscription and contacts limit
@@ -1439,17 +1442,34 @@ def contact_list(request):
     # Optimize query by limiting contacts directly in the query and using prefetch_related if needed
     user_contacts = UserContactList.objects.filter(user=request.user)[:contacts_limit]  # Limit contacts in the query itself
 
-    # Optionally, if you have related fields (e.g., User model), use select_related or prefetch_related to optimize
-    # user_contacts = user_contacts.select_related('related_field')  # Example if you have related fields
-    
+    # Pagination settings
+    page = request.GET.get('page', 1)
+    paginator = Paginator(user_contacts, 20)  # Show 20 contacts per page
+
+    try:
+        contacts = paginator.page(page)
+    except PageNotAnInteger:
+        contacts = paginator.page(1)
+    except EmptyPage:
+        contacts = paginator.page(paginator.num_pages)
+
     # Pass contacts and username to the template
     username = request.user.username
 
     # Print the contacts limit to the terminal
     print(f"User {request.user.username} can see up to {contacts_limit} contacts.")
-    
-    return render(request, 'contactlists/contact_list.html', {'contacts': user_contacts, 'username': username})
 
+    return render(request, 'contactlists/contact_list.html', {'contacts': contacts, 'username': username})
+
+
+@login_required
+def delete_contacts(request):
+    if request.method == 'POST':
+        selected_contacts = request.POST.getlist('selected_contacts')
+        if selected_contacts:
+            UserContactList.objects.filter(id__in=selected_contacts, user=request.user).delete()
+            return redirect('contacts_list')
+    return redirect('contacts_list')
 # Adding contact list feature End here ---------------------------------------------------------------------------------------
 
 
@@ -1579,10 +1599,14 @@ def download_contacts_csv(request):
 
     # Loop through each contact and write the respective data to the CSV file
     for contact in user_contacts:
+        # Format the dates to MM/DD/YYYY
+        dob = contact.dob.strftime('%m/%d/%Y') if contact.dob else ''
+        reg_date = contact.reg_date.strftime('%m/%d/%Y') if contact.reg_date else ''
+
         writer.writerow([
             contact.state_id, contact.voter_nbr, contact.last_name, contact.first_name, contact.title,
             contact.address, contact.address2, contact.city, contact.state, contact.zipcode,
-            contact.phone, contact.dob, contact.reg_date, contact.district, contact.pct_nbr,
+            contact.phone, dob, reg_date, contact.district, contact.pct_nbr,
             contact.ward, contact.email
         ])
 
@@ -1769,3 +1793,126 @@ from surveyapp.models import Survey, SurveyResponse  # Import the models from su
 #         writer.writerow(row)  # Write the row to the CSV
 
 #     return response
+
+
+# User details edit   start --------------------------------------------------------------------
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+
+from django.contrib import messages
+
+@login_required
+def edit_user_profile(request):
+    user_profile = UserProfile.objects.filter(user=request.user).first()
+
+    if request.method == 'POST':
+        user_profile.first_name = request.POST.get('first_name')
+        user_profile.last_name = request.POST.get('last_name')
+        user_profile.phone_number = request.POST.get('phone_number')
+        user_profile.country = request.POST.get('country')
+        user_profile.city = request.POST.get('city')
+        user_profile.street = request.POST.get('street')
+        user_profile.zip_code = request.POST.get('zip_code')
+
+        if 'profile_pic' in request.FILES:
+            user_profile.profile_pic = request.FILES['profile_pic']
+
+        user_profile.save()
+
+        # Send a success message
+        messages.success(request, 'Profile updated successfully!')
+
+        # Redirect to the same page to show the message
+        return redirect('edit_user_profile')
+    username = request.user.username if request.user.is_authenticated else None
+
+    context = {
+        'profile': user_profile,
+        'username':username,
+    }
+    return render(request, 'user/edit_user_profile.html', context)
+
+
+@login_required
+def verify_password(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        
+        # Authenticate the user
+        user = authenticate(request, username=request.user.username, password=password)
+        
+        if user is not None:
+            # Password is correct, so redirect to the update email page
+            return redirect('update_email')
+        else:
+            messages.error(request, "Incorrect password. Please try again.")
+    
+    return render(request, 'user/verify_password.html')
+
+
+@login_required
+def update_email(request):
+    if request.method == 'POST':
+        new_email = request.POST.get('new_email')
+
+        # Check if the new email is the same as the current one or already in use
+        if new_email == request.user.email:
+            messages.error(request, "Please enter a different email.")
+        elif User.objects.filter(email=new_email).exists():
+            messages.error(request, "This email is already in use. Please choose a different email.")
+        else:
+            # Update the email
+            request.user.email = new_email
+            request.user.save()
+            messages.success(request, "Your email has been updated successfully!")
+            return redirect('edit_user_profile')  # Or any other redirect after success
+    
+    return render(request, 'user/update_email.html')
+# User details edit  End  --------------------------------------------------------------------
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Question
+
+@csrf_exempt
+def delete_question(request, question_id):
+    if request.method == 'DELETE':
+        try:
+            question = Question.objects.get(id=question_id)
+            question.delete()
+            return JsonResponse({'message': 'Question deleted successfully.'}, status=200)
+        except Question.DoesNotExist:
+            return JsonResponse({'message': 'Question not found.'}, status=404)
+    return JsonResponse({'message': 'Invalid request method.'}, status=400)
+
+
+# Deleting poltaker Start --------------------------------------------------------------------------------------------------------
+
+@login_required
+def poltaker_edit(request, pk):
+    poltaker = get_object_or_404(Poltaker, pk=pk, user=request.user)
+    if request.method == "POST":
+        poltaker.name = request.POST.get('name')
+        poltaker.mobile = request.POST.get('mobile')
+        poltaker.email = request.POST.get('email')
+        poltaker.zip_code = request.POST.get('zip_code')
+        poltaker.Street = request.POST.get('Street')
+        poltaker.city = request.POST.get('city')
+        poltaker.state = request.POST.get('state')
+        poltaker.completed_surveys = request.POST.get('completed_surveys')
+        poltaker.inprogress_surveys = request.POST.get('inprogress_surveys')
+        poltaker.pending_surveys = request.POST.get('pending_surveys')
+        poltaker.total_survey = request.POST.get('total_survey')
+        poltaker.save()
+        return redirect('add_poltaker')
+    return render(request, 'poltaker/poltaker_edit.html', {'poltaker': poltaker})
+
+@login_required
+def poltaker_delete(request, pk):
+    poltaker = get_object_or_404(Poltaker, pk=pk, user=request.user)
+    if request.method == "POST":
+        poltaker.delete()
+        return redirect('add_poltaker')
+    return render(request, 'poltaker/poltaker_confirm_delete.html', {'poltaker': poltaker})
+# Deleting poltaker End --------------------------------------------------------------------------------------------------------

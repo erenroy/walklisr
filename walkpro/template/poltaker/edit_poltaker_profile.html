@@ -1,0 +1,208 @@
+{% extends 'poltaker/surveybase.html' %}
+
+{% block title %}Survey Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* Basic form container */
+.profile-container {
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 40px;
+    background-color: #f4f7fc;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.profile-container h2 {
+    text-align: center;
+    color: #4B4F6B;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    animation: slideInTop 0.8s ease-out;
+}
+
+/* Styling for labels */
+.profile-container label {
+    font-size: 1rem;
+    color: #6c6f86;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: inline-block;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Input fields */
+.profile-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    font-size: 1rem;
+    background-color: #f8f8f8;
+    transition: all 0.3s ease-in-out;
+}
+
+.profile-container input:focus {
+    border: 2px solid #4CAF50; /* Green focus border */
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(72, 183, 50, 0.4);
+}
+
+/* Submit Button */
+.profile-container button.update-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.profile-container button.update-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.profile-container button.update-button:focus {
+    outline: none;
+    box-shadow: 0 0 12px rgba(72, 183, 50, 0.7);
+}
+
+/* Success or error message */
+.message {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #4CAF50; /* Green for success */
+    margin-bottom: 20px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInTop {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Media Query for Mobile */
+@media screen and (max-width: 600px) {
+    .profile-container {
+        padding: 30px;
+    }
+
+    .profile-container h2 {
+        font-size: 1.8rem;
+    }
+
+    .profile-container input, .profile-container button {
+        font-size: 1rem;
+    }
+}
+/* Message Styling */
+.message {
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #32b000;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    animation: fadeInMessage 0.8s ease-out forwards;
+}
+
+/* Success Message */
+.message.success {
+    background-color: #56f417;
+    color: #000000;
+    border: 1px solid #56f417;
+}
+
+/* Error Message */
+.message.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+/* Fade-in Animation for Message */
+@keyframes fadeInMessage {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.profile-container {
+    max-width: 1000px;
+    margin: 0px auto;
+}
+</style>
+<!-- surveyapp/templates/surveyapp/edit_poltaker_profile.html -->
+<!-- surveyapp/templates/surveyapp/edit_poltaker_profile.html -->
+<!-- surveyapp/templates/surveyapp/edit_poltaker_profile.html -->
+{% if messages %}
+    {% for message in messages %}
+    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="profile-container">
+    <h2>Edit Your Profile</h2>
+    <form method="POST" class="edit-form">
+        {% csrf_token %}
+        
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="{{ poltaker.name }}" required><br>
+
+        <label for="mobile">Mobile:</label>
+        <input type="number" name="mobile" value="{{ poltaker.mobile }}" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" value="{{ poltaker.email }}" required><br>
+
+        <label for="zip_code">Zip Code:</label>
+        <input type="text" name="zip_code" value="{{ poltaker.zip_code }}" required><br>
+
+        <label for="Street">Street:</label>
+        <input type="text" name="Street" value="{{ poltaker.Street }}" required><br>
+
+        <label for="city">City:</label>
+        <input type="text" name="city" value="{{ poltaker.city }}" required><br>
+
+        <label for="state">State:</label>
+        <input type="text" name="state" value="{{ poltaker.state }}" required><br>
+
+        <button type="submit" class="update-button">Update Profile</button>
+    </form>
+</div>
+
+
+
+{% endblock content %}

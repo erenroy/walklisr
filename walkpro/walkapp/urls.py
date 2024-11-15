@@ -11,8 +11,10 @@ from django.conf.urls.static import static
 from .views import ForgotPassword, PasswordResetSent, ResetPassword , question_search ,   poltaker_change_password , upload_contacts
 from .views import contact_list ,contact_search ,contact_search_results
 from .views import download_poltakers_csv
+from .views import edit_user_profile , update_email
+from .views import delete_contacts
 
-
+from .views import delete_question
 # app_name = 'walkapp'  # This is the namespace for this app
 
 urlpatterns = [
@@ -62,6 +64,7 @@ urlpatterns = [
     # adding contact 
     path('upload-contacts/', upload_contacts, name='upload_contacts'),
     path('contacts/', contact_list, name='contacts_list'),  # This should match the view name
+    path('delete_contacts/', delete_contacts, name='delete_contacts'),
     # path('test/',test_details, name='test_details')
     path('contact_search/', contact_search, name='contact_search'),
     path('contact_search/results/', contact_search_results, name='contact_search_results'),
@@ -71,6 +74,16 @@ urlpatterns = [
     path('download-contacts/', views.download_contacts_csv, name='download_contacts_csv'),
     path('download-poltakers/', download_poltakers_csv, name='download_poltakers_csv'),
     
+    # user profile edit 
+    path('edit-profile/', edit_user_profile, name='edit_user_profile'),
+    path('verify-password/', views.verify_password, name='verify_password'),
+    path('update-email/', update_email, name='update_email'),
+
+    path('delete_question/<int:question_id>/', delete_question, name='delete_question'),
+
+    path('poltakers/edit/<int:pk>/', views.poltaker_edit, name='poltaker_edit'),
+    path('poltakers/delete/<int:pk>/', views.poltaker_delete, name='poltaker_delete'),
+
 
     # survey data 
     # path('my-surveys/', views.my_surveys, name='my_surveys'), 

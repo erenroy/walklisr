@@ -214,6 +214,47 @@
             <li><a href="#profile-info">Profile Information</a></li>
             <li><a href="#subscription-info">Subscription Details</a></li>
         </ul>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <!-- Edit Profile Button -->
+            <a href="{% url 'edit_user_profile' %}" style="
+            display: inline-block;
+            width: 40%;
+            padding: 12px 25px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        " onmouseover="this.style.backgroundColor='#45a049'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)';"
+                onmouseout="this.style.backgroundColor='#4CAF50'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)';">
+               Edit
+            </a>
+            <!-- Cancel Button -->
+            <a href="{% url 'home' %}" style="
+    display: inline-block;
+    width: 40%;
+    padding: 12px 25px;
+    background-color: #006aff; /* Blue */
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+" onmouseover="this.style.backgroundColor='#0056e3'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.15)';"
+                onmouseout="this.style.backgroundColor='#006aff'; this.style.transform='scale(1)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)';">
+                Home
+            </a>
+
+        </div>
     </div>
 
     <!-- Content area -->
@@ -233,6 +274,7 @@
                     <strong>{{ user_email }}</strong>
                 </div>
             </div>
+
         </div>
 
         <!-- Profile Information -->
@@ -322,4 +364,11 @@
         {% endif %}
     </div>
 </div>
+<style>
+    #footer-containers {
+        max-width: 1500px;
+    width: 100%;
+    display: block;
+    }
+</style>
 {% endblock %}
