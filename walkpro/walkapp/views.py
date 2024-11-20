@@ -98,40 +98,60 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib import messages
 from .models import UserSubscription
-
+from walkapp.models import Poltaker
 User = get_user_model()
 
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        
+
+        # Attempt User login
         try:
-            # Get user by email
             user = User.objects.get(email=email)
-            # Authenticate the user
             user = authenticate(request, username=user.username, password=password)
-            
             if user is not None:
                 login(request, user)  # Log in the user
-                
-                # Check if the user has a UserSubscription
+
+                # Check User's subscription status
                 if UserSubscription.objects.filter(user=user).exists():
-                    return redirect('home')  # Redirect to home page if subscription is present
+                    return redirect('home')  # Redirect to home page
                 else:
-                    return redirect('subscription_plans')  # Redirect to subscription plans if no subscription
+                    return redirect('subscription_plans')  # Redirect to subscription plans
             else:
-                messages.error(request, 'Invalid email or password.')
+                messages.error(request, 'Invalid email or password for user.')
+                return render(request, 'login.html')  # Reload login page with error
         except User.DoesNotExist:
-            messages.error(request, 'Invalid email or password.')  # Handle case where user doesn't exist
+            pass  # Continue to check for Poltaker
+
+        # Attempt Poltaker login
+        try:
+            poltaker = Poltaker.objects.get(email=email)
+            if poltaker.password == password:  # Plain text comparison
+                # Set session for Poltaker
+                request.session['poltaker_id'] = poltaker.id
+
+                # Check if Poltaker needs to change password
+                if not poltaker.password_changed:
+                    return redirect('surveyapp:password_change')  # Redirect to password change page
+
+                return redirect('surveyapp:poltaker_dashboard')  # Redirect to Poltaker dashboard
+            else:
+                messages.error(request, 'Invalid password for Poltaker.')
+                return render(request, 'login.html')  # Reload login page with error
+        except Poltaker.DoesNotExist:
+            pass  # No match for Poltaker either
+
+        # If neither User nor Poltaker credentials match, show error
+        messages.error(request, 'Invalid email or password.')
+        return render(request, 'login.html')
 
     return render(request, 'login.html')
 
 
-
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('first_look')
 
 @login_required
 def home_view(request):

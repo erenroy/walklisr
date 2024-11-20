@@ -454,59 +454,50 @@
 </div>
 </div>
 <div id="survey-list">
-        {% for survey in surveys %}
-            <div id="survey-{{ survey.id }}" class="survey-item" data-zipcode="{% for contact in survey.contacts.all %}{{ contact.zipcode }}{% endfor %}" data-status="{% for contact in survey.contacts.all %}{{ contact.status }}{% endfor %}"> 
-                <!-- <div class="heading">
-                <h2 class="survey-title">{{ survey.title }}</h2>
+    {% for survey in surveys %}
+    <div id="survey-{{ survey.id }}" class="survey-item" 
+         data-zipcode="{% for contact in survey.contacts.all %}{{ contact.zipcode }}{% endfor %}" 
+         data-status="{% for contact in survey.contacts.all %}{{ contact.status }}{% endfor %}">
 
-            </div> -->
-                <!-- <p class="survey-description">{{ survey.description }}</p> -->
-                
-                <!-- <p>Created on: {{ survey.created_at }}</p> -->
-    
-                <!-- Displaying contact details -->
-                {% for contact in survey.contacts.all %}
-                    <div class="contact-details">
-                        <p><strong>Contact Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
-                        <p><strong>Zipcode:</strong> {{ contact.email }}</p>
-                        <p><strong>City:</strong> {{ contact.city }} || Contact Street:</strong> {{ contact.street }}</p>
-                        <p><strong>Telephone:</strong> {{ contact.phone}}</p>
-                        <p><strong>Address:</strong> {{ contact.address }}</p>
-
-                        <p><strong>Contact Zipcode:</strong> {{ contact.zipcode }}</p>
-                    </div>
-                    <div class="show-map-status" style="display: flex; flex-direction: row;">
-                    <p style="font-size: 1.2rem;">
-                        <strong>Status:</strong> 
-                        <b style="{% if contact.status == 'completed' %}color: green;{% elif contact.status == 'pending' %}color: darkorange;{% else %}color: red;{% endif %}">
-                            {% if contact.status == 'completed' %}
-                                Completed
-                            {% elif contact.status == 'pending' %}
-                                Pending
-                            {% else %}
-                                Denied
-                            {% endif %}
-                        </b>
-                    </p>
-                    <button class="show-map-btn"  onclick="showSpecificLocation('{{ contact.zipcode }}', '{{ contact.city }}', '{{ contact.street }}')">Show on Map</button>
-                </div>
-                {% endfor %}
-                <p>Survey Date: {{ survey.survey_date }}</p>
-    
-                <!-- Link to take the individual survey -->
-                <div class="contact-survey">
-                    <!-- <p>Survey for Contact: {{ survey.contacts.all|join:", " }}</p> -->
-                    <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey for Contact</a>
-                </div>
+        {% for contact in survey.contacts.all %}
+            <div class="contact-details">
+                <p><strong>Contact Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
+                <p><strong>City:</strong> {{ contact.city }}</p>
+                <p><strong>Address:</strong> {{ contact.address }}</p>
+                <p><strong>Telephone:</strong> {{ contact.phone }}</p>
+                <p><strong>Contact Zipcode:</strong> {{ contact.zipcode }}</p>
+                <p><strong>Contact Status:</strong> {{ contact.status }}</p>
+            </div>
+            <div class="show-map-status" style="display: flex; flex-direction: row;">
+                <p style="font-size: 1.2rem;">
+                    <strong>Status:</strong> 
+                    <b style="{% if contact.status == 'completed' %}color: green;{% elif contact.status == 'pending' %}color: darkorange;{% else %}color: red;{% endif %}">
+                        {% if contact.status == 'completed' %}
+                            Completed
+                        {% elif contact.status == 'pending' %}
+                            Pending
+                        {% else %}
+                            Denied
+                        {% endif %}
+                    </b>
+                </p>
+                <button class="show-map-btn" onclick="showSpecificLocation('{{ contact.zipcode }}', '{{ contact.city }}')">Show on Map</button>
             </div>
         {% endfor %}
+        <p>Survey Date: {{ survey.survey_date }}</p>
+        <div class="contact-survey">
+            <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey for Contact</a>
+        </div>
+    </div>
+{% endfor %}
+
     
         <!-- JavaScript for showing map with zip codes and status-based markers -->
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
             // Initialize the map with a slightly zoomed-in view
-            var map = L.map('survey-map').setView([51.505, -0.09], 2); // Zoom level set to 2
+            var map = L.map('survey-map').setView([51.505, -0.09], 2); // Default zoom set to 2
         
             // Add OpenStreetMap tile layer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -543,8 +534,8 @@
                     .then(response => {
                         if (response.data.length > 0) {
                             var location = response.data[0];
-                            var lat = location.lat;
-                            var lon = location.lon;
+                            var lat = parseFloat(location.lat);
+                            var lon = parseFloat(location.lon);
         
                             // Create the custom icon
                             var customIcon = L.icon({
@@ -555,6 +546,10 @@
                                 popupAnchor: [1, -34],
                                 shadowSize: [41, 41]
                             });
+        
+                            // Adjust latitude and longitude slightly if markers overlap
+                            lat += (Math.random() - 0.5) * 0.01; // Add a small random offset
+                            lon += (Math.random() - 0.5) * 0.01;
         
                             // Add a marker to the map with the appropriate icon
                             var marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
@@ -570,6 +565,9 @@
                                 direction: 'bottom', // Position below the marker
                                 className: 'zipcode-label' // Add custom CSS class for styling
                             }).openTooltip();
+        
+                            // Zoom the map to city level (10-12) centered on the marker
+                            map.setView([lat, lon], 12); // City-level zoom
                         } else {
                             console.error('Location not found for zipcode: ' + zipCode);
                         }
@@ -586,85 +584,62 @@
                     addLocationMarker("{{ contact.zipcode }}", "{{ contact.city }}", "{{ contact.street }}", "{{ contact.status }}", "{{ survey.id }}");
                 {% endfor %}
             {% endfor %}
-        
-            // Function to show a specific location based on the address details
-            function showSpecificLocation(zipCode, city, street, status) {
-                 // Scroll the page to the top
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'  // This enables smooth scrolling to the top
-                });
 
-                // Remove anything after a hyphen from the zip code (if present)
-                zipCode = zipCode.split("-")[0];
-        
-                let query = `postalcode=${encodeURIComponent(zipCode)}`;
-                if (city) query += `&city=${encodeURIComponent(city)}`;
-                if (street) query += `&street=${encodeURIComponent(street)}`;
-        
-                // Define the marker color URLs based on status
-              
-        
-                // Fetch location based on the contact's address details
-                axios.get(`https://nominatim.openstreetmap.org/search?${query}&format=json&limit=1`)
-                    .then(response => {
-                        if (response.data.length > 0) {
-                            var location = response.data[0];
-                            var lat = location.lat;
-                            var lon = location.lon;
-        
-                            // Center the map on the found location and set zoom level
-                            map.setView([lat, lon], 14);  // Adjust zoom level as needed (14 for more detail)
-        
-                            // Create a custom icon for the marker based on the status
-                            var customIcon = L.icon({
-                                iconUrl: markerUrl,
-                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-                                iconSize: [25, 41],  // Marker size
-                                iconAnchor: [12, 41], // Anchor the icon at the bottom of the marker
-                                popupAnchor: [1, -34], // Position the popup correctly
-                                shadowSize: [41, 41]  // Shadow size
-                            });
-        
-                            // Add the marker to the map with the custom icon
-                            var marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
-        
-                            // Bind a tooltip with the zipcode
-                            marker.bindTooltip(zipCode, {
-                                permanent: true, // Make the label permanent
-                                direction: 'bottom', // Position it below the marker
-                                className: 'zipcode-label' // Add CSS class for custom styling
-                            }).openTooltip();
-                        } else {
-                            // Show a notification if location is not found
-                            showNotification('Location not found for this address: ' + zipCode + ', ' + city + ', ' + street);
+
+            // Go to top -=----------------------------------------
+            function showSpecificLocation(zipCode, city) {
+    // Scroll the page to the top when the button is pressed
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth',  // Smooth scrolling effect
+    });
+
+    // Log details for debugging
+    console.log('Fetching location for:', zipCode, city);
+
+    // Form the query to search for the city
+    let query = `city=${encodeURIComponent(city)}`;
+    if (zipCode) query += `&postalcode=${encodeURIComponent(zipCode)}`;
+
+    // Fetch location based on city and postal code
+    axios.get(`https://nominatim.openstreetmap.org/search?${query}&format=json&limit=1`)
+        .then(response => {
+            if (response.data.length > 0) {
+                const location = response.data[0];
+                const lat = location.lat;
+                const lon = location.lon;
+
+                // Center the map on the city's location
+                map.setView([lat, lon], 12); // City view zoom level
+
+                // Add markers for all contacts in the city
+                {% for survey in surveys %}
+                    {% for contact in survey.contacts.all %}
+                        if ("{{ contact.city }}" === city) {
+                            addLocationMarker(
+                                "{{ contact.zipcode }}",
+                                "{{ contact.city }}",
+                                "{{ contact.street }}",
+                                "{{ contact.status }}",
+                                "{{ survey.id }}"
+                            );
                         }
-                    })
-                    // .catch(error => {
-                    //     console.error('Error fetching location:', error);
-                    //     // Show a notification if there's an error fetching the location
-                    //     showNotification('Error fetching location for address: ' + zipCode + ', ' + city + ', ' + street);
-                    // });
+                    {% endfor %}
+                {% endfor %}
+            } else {
+                // Show notification if location is not found
+                showNotification('City not found: ' + city);
             }
-        
-            // Function to display a notification to the user
-            function showNotification(message) {
-                // Create a div for the notification
-                var notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.innerHTML = message;
-        
-                // Append the notification to the body
-                document.body.appendChild(notification);
-        
-                // Remove the notification after 5 seconds
-                setTimeout(function() {
-                    notification.remove();
-                }, 5000);
-            }
-        
+        })
+        .catch(error => {
+            console.error('Error fetching location:', error);
+            showNotification('Error fetching location for city: ' + city);
+        });
+}
+
         </script>
         
+      
     
         <!-- Custom CSS for the zipcode labels -->
         <style>

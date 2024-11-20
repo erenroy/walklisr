@@ -1,0 +1,9 @@
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+/* for home page  */
+@media screen and (max-width: 380px) {
+
+
+}

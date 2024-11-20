@@ -1377,40 +1377,9 @@ form {
 <body>
   
     <!-- Main Layout -->
-    <div style="display: flex;">
+    <div>
         <!-- Sidebar -->
-        <div id="mySidebar" class="sidebar">
-            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
-                <i class="fas fa-tasks"></i> Plan Management
-            </div>
-           
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
-                <i class="fas fa-question-circle"></i> Question Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
-                <i class="fas fa-user-check"></i> Contact Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
-                <i class="fas fa-chart-pie"></i> Survey Management
-            </div>
-            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
-                <i class="fas fa-users"></i> Polltaker Management
-            </div>
-              <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
-        <i class="fas fa-user-circle"></i> User Details
-    </div>
-
-    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </div>
-        </div>
-        <div id="main">
-
-
-        </div>
+      
         <!-- Main Content -->
         <div class="main-content">
             <div class="plan-details" style="margin-bottom: 30px; max-height: 100px;">
@@ -1428,17 +1397,7 @@ form {
                 </div>
             </div>
             
-            <!-- <div class="custom-search-bar">
-                <label class="custom-label-title" style="margin-right: 40%;">Poltaker Management</label>
-                <form method="get">
-                    <button type="button" style="background-color: rgb(43, 68, 124);" class="custom-search-button"
-                        onclick="toggleForm()">Add Poltaker</button>
-                </form>
-                <form method="GET" action="{% url 'download_poltakers_csv' %}">
-                    <button type="submit" class="btn btn-primary">Export Data</button>
-                </form>
-                
-            </div> -->
+            
             <table class="contact-list-table">
                 <thead>
                     <tr>
@@ -1469,11 +1428,11 @@ form {
                         <td style="position: relative;">
                             <button onclick="toggleOptions(this)" style="padding: 5px 10px; border: none; background-color: #007BFF; color: white; cursor: pointer; border-radius: 4px; font-size: 14px;">Action</button>
                             
-                            <div class="options" style="display: none; position: absolute; bottom: 35px; left: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); opacity: 0; transition: opacity 0.3s ease; width: 150px;">
-                                <a href="{% url 'poltaker_edit' poltaker.pk %}" style="display: block; margin: 5px 0; background-color: #007BFF; border-radius: 5px; text-align: center; color: #ffffff; text-decoration: none; padding: 5px; font-size: 14px;">Edit</a>
+                            <div class="options" style="display: none; position: absolute; bottom: 35px; left: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 4px; padding: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); opacity: 0; transition: opacity 0.3s ease; width: 100%; ">
+                                <a href="{% url 'poltaker_edit' poltaker.pk %}" style="display: block; margin: 5px 0; background-color: #007BFF; border-radius: 5px; text-align: center; color: #ffffff; text-decoration: none; padding: 5px; font-size: 8px;">Edit</a>
                                 <form action="{% url 'poltaker_delete' poltaker.pk %}" method="post" style="display: inline;" onsubmit="return confirmDelete();">
                                     {% csrf_token %}
-                                    <button type="submit" style="padding: 5px 10px; border: none; background-color: #DC3545; color: white; cursor: pointer; border-radius: 4px; font-size: 14px; width: 100%;">Delete</button>
+                                    <button type="submit" style="padding: 5px 10px; border: none; background-color: #DC3545; color: white; cursor: pointer; border-radius: 4px; font-size: 8px; width: 100%;">Delete</button>
                                 </form>
                             </div>
                         </td>
@@ -1513,43 +1472,7 @@ form {
             </table>
             <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
                 <div class="user-info-container">
-                    <!-- model start  -->
-                    <!-- <div class="user-info-header">
-                        <div class="header-item">Profile-Image</div>
-                        <div class="header-item">Poltaker-Name</div>
-                        <div class="header-item">Email</div>
-                        <div class="header-item">Mobile</div>
-                        <div class="header-item">Total survey</div>
-                        <div class="header-item">Inprocess Survey</div>
-                        <div class="header-item">Pending Surveys</div>
-                        <div class="header-item">Complete Surveys</div>
-                        <div class="header-item">Action</div>
-                    </div>
-                    <hr style="grid-column: 1 / -1; margin: 10px 0;">
-
-                    {% if poltakers %}
-                    {% for poltaker in poltakers %}
-                    <div class="user-info-data">
-                        <div class="data-item"><img src="{% static 'img/logo2.png' %}" alt=""></div>
-                        <div class="data-item">{{ poltaker.name }}</div>
-                        <div class="data-item">{{ poltaker.email }}</div>
-                        <div class="data-item">{{ poltaker.mobile }}</div>
-                        <div class="data-item">{{ poltaker.completed_surveys }}</div>
-                        <div class="data-item">{{ poltaker.inprogress_surveys }}</div>
-                        <div class="data-item">{{ poltaker.pending_surveys }}</div>
-                        <div class="data-item">{{ poltaker.total_survey}}</div>
-                        <div class="data-item" style="font-size: 20px; margin-top: -5px;">...</div>
-
-                    </div>
-                    {% endfor %}
-                    {% else %}
-                    <p>No Poltakers added yet.</p>
-                    {% endif %}
-                    {% if error %}
-                    <p style="color: red;">{{ error }}</p>
-                    {% endif %} -->
-                   
-                  
+                    
                     
                     <!-- Modal for Adding Poltaker -->
                     <div class="modal" id="poltakerForm" style="display: none;">
@@ -1758,4 +1681,297 @@ form {
     }
     }
             </style>
+
+            <!-- Adding new nav responsive css ------------------------------------------------------------------- START -->
+             <style>
+                .vertical-tabs{
+                min-width: 240px;
+            }
+           /* Base styles for the table */
+.contact-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.contact-list-table th, .contact-list-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.contact-list-table img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+/* Default styles for the Action button */
+.contact-list-table .options {
+    display: none;
+}
+
+.contact-list-table .options a,
+.contact-list-table .options button {
+    display: block;
+    margin: 5px 0;
+    padding: 6px 12px; /* Added padding for button size */
+    font-size: 14px; /* Standard font size */
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    width: 100%; /* Make them take full width */
+    box-sizing: border-box; /* Ensure proper width calculation */
+}
+
+/* For larger screens (desktops, tablets) */
+@media screen and (max-width: 1200px) {
+    .contact-list-table {
+        display: table;
+    }
+}
+
+/* For tablets and below (768px and below) */
+@media screen and (max-width: 768px) {
+    .contact-list-table th, .contact-list-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .contact-list-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Hide unnecessary columns on smaller screens */
+    .contact-list-table th:nth-child(4),
+    .contact-list-table td:nth-child(4),
+    .contact-list-table th:nth-child(5),
+    .contact-list-table td:nth-child(5),
+    .contact-list-table th:nth-child(6),
+    .contact-list-table td:nth-child(6),
+    .contact-list-table th:nth-child(7),
+    .contact-list-table td:nth-child(7),
+    .contact-list-table th:nth-child(8),
+    .contact-list-table td:nth-child(8),
+    .contact-list-table th:nth-child(1),
+    .contact-list-table td:nth-child(1) {
+        display: none;
+    }
+
+    /* Action buttons container adjustments */
+    .contact-list-table .options {
+        display: block;
+        position: absolute;
+        bottom: 35px;
+        left: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 120px;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+    }
+
+    /* Align Edit and Delete buttons properly */
+    .contact-list-table .options a {
+        background-color: #007BFF;
+        color: white;
+        text-align: center;
+        padding: 6px 0;
+    }
+
+    .contact-list-table .options button {
+        background-color: #DC3545;
+        color: white;
+        padding: 6px 0;
+        border: none;
+    }
+
+    /* Ensure button text is centered */
+    .contact-list-table .options a,
+    .contact-list-table .options button {
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+/* For smaller mobile screens (480px and below) */
+@media screen and (max-width: 480px) {
+    .contact-list-table th, .contact-list-table td {
+        padding: 6px;
+        font-size: 12px;
+    }
+
+    .contact-list-table img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .contact-list-table .options {
+        width: 90px;
+        font-size: 11px;
+    }
+
+    .contact-list-table .options a,
+    .contact-list-table .options button {
+        padding: 5px 8px;
+        font-size: 10px;
+    }
+    .options{
+        display: flex;
+    }
+}
+/* General Styles for the Action Button and Options */
+.contact-list-table button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    position: relative; /* Ensure the button has relative positioning */
+    z-index: 2;
+}
+
+/* Options Dropdown Styles */
+.contact-list-table .options {
+    display: none;
+    position: absolute;
+    bottom: 35px;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    width: 150px;
+    z-index: 10; /* Ensure dropdown is on top of other content */
+}
+
+/* Edit and Delete Buttons Inside the Options */
+.contact-list-table .options a,
+.contact-list-table .options button {
+    display: block;
+    margin: 5px 0;
+    padding: 6px 12px; /* Adjust padding */
+    font-size: 14px;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box; /* Ensures the button width is correct */
+}
+
+/* Edit Button Styles */
+.contact-list-table .options a {
+    background-color: #007BFF;
+    color: white;
+}
+
+/* Delete Button Styles */
+.contact-list-table .options button {
+    background-color: #DC3545;
+    color: white;
+    border: none;
+}
+
+/* Make the options visible when toggled */
+.contact-list-table .options.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Media Queries for Responsiveness */
+
+/* For screens 768px and below */
+@media screen and (max-width: 768px) {
+    .contact-list-table {
+        display: block;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .contact-list-table th,
+    .contact-list-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* Make the Action button smaller */
+    .contact-list-table button {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+
+    /* Adjust the options dropdown width for small screens */
+    .contact-list-table .options {
+        width: 120px;
+        bottom: 30px;
+    }
+
+    /* Adjust Edit and Delete button padding for smaller screens */
+    .contact-list-table .options a,
+    .contact-list-table .options button {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+}
+
+/* For even smaller screens (480px and below) */
+@media screen and (max-width: 480px) {
+    /* Adjust options container size */
+    .contact-list-table .options {
+        width: 100px;
+        bottom: 25px;
+    }
+
+    /* Reduce font size and padding for smaller screens */
+    .contact-list-table .options a,
+    .contact-list-table .options button {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .contact-list-table button {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+    .content {
+    border-top: 1px solid var(--c-border-primary);
+    margin-top: 2rem;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;  /* Ensure padding and border are included in width */
+    overflow: hidden;  /* Prevent horizontal overflow */
+    flex-wrap: wrap;  /* Allow child elements to wrap and shrink */
+}
+
+.content > * {
+    flex-shrink: 1;  /* Allow the content to shrink if necessary */
+    max-width: 100%;  /* Ensure that child elements don’t exceed the container width */
+}
+.mainfooter{
+    margin-top: -30%;
+}
+}
+
+.main-content{
+    padding: 0px;
+}
+
+
+             </style>
+            <!-- Adding new nav responsive css ------------------------------------------------------------------- END -->
+
+
         {% endblock %}

@@ -797,46 +797,18 @@ form {
    
     
     <!-- Main Layout -->
-    <div style="display: flex;">
+    <div>
         <!-- Sidebar -->
-        <div id="mySidebar" class="sidebar">
-            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
-                <i class="fas fa-tasks"></i> Plan Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
-                <i class="fas fa-question-circle"></i> Question Management
-            </div>
-            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white;  font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
-                <i class="fas fa-user-check"></i> Contact Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
-                <i class="fas fa-chart-pie"></i> Survey Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
-                <i class="fas fa-users"></i> Polltaker Management
-            </div>
-            <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
-        <i class="fas fa-user-circle"></i> User Details
-    </div>
-
-    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </div>
-        </div>
+      
     
-        <div id="main" >
-           
-        </div>
+        
         <!-- Main Content -->
         <div class="main-content">
             <div class="plan-details" style="margin-bottom: 30px;">
                 <div class="custom-search-bars" style="gap: 20px; padding: 10px; border-radius: 8px;">
                     <label class="custom-label-title" style="font-size: 1.5rem; font-weight: bold; margin-right: auto;">Contact Management</label>
                     <!-- operation start  -->
-                    <div class="importexportbuttons" style="display: flex; gap: 15px;">
+                    <div class="importexportbuttons" style="display: flex; gap: 5px;">
                         <form action="{% url 'upload_contacts' %}" method="get" style="margin: 0;">
                             <button type="submit" style="padding: 8px 16px; font-size: 1rem; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Import</button>
                         </form>
@@ -1102,6 +1074,226 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
     }
     }
 </style>
+
+<!-- Making page responsive code goes here ------------------------------------------------------------- --  START -->
+
+<style>
+    /* Base styles (for larger screens) */
+.contact-list-container {
+    margin: 20px 0;
+}
+.contact-list-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.contact-list-table th, .contact-list-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.contact-list-table th {
+    background-color: #4CAF50; /* Green background */
+    color: white;
+}
+.pagination {
+    margin: 20px 0;
+    text-align: center;
+}
+.pagination .step-links a {
+    margin: 0 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    color: #333;
+}
+.pagination .step-links .current {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    background-color: #f2f2f2;
+}
+
+/* Media queries for responsiveness */
+
+/* Mobile (up to 600px) */
+@media (max-width: 600px) {
+    .custom-search-bars {
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px;
+    }
+    
+    .importexportbuttons {
+        display: block;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .importexportbuttons form {
+        width: 100%;
+        text-align: center;
+    }
+
+    .importexportbuttons button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.1rem;
+        margin: 5px 0;
+    }
+
+    .contact-list-table th, .contact-list-table td {
+        padding: 6px;
+    }
+
+    .pagination .step-links a,
+    .pagination .step-links .current {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .contact-list-container {
+        padding: 0 10px;
+    }
+
+    .contact-list-table {
+        font-size: 0.9rem;
+    }
+
+    /* Ensure buttons and forms are more touch-friendly */
+    button {
+        padding: 12px 18px;
+        font-size: 1rem;
+        width: 100%;
+    }
+}
+
+/* Tablet (601px to 768px) */
+@media (max-width: 768px) {
+    .custom-search-bars {
+        flex-direction: column;
+        gap: 15px;
+        padding: 12px;
+    }
+    
+    .importexportbuttons {
+        display: block;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .importexportbuttons form {
+        width: 100%;
+        text-align: center;
+    }
+
+    .contact-list-table th, .contact-list-table td {
+        padding: 10px;
+    }
+
+    .pagination .step-links a,
+    .pagination .step-links .current {
+        padding: 8px 15px;
+        font-size: 1rem;
+    }
+
+    .contact-list-table {
+        font-size: 1rem;
+    }
+
+    .contact-list-container {
+        padding: 0 20px;
+    }
+}
+
+/* Small Desktop (769px to 1024px) */
+@media (max-width: 1024px) {
+    .custom-search-bars {
+        flex-direction: row;
+        gap: 20px;
+        padding: 10px;
+    }
+    
+    .importexportbuttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .contact-list-table th, .contact-list-table td {
+        padding: 10px;
+    }
+
+    .pagination .step-links a,
+    .pagination .step-links .current {
+        padding: 8px 15px;
+        font-size: 1rem;
+    }
+}
+
+/* Large Desktop (above 1024px) */
+@media (min-width: 1025px) {
+    .contact-list-container {
+        padding: 0 50px;
+    }
+
+    .contact-list-table th, .contact-list-table td {
+        padding: 12px;
+    }
+
+    .pagination .step-links a,
+    .pagination .step-links .current {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+    }
+}
+.vertical-tabs{
+    width: 20%;
+    min-width: 240px;
+}
+.contact-list-container {
+        padding: 0 0px;
+    }
+
+/* making display none of fields for responsiveness  */
+@media screen and (max-width: 600px) {
+    /* Hide the Address, City, State, Zipcode, and Phone columns in both the header and data rows */
+    .contact-list-table th:nth-child(5),
+    .contact-list-table th:nth-child(6),
+    .contact-list-table th:nth-child(7),
+    .contact-list-table th:nth-child(8),
+    .contact-list-table th:nth-child(9),
+    .contact-list-table td:nth-child(5),
+    .contact-list-table td:nth-child(6),
+    .contact-list-table td:nth-child(7),
+    .contact-list-table td:nth-child(8),
+    .contact-list-table td:nth-child(9) {
+        display: none;
+    }
+}
+.main-content{
+    padding: 0px;
+    margin-left: 0px;
+}
+.content-main {
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    flex-grow: 1;
+    padding: 0px;
+    width: 100%;
+}
+@media screen and (max-width: 400px) {
+    .plan-details {
+        padding: 00px;
+        height: 100px;
+        margin-left: -22px;
+        width: 300px;
+    }
+}
+
+
+</style>
+
+<!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
+
    {% endblock %}
 
 

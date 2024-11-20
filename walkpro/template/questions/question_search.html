@@ -1059,47 +1059,9 @@
 
 
     <!-- Main Layout -->
-    <div style="display: flex;">
+    <div >
         <!-- Sidebar -->
-        <div id="mySidebar" class="sidebar">
-            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);"
-                onclick="location.href='{% url 'home' %}'">
-                <i class="fas fa-tasks"></i> Plan Management
-            </div>
-            
-            <div class="sidebar-item"
-                style="background-color: rgb(43, 68, 124); color: white; font-size: 0.9rem; font-weight: 200;"
-                onclick="location.href='{% url 'view_questions' %}'">
-                <i class="fas fa-question-circle"></i> Question Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
-                onclick="location.href='{% url 'accessed_contacts' %}'">
-                <i class="fas fa-user-check"></i> Contact Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
-                onclick="location.href='{% url 'survey_work' %}'">
-                <i class="fas fa-chart-pie"></i> Survey Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;"
-                onclick="location.href='{% url 'add_poltaker' %}'">
-                <i class="fas fa-users"></i> Polltaker Management
-            </div>
-            <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
-        <i class="fas fa-user-circle"></i> User Details
-    </div>
-
-    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </div>
-        </div>
-
-
-        <div id="main">
-
-        </div>
+       
         <!-- Main Content -->
         <div class="main-content">
             <div class="plan-details">
@@ -1109,9 +1071,6 @@
                         <input type="text" class="unique-search-input" name="q" placeholder="Search..." required>
                         <button type="submit" class="search-button">Search</button>
                     </form>
-                    <a href="{% url 'add_questions' %}" style="text-decoration: none;">
-                        <button type="button" class="unique-search-button">Add</button>
-                    </a>
                 </div>
             </div>
             
@@ -1232,6 +1191,206 @@
     </script>
     <link rel="stylesheet" href="scripts.js">
     <link rel="stylesheet" href="{% static 'css/view.css' %}">
+<!-- Making page responsive code goes here ------------------------------------------------------------- --  START -->
+
+<style>
+
+
+
+    /* Header */
+    .plan-details {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ccc;
+    }
+    
+    .search-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .label-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0;
+    }
+    
+    form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .unique-search-input {
+        padding: 8px 12px;
+        font-size: 1rem;
+        width: 70%;
+        max-width: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+        transition: border 0.3s ease;
+    }
+    
+    .unique-search-input:focus {
+        border: 1px solid #007bff;
+    }
+    
+    .search-button,
+    .unique-search-button {
+        padding: 10px 15px;
+        font-size: 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .search-button:hover,
+    .unique-search-button:hover {
+        background-color: #0056b3;
+    }
+    
+    .search-button:disabled,
+    .unique-search-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    
+    /* Table Row Styles */
+    .row {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .cell {
+        padding: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    
+    .cell.action-btn {
+        text-align: center;
+    }
+    
+    button {
+        padding: 5px 10px;
+        background-color: transparent;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #007bff;
+        transition: color 0.3s ease;
+    }
+    
+    button:hover {
+        color: #0056b3;
+    }
+    
+    /* Options Menu */
+    .options {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+    
+    .options button {
+        width: 100%;
+        padding: 8px;
+        font-size: 1rem;
+        color: #dc3545;
+        border: none;
+        background-color: transparent;
+        text-align: left;
+        transition: background-color 0.3s ease;
+    }
+    
+    .options button:hover {
+        background-color: #f8d7da;
+    }
+    
+    /* Error Message */
+    p {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 1.1rem;
+    }
+    
+    p.bg-error {
+        color: #dc3545;
+        font-weight: bold;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        padding: 10px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .search-bar {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    
+        form {
+            width: 100%;
+            flex-direction: column;
+        }
+    
+        .unique-search-input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        .search-button,
+        .unique-search-button {
+            width: 100%;
+        }
+    
+        .row {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .label-title {
+            font-size: 1.4rem;
+        }
+    
+        .search-button,
+        .unique-search-button {
+            padding: 8px;
+        }
+    
+        .cell {
+            font-size: 1rem;
+        }
+    }
+    .main-content {
+        padding: 0px;
+        max-width: 3200px;
+    }
+    .container {
+        max-width: 3200px;
+    }
+    </style>
+
+
+<!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
 
 
     {% endblock %}

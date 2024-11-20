@@ -1125,45 +1125,6 @@
     background-color: #3498db;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .search-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .label-title {
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .search-bar form,
-    .unique-search-button {
-        width: 100%;
-        margin-left: 0px;
-        margin-right: 0; /* Remove margin on smaller screens */
-    }
-
-    .unique-search-input {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .search-button {
-        width: 100%;
-        margin-right: 0; /* Remove margin on smaller screens */
-    }
-    .container {
-        margin-top: 10px;
-    }
-}
-.search-button {
-    background-color: #3498db;
-    margin-top: -10px;
-}
-.form-alignment{
-    margin-left: 30%;
-}
 </style>
 </head>
 
@@ -1172,9 +1133,9 @@
   
 
     <!-- Main Layout -->
-    <div style="display: flex;">
+    <div >
         <!-- Sidebar -->
-        <div id="mySidebar" class="sidebar">
+        <!-- <div id="mySidebar" class="sidebar">
             <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);"
                 onclick="location.href='{% url 'home' %}'">
                 <i class="fas fa-tasks"></i> Plan Management
@@ -1196,21 +1157,16 @@
                 onclick="location.href='{% url 'add_poltaker' %}'">
                 <i class="fas fa-users"></i> Polltaker Management
             </div>
-            <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
     <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
         <i class="fas fa-user-circle"></i> User Details
     </div>
 
-    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
     <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
         <i class="fas fa-sign-out-alt"></i> Logout
     </div>
         </div>
+ -->
 
-
-        <div id="main">
-
-        </div>
         <!-- Main Content -->
         <div class="main-content">
             <div class="plan-details">
@@ -1220,7 +1176,7 @@
                         <input type="text" class="unique-search-input" name="q" placeholder="Search..." required>
                         <button type="submit" class="search-button">Search</button>
                     </form>
-                    <a href="{% url 'add_questions' %}" style="text-decoration: none;">
+                    <a href="{% url 'add_questions' %}" style="text-decoration: none;" id="add-button">
                         <button type="button" class="unique-search-button">Add</button>
                     </a>
                 </div>
@@ -1370,77 +1326,206 @@
     <link rel="stylesheet" href="scripts.js">
     <link rel="stylesheet" href="{% static 'css/view.css' %}">
 
+
+<!-- Making page responsive code goes here ------------------------------------------------------------- --  START   -->
+
 <style>
-    /* responsive code  */
+    /* Main content container */
+.main-content {
+    padding: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-    
-/* Responsive adjustments */
-@media (max-width: 768px) {
+/* Plan Details Section */
+.plan-details {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    flex-wrap: wrap; /* Makes elements wrap for small screens */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.label-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    flex-basis: 100%; /* Full width on small screens */
+    text-align: center; /* Centered for all screen sizes */
+}
+
+.form-alignment {
+    display: flex;
+    gap: 10px;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.unique-search-input {
+    flex-grow: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.search-button, .unique-search-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Prevents text wrapping */
+}
+
+.search-button {
+    background-color: #6e8efb;
+}
+
+.search-button:hover {
+    background-color: #5a7de2;
+}
+
+.unique-search-button {
+    background-color: #FF4B2B;
+}
+
+.unique-search-button:hover {
+    background-color: #e6401a;
+}
+
+/* Table-like container for questions */
+.container {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.cell {
+    flex: 1 1 30%; /* Takes up equal space, shrinks as needed */
+    text-align: center;
+    word-wrap: break-word; /* Prevents overflow */
+    padding: 10px;
+}
+
+
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 0;
+}
+
+/* Options Toggle */
+.options {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.options button {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    color: white;
+    background-color: #FF4B2B;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.options button:hover {
+    background-color: #e6401a;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
     .search-bar {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .label-title {
-        margin-bottom: 10px;
+    .unique-search-input, .search-button, .unique-search-button {
+        width: 100%; /* Full width for small screens */
+    }
+
+    .form-alignment {
+        flex-direction: column;
+    }
+
+    .row {
+        flex-direction: column; /* Stack items vertically */
         text-align: center;
     }
 
-    .search-bar form,
-    .unique-search-button {
-        width: 100%;
-        margin-left: 0px;
-        margin-right: 0; /* Remove margin on smaller screens */
+    .cell {
+        flex: 1 1 100%; /* Full width on small screens */
     }
 
-    .unique-search-input {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-
-    .search-button {
-        width: 100%;
-        margin-right: 0; /* Remove margin on smaller screens */
-    }
-    .container {
-        margin-top: 10px;
+    .cell.action-btn {
+        text-align: center; /* Center align action buttons */
     }
 }
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .search-bar {
-        flex-direction: column;
-        align-items: stretch;
-    }
 
+@media screen and (max-width: 480px) {
     .label-title {
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .search-bar form,
-    .unique-search-button {
-        width: 100%;
-        margin-left: 0px;
-        margin-right: 0; /* Remove margin on smaller screens */
+        font-size: 1.2rem; /* Smaller font for small devices */
     }
 
     .unique-search-input {
-        margin-right: 0;
-        margin-bottom: 10px;
+        min-width: 150px; /* Shrink input for very small screens */
     }
+}
 
-    .search-button {
-        width: 100%;
-        margin-right: 0; /* Remove margin on smaller screens */
+
+@media screen and (max-width: 770px) {
+.container {
+        margin-top: 0px;
     }
-    .container {
-        margin-top: 10px;
-    }
-    .main-content {
-    flex: 1;
+}
+
+.search-button, .unique-search-button {
+    margin-top: -10px;
+}
+.main-content {
+    padding: 0ppx;
+}
+.main-content {
     padding: 0px;
-}
+    max-width: 3200px;
 }
 </style>
+
+<!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
+
+
+
     {% endblock %}

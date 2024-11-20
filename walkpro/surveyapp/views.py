@@ -214,7 +214,7 @@ def reset_password(request):
 def poltaker_logout(request):
     # Clear session data to log out the Poltaker
     request.session.flush()
-    return redirect('surveyapp:poltaker_login')
+    return redirect('first_look')
 
 
 
@@ -326,12 +326,19 @@ def create_survey(request):
                     question_type = custom_questions_types[i]
                     if question_text.strip():
                         # Create the custom question
-                        question = Question.objects.create(
+                        # Create the custom question only if it doesn't already exist
+                        if not Question.objects.filter(
+                            question_text=question_text,
+                            question_type=question_type,
+                            user=request.user
+                        ).exists():
+                            question = Question.objects.create(
                             question_text=question_text,
                             question_type=question_type,
                             user=request.user
                         )
-
+                        else:
+                            print("Question already exists. Skipping creation.")
                         # If it's an MCQ, handle the options
                         if question_type == 'mcq' and custom_mcq_options:
                             options = custom_mcq_options[i].split(',')
@@ -382,43 +389,43 @@ from django.contrib.auth.decorators import login_required
 from .models import Survey, SurveyResponse, Poltaker, UserContactList
 
 
-def submit_survey(request, survey_id):
-    survey = Survey.objects.get(id=survey_id)
+# def submit_survey(request, survey_id):
+#     survey = Survey.objects.get(id=survey_id)
 
-    # Ensure that the `polltaker` is fetched from the session or context, not the user directly
-    try:
-        polltaker = Poltaker.objects.get(id=request.session['poltaker_id'])  # Assuming you have `poltaker_id` stored in the session
-    except Poltaker.DoesNotExist:
-        messages.error(request, 'Polltaker record not found.')
-        return redirect('survey_list')
+#     # Ensure that the `polltaker` is fetched from the session or context, not the user directly
+#     try:
+#         polltaker = Poltaker.objects.get(id=request.session['poltaker_id'])  # Assuming you have `poltaker_id` stored in the session
+#     except Poltaker.DoesNotExist:
+#         messages.error(request, 'Polltaker record not found.')
+#         return redirect('survey_list')
 
-    # Contact can be any associated with the `polltaker`, modify as needed
-    contact = UserContactList.objects.filter(user=polltaker.user).first()
+#     # Contact can be any associated with the `polltaker`, modify as needed
+#     contact = UserContactList.objects.filter(user=polltaker.user).first()
 
-    if request.method == 'POST':
-        responses = {}
+#     if request.method == 'POST':
+#         responses = {}
 
-        # Loop through each question and get the answer
-        for question in survey.questions.all():
-            answer = request.POST.get(f"question_{question.id}")
-            if question.question_type in ['mcq', 'yesno']:
-                responses[question.question_text] = answer
-            elif question.question_type == 'text':
-                responses[question.question_text] = answer
+#         # Loop through each question and get the answer
+#         for question in survey.questions.all():
+#             answer = request.POST.get(f"question_{question.id}")
+#             if question.question_type in ['mcq', 'yesno']:
+#                 responses[question.question_text] = answer
+#             elif question.question_type == 'text':
+#                 responses[question.question_text] = answer
 
-        # Create the SurveyResponse entry with the contact info
-        SurveyResponse.objects.create(
-            survey=survey,
-            polltaker=polltaker,  # Ensure this is based on the current `polltaker`
-            contact=contact,
-            responses=responses
-        )
+#         # Create the SurveyResponse entry with the contact info
+#         SurveyResponse.objects.create(
+#             survey=survey,
+#             polltaker=polltaker,  # Ensure this is based on the current `polltaker`
+#             contact=contact,
+#             responses=responses
+#         )
 
-        messages.success(request, 'Survey submitted successfully!')
-        return redirect('survey_list')  # Redirect to the survey list or another page
+#         messages.success(request, 'Survey submitted successfully!')
+#         return redirect('survey_list')  # Redirect to the survey list or another page
 
-    context = {'survey': survey}
-    return render(request, 'surveyapp/take_survey.html', context)
+#     context = {'survey': survey}
+#     return render(request, 'surveyapp/take_survey.html', context)
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Survey, SurveyResponse
@@ -501,7 +508,24 @@ def take_survey(request, survey_id):
 
         # Show success message and redirect
         messages.success(request, 'Survey submitted successfully!')
-        return redirect('surveyapp:poltaker_dashboard')  # Redirect after submission
+        # return redirect('surveyapp:poltaker_dashboard')  # Redirect after submission
+        # return redirect('surveyapp:all_token_survey', survey_token=survey.survey_token)
+        # Check if there are any surveys with the token and valid contacts
+        surveys = Survey.objects.filter(
+            survey_token=survey.survey_token,
+            polltaker=poltaker
+        ).annotate(
+            valid_contacts=Count('contacts', filter=~Q(contacts__status__in=['completed', 'denied']))
+        ).filter(valid_contacts__gt=0)
+
+        # If no valid surveys, redirect to the dashboard
+        if not surveys.exists():
+            return redirect('surveyapp:poltaker_dashboard')  # Redirect to dashboard if no valid surveys
+
+        # Redirect to the all_token_survey page with the survey_token
+        return redirect('surveyapp:all_token_survey', survey_token=survey.survey_token)
+
+        
     # print()
     # Render the form with context data for GET requests
     context = {
@@ -761,14 +785,21 @@ def poltaker_dashboard(request):
     return render(request, 'poltaker/dashboard.html', context)
 
 
+from django.db.models import Count, Q
+
 def all_token_survey(request, survey_token):
     if 'poltaker_id' not in request.session:
         return redirect('surveyapp:poltaker_login')
 
     poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
 
-    # Fetch all surveys with the given token for this polltaker
-    surveys = Survey.objects.filter(survey_token=survey_token, polltaker=poltaker)
+    # Fetch surveys with at least one contact not marked as 'completed' or 'denied'
+    surveys = Survey.objects.filter(
+        survey_token=survey_token,
+        polltaker=poltaker
+    ).annotate(
+        valid_contacts=Count('contacts', filter=~Q(contacts__status__in=['completed', 'denied']))
+    ).filter(valid_contacts__gt=0)
 
     context = {'poltaker': poltaker, 'surveys': surveys}
     return render(request, 'poltaker/all_token_survey.html', context)

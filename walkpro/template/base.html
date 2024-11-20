@@ -5,8 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscription Plans</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Document</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -14,469 +13,1240 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/first_look.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
 
+</head>
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-a {
-	color: #333;
-	font-size: 14px;
+:root {
+	--c-text-primary: #282a32;
+	--c-text-secondary: #686b87;
+	--c-text-action: #404089;
+	--c-accent-primary: #434ce8;
+	--c-border-primary: #eff1f6;
+	--c-background-primary: #ffffff;
+	--c-background-secondary: #fdfcff;
+	--c-background-tertiary: #ecf3fe;
+	--c-background-quaternary: #e9ecf4;
+}
+
+body {
+	line-height: 1.5;
+	min-height: 100vh;
+	font-family: "Be Vietnam Pro", sans-serif;
+	background-color: var(--c-background-secondary);
+	color: var(--c-text-primary);
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+:focus {
+	outline: 0;
+}
+
+.responsive-wrapper {
+	width: 90%;
+	max-width: 1280px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	height: 80px;
+	border-bottom: 1px solid var(--c-border-primary);
+	background-color: var(--c-background-primary);
+}
+
+.header-content {
+	display: flex;
+	align-items: center;
+	& > a {
+		display: none;
+	}
+	@media (max-width: 1200px) {
+		justify-content: space-between;
+		& > a {
+			display: inline-flex;
+		}
+	}
+}
+
+.header-logo {
+	margin-right: 2.5rem;
+	a {
+		display: flex;
+		align-items: center;
+		div {
+			// outline: 2px solid;
+			flex-shrink: 0;
+			position: relative;
+			&:after {
+				display: block;
+				content: "";
+				position: absolute;
+				left: 0;
+				top: auto;
+				right: 0;
+				bottom: 0;
+				overflow: hidden;
+				height: 50%;
+				border-bottom-left-radius: 8px;
+				border-bottom-right-radius: 8px;
+				background-color: rgba(#fff, 0.2);
+				backdrop-filter: blur(4px);
+			}
+		}
+	}
+}
+
+.header-navigation {
+	display: flex;
+	flex-grow: 1;
+	align-items: center;
+	justify-content: space-between;
+	@media (max-width: 1200px) {
+		display: none;
+	}
+}
+
+.header-navigation-links {
+	display: flex;
+	align-items: center;
+
+	a {
+		text-decoration: none;
+		color: var(--c-text-action);
+		font-weight: 500;
+		transition: 0.15s ease;
+		& + * {
+			margin-left: 1.5rem;
+		}
+
+		&:hover,
+		&:focus {
+			color: var(--c-accent-primary);
+		}
+	}
+}
+
+.header-navigation-actions {
+	display: flex;
+	align-items: center;
+	& > .avatar {
+		margin-left: 0.75rem;
+	}
+	& > .icon-button + .icon-button {
+		margin-left: 0.25rem;
+	}
+
+	& > .button + .icon-button {
+		margin-left: 1rem;
+	}
+}
+
+.button {
+	font: inherit;
+	color: inherit;
 	text-decoration: none;
-	margin: 15px 0;
-}
-/* 
-button {
-	border-radius: 20px;
-	border: 1px solid #FF4B2B;
-	background-color: #FF4B2B;
-	color: #FFFFFF;
-	font-size: 12px;
-	font-weight: bold;
-	padding: 12px 45px;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	transition: transform 80ms ease-in;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 1em;
+	height: 40px;
+	border-radius: 8px;
+	line-height: 1;
+	border: 2px solid var(--c-border-primary);
+	color: var(--c-text-action);
+	font-size: 0.875rem;
+	transition: 0.15s ease;
+	background-color: var(--c-background-primary);
+
+	i {
+		margin-right: 0.5rem;
+		font-size: 1.25em;
+	}
+
+	span {
+		font-weight: 500;
+	}
+
+	&:hover,
+	&:focus {
+		border-color: var(--c-accent-primary);
+		color: var(--c-accent-primary);
+	}
 }
 
-button:active {
-	transform: scale(0.95);
+.icon-button {
+	font: inherit;
+	color: inherit;
+	text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	color: var(--c-text-action);
+	transition: 0.15s ease;
+	i {
+		font-size: 1.25em;
+	}
+
+	&:focus,
+	&:hover {
+		background-color: var(--c-background-tertiary);
+		color: var(--c-accent-primary);
+	}
 }
 
-button:focus {
-	outline: none;
+.avatar {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	overflow: hidden;
 }
 
-button.ghost {
-	background-color: transparent;
-	border-color: #FFFFFF;
+.main {
+	padding-top: 3rem;
+}
+
+.main-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+
+	h1 {
+		font-size: 1.75rem;
+		font-weight: 600;
+		line-height: 1.25;
+		@media (max-width: 550px) {
+			margin-bottom: 1rem;
+		}
+	}
+}
+
+.search {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	max-width: 340px;
+	input {
+		font: inherit;
+		color: inherit;
+		text-decoration: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 1em 0 36px;
+		height: 40px;
+		border-radius: 8px;
+		border: 2px solid var(--c-border-primary);
+		color: var(--c-text-action);
+		font-size: 0.875rem;
+		transition: 0.15s ease;
+		width: 100%;
+		line-height: 1;
+
+		&::placeholder {
+			color: var(--c-text-action);
+		}
+
+		&:focus,
+		&:hover {
+			border-color: var(--c-accent-primary);
+		}
+	}
+
+	button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 0;
+		background-color: transparent;
+		position: absolute;
+		left: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: 1.25em;
+		color: var(--c-text-action);
+		padding: 0;
+		height: 40px;
+	}
+}
+
+.horizontal-tabs {
+	margin-top: 1.5rem;
+	display: flex;
+	align-items: center;
+	overflow-x: auto;
+	@media (max-width: 1000px) {
+		scrollbar-width: none;
+		position: relative;
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	a {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		height: 48px;
+		padding: 0 0.25rem;
+		font-weight: 500;
+		color: inherit;
+		border-bottom: 3px solid transparent;
+		text-decoration: none;
+		transition: 0.15s ease;
+		&:hover,
+		&:focus,
+		&.active {
+			color: var(--c-accent-primary);
+			border-bottom-color: var(--c-accent-primary);
+		}
+
+		& + * {
+			margin-left: 1rem;
+		}
+	}
+}
+
+.content-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 3rem;
+	margin-top: -1px;
+	border-top: 1px solid var(--c-border-primary);
+}
+
+.content-header-intro {
+	h2 {
+		font-size: 1.25rem;
+		font-weight: 600;
+	}
+
+	p {
+		color: var(--c-text-secondary);
+		margin-top: 0.25rem;
+		font-size: 0.875rem;
+		margin-bottom: 1rem;
+	}
+}
+
+.content-header-actions {
+	a:first-child {
+		@media (min-width: 800px) {
+			display: none;
+		}
+	}
+}
+
+.content {
+	border-top: 1px solid var(--c-border-primary);
+	margin-top: 2rem;
+	display: flex;
+	align-items: flex-start;
+}
+.content-panel {
+	display: none;
+	max-width: 280px;
+	width: 20%;
+	padding: 2rem 1rem 2rem 0;
+	margin-right: 3rem;
+	@media (min-width: 800px) {
+		display: block;
+	}
+}
+
+.vertical-tabs {
+	display: flex;
+	flex-direction: column;
+	a {
+		display: flex;
+		align-items: center;
+		padding: 0.75em 1em;
+		background-color: transparent;
+		border-radius: 8px;
+		text-decoration: none;
+		font-weight: 500;
+		color: var(--c-text-action);
+		transition: 0.15s ease;
+		&:hover,
+		&:focus,
+		&.active {
+			background-color: var(--c-background-tertiary);
+			color: var(--c-accent-primary);
+		}
+
+		& + * {
+			margin-top: 0.25rem;
+		}
+	}
+}
+
+.content-main {
+	padding-top: 2rem;
+	padding-bottom: 6rem;
+	flex-grow: 1;
+}
+
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(1, 1fr);
+	column-gap: 1.5rem;
+	row-gap: 1.5rem;
+	@media (min-width: 600px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+	@media (min-width: 1200px) {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.card {
+	background-color: var(--c-background-primary);
+	box-shadow: 0 3px 3px 0 rgba(#000, 0.05), 0 5px 15px 0 rgba(#000, 0.05);
+	border-radius: 8px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.card-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	padding: 1.5rem 1.25rem 1rem 1.25rem;
+	div {
+		display: flex;
+		align-items: center;
+
+		span {
+			width: 40px;
+			height: 40px;
+			border-radius: 8px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			img {
+				// max-width: 85%;
+				max-height: 100%;
+			}
+		}
+
+		h3 {
+			margin-left: 0.75rem;
+			font-weight: 500;
+		}
+	}
+}
+
+.toggle {
+	span {
+		display: block;
+		width: 40px;
+		height: 24px;
+		border-radius: 99em;
+		background-color: var(--c-background-quaternary);
+		box-shadow: inset 1px 1px 1px 0 rgba(#000, 0.05);
+		position: relative;
+		transition: 0.15s ease;
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			left: 3px;
+			top: 3px;
+			height: 18px;
+			width: 18px;
+			background-color: var(--c-background-primary);
+			border-radius: 50%;
+			box-shadow: 0 1px 3px 0 rgba(#000, 0.15);
+			transition: 0.15s ease;
+		}
+	}
+
+	input {
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+		&:checked + span {
+			background-color: var(--c-accent-primary);
+			&:before {
+				transform: translateX(calc(100% - 2px));
+			}
+		}
+
+		&:focus + span {
+			box-shadow: 0 0 0 4px var(--c-background-tertiary);
+		}
+	}
+}
+
+.card-body {
+	padding: 1rem 1.25rem;
+	font-size: 0.875rem;
+}
+
+.card-footer {
+	margin-top: auto;
+	padding: 1rem 1.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	border-top: 1px solid var(--c-border-primary);
+	a {
+		color: var(--c-text-action);
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.875rem;
+	}
+}
+
+html {
+	&::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: var(--c-text-primary);
+		border: 4px solid var(--c-background-primary);
+		border-radius: 99em;
+	}
+}
+/* body{
+    background-color: rgb(235, 248, 255);
 } */
 
-
-
-
-.container {
-	background-color: #fff;
-	border-radius: 10px;
-  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
-			0 10px 10px rgba(0,0,0,0.22);
-	position: relative;
-	overflow: hidden;
-	width: 768px;
-	max-width: 100%;
-	min-height: 480px;
-}
-
-
-.dropdown-option:hover {
-        background-color: #2aa3f9;
-        border: #2aa3f9;;
-    }
-    .dropdown-option {
-    cursor: pointer;
-}
-
-
-
-/* Center the button's container */
-#logout_button {
-    display: inline-block; /* Allows for centering */
-     background-color: rgb(30, 55, 99); /* New button background color */
-    color: #ffffff; /* Button text color */
-    font-size: 1rem; /* Font size */
-    padding: 10px 20px; /* Vertical and horizontal padding */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer cursor on hover */
-    text-align: center; /* Center text within the button */
-    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
-    margin: 1px 25%; /* Centering the button with auto margins */
-}
-
-/* Add hover effects */
-#logout_button:hover {
-    background-color: #2c447d; /* Darker shade on hover */
-    transform: translateY(-2px); /* Slight lift effect on hover */
-}
-
-/* Add focus effects */
-#logout_button:focus {
-    outline: none; /* Remove default outline */
-    box-shadow: 0 0 5px rgba(43, 68, 124, 0.5); /* Add shadow on focus */
-}
-body{
-    background-color: #f5f4f4;
-}
-
-/* Responsive Code  */
-@media screen and (max-width: 500px) {
-    .navbar-welcome h2 {
-        font-size: 15px;
-        color: #000000;
-        font-weight: bold;
-    }
-}
-.navbar-logo:hover{
-    cursor: pointer;
-}
-    </style>
-</head>
+</style>
 <body>
-   
-    
-   
-    
-     <!-- Navbar -->
-     <nav class="navbar" style="position: sticky;">
-        <div class="navbar-logo">
-            <img src="{% static 'img/logo.png' %}" alt="Logo" onclick="window.location.href='{% url 'home' %}'">
+    <header class="header">
+        <div class="header-content responsive-wrapper">
+            <div class="header-logo">
+                <a href="{% url 'surveyapp:poltaker_dashboard' %}">
+                    
+                    <img style="width: 40%;" src="{% static 'img/logo.png' %}" />
+                </a>
+            </div>
+            <div class="header-navigation">
+                <nav class="header-navigation-links">
+                    <a  href="{% url 'home' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %} ">Home</a>
+                    <a href="{% url 'user_details' %}" class="{% if request.path == '/surveyapp/poltaker_account/' %}active{% endif %}">About Me</a>
+                    <!-- <a href="{% url 'surveyapp:all_the_survey' %}" class="{% if request.path == '/surveyapp/all_the_survey/' %}active{% endif %}">All Surveys</a> -->
+
+                    <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Notifications</a> -->
+                    
+                    <!-- <a href="#"> Tasks </a>
+                    <a href="#"> Reporting </a>
+                    <a href="#"> Users </a> -->
+                </nav>
+               
+                <div class="header-navigation-actions">
+                    <form method="post" id="logout-button-set" action="{% url 'logout' %}" style="display: block;">
+
+                        {% csrf_token %}
+                        <button class="logout" id="navbutton" type="submit" 
+                        style="
+                            background: #ff2d07; /* Professional red color indicating logout */
+                            color: white; /* White text for contrast */
+                            font-size: 12px;
+                            padding: 8px 20px; /* Reduced padding for a smaller button */
+                            border: none;
+                            border-radius: 8px; /* Slightly rounded corners */
+                            cursor: pointer;
+                            text-transform: uppercase;
+                            font-weight: 600; /* Bold text */
+                            letter-spacing: 1px;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                            transition: all 0.3s ease;
+                            display: inline-block;
+                            text-align: center;
+                            outline: none;
+                            min-width: 120px; /* Smaller width */
+                            height: 40px;
+                        " 
+                        onmouseover="this.style.background = '#E04E38'; this.style.transform = 'scale(1.05)'; this.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.2)';"
+                        onmouseout="this.style.background = '#FF4B2B'; this.style.transform = 'scale(1)'; this.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';">
+                        Logout
+                    </button>
+                    
+                    </form> 
+                    
+            
+             
+                    <a href="#" class="icon-button">
+                        <i class="ph-gear-bold"></i>
+                    </a>
+                    <a href="#" class="icon-button">
+                        <i class="ph-bell-bold"></i>
+                    </a>
+                    <a href="{% url 'user_details' %}" class="avatar">
+                        <img src="{% static 'img/poltaker.png' %}" alt="" />
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="button" onclick="event.preventDefault(); location.href='{% url 'logout' %}';">
+                <i class="ph-list-bold"></i>
+                <span>Logout</span>
+            </a>
+            
+            <!-- <a href="#" class="button" onclick="event.preventDefault(); location.href='{% url 'logout' %}';">
+                <i class="ph-list-bold"></i>
+                <span>Logout</span>
+            </a>
+            
+             -->
+           
+            
         </div>
-        <div class="navbar-welcome">
-            <h2>Welcome Manager</h2>
-        </div>
-        <div class="navbar-user">
-            <!-- <img onclick="toggleDropdown()" src="{% static 'img/logo2.png' %}" alt="User Icon" class="user-icon" style="margin-top: 0px; vertical-align: middle; width: 40px; height: 40px;">
-     -->
-            <!-- <span class="user-name" onclick="toggleDropdown()">{{ username }} ↓</span> -->
-    
-            <!-- Dropdown Menu -->
-            <!-- <div class="dropdown-menu" id="dropdown">
-                <a href="{% url 'user_details' %}" class="dropdown-option" style="text-align: center;">My Account</a>
-                <form action="{% url 'logout' %}" method="POST">
-                    {% csrf_token %}
-                    <button id="logout_button" type="submit" class="dropdown-option">Logout</button>
-                </form>
+    </header>
+    <main class="main">
+        <div class="responsive-wrapper">
+            <div class="main-header">
+                <h1>Welcome Manager - <b style="color:  #000000;"> {{ username }} </b></h1>
+                <!-- <div class="search">
+                    <input type="text" placeholder="Search" />
+                    <button type="submit">
+                        <i class="ph-magnifying-glass-bold"></i>
+                    </button>
+                </div> -->
+            </div>
+            <div class="horizontal-tabs">
+                <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">Dashboard</a>
+                <a href="{% url 'view_questions' %}" class="{% if request.path == '/view/' %}active{% endif %}">Questions</a>
+
+                <a href="{% url 'contacts_list' %}" class="{% if request.path == '/contacts/' %}active{% endif %}">Contact</a>
+
+                <a href="{% url 'surveydata:my_surveys' %}" class="{% if request.path == '/surveydata/my-surveys/' %}active{% endif %}">Surveys</a>
+
+                <a href="{% url 'add_poltaker' %}" class="{% if request.path == '/add-poltaker/' %}active{% endif %}">Polltakers</a>
+                <a href="{% url 'user_details' %}" class="{% if request.path == '/user-details/' %}active{% endif %}">User profile</a>
+
+
+                
+            </div>
+            <!-- <div class="content-header">
+                <div class="content-header-intro">
+                    <h2>Intergrations and connected apps</h2>
+                    <p>Supercharge your workflow and connect the tool you use every day.</p>
+                </div>
+                <div class="content-header-actions">
+                    <a href="#" class="button">
+                        <i class="ph-faders-bold"></i>
+                        <span>Filters</span>
+                    </a>
+                    <a href="#" class="button">
+                        <i class="ph-plus-bold"></i>
+                        <span>Request integration</span>
+                    </a>
+                </div>
             </div> -->
+            <div class="content">
+                <div class="content-panel">
+                    <div class="vertical-tabs">
+                        <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Dashboard</a> -->
+                        <!-- <a href="{% url 'surveyapp:poltaker_account' %}" class="{% if request.path == '/surveyapp/poltaker_account/' %}active{% endif %}">My Profile</a> -->
+                        <!-- <a href="{% url 'surveyapp:all_the_survey' %}" class="{% if request.path == '/surveyapp/all_the_survey/' %}active{% endif %}">All Surveys</a> -->
+                        <!-- <a href="{% url 'surveyapp:edit_poltaker_profile' %}" class="{% if request.path == '/surveyapp/edit-poltaker-profile/' %}active{% endif %}">Update Details</a> -->
+                        <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Notifications</a> -->
+                        <!-- <a href="{% url 'surveyapp:forgot_password' %}" class="{% if request.path == '/surveyapp/forgot_password/' %}active{% endif %}">Reset Password</a> -->
+                        
+                        <!-- <a href="#" class="active">Integrations</a> -->
+                        <!-- <ul>
+                            <li>its new </li>
+                        </ul> -->
+                     
+                        
+                        
+
+                     <ul id="side-navdetails"  style="
+                         list-style: none;
+                         padding: 0;
+                         margin: 20px auto;
+                         max-width: 800px;
+                         animation: fadeIn 1s ease-in-out;
+                      
+                     ">
+                         <li style="
+                             margin-bottom: 10px;
+                             font-size: 1rem;
+                             color: #555;
+                             padding: 10px;
+                             border-left: 4px solid #6e8efb;
+                             background-color: #f9f9f9;
+                             border-radius: 5px;
+                         ">
+                            Our survey web app features an intuitive and responsive interface, making it easy for users to create and distribute surveys efficiently.
+                         </li>
+                         <li style="
+                             margin-bottom: 10px;
+                             font-size: 1rem;
+                             color: #555;
+                             padding: 10px;
+                             border-left: 4px solid #6e8efb;
+                             background-color: #f9f9f9;
+                             border-radius: 5px;
+                         ">
+                           Gain valuable insights from your surveys with built-in advanced analytics, helping you interpret data and make informed decisions quickly.
+                         </li>
+                         <li style="
+                             margin-bottom: 10px;
+                             font-size: 1.1rem;
+                             color: #555;
+                             padding: 10px;
+                             border-left: 4px solid #6e8efb;
+                             background-color: #f9f9f9;
+                             border-radius: 5px;
+                         ">
+                            Enjoy complete flexibility with customizable survey templates, allowing you to tailor each survey to your specific needs and preferences.
+                         </li>
+                     </ul>
+                    </div>
+                </div>
+                <div class="content-main">
+                    {% block content %}
+   
+                    {% endblock %}
+                    <div class="card-grid">
+                     
+                        <!-- <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/zeplin.svg" /></span>
+                                    <h3>Zeplin</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Collaboration between designers and developers.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div> -->
+                        <!-- </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/github.svg" /></span>
+                                    <h3>GitHub</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Link pull requests and automate workflows.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/figma.svg" /></span>
+                                    <h3>Figma</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Embed file previews in projects.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/zapier.svg" /></span>
+                                    <h3>Zapier</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox">
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Build custom automations and integrations with apps.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/notion.svg" /></span>
+                                    <h3>Notion</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Embed notion pages and notes in projects.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/slack.svg" /></span>
+                                    <h3>Slack</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Send notifications to channels and create projects.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/zendesk.svg" /></span>
+                                    <h3>Zendesk</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Link and automate Zendesk tickets.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/jira.svg" /></span>
+                                    <h3>Atlassian JIRA</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox">
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Plan, track, and release great software.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/dropbox.svg" /></span>
+                                    <h3>Dropbox</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Everything you need for work, all in one place.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/google-chrome.svg" /></span>
+                                    <h3>Google Chrome</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Link your Google account to share bookmarks across your entire team.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/discord.svg" /></span>
+                                    <h3>Discord</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" checked>
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Keep in touch with your customers without leaving the app.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article>
+                        <article class="card">
+                            <div class="card-header">
+                                <div>
+                                    <span><img src="https://assets.codepen.io/285131/google-drive.svg" /></span>
+                                    <h3>Google Drive</h3>
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox">
+                                    <span></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <p>Link your Google account to share files across your entire team.</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">View integration</a>
+                            </div>
+                        </article> -->
+                    </div>
+                </div>
+            </div>
         </div>
-    
-        <!-- Toggle Button for Sidebar -->
-        <div class="toggle-btn-container" style="position: absolute; top: 20px; right: 20px; z-index: 9999;">
-            <button id="toggleBtn" onclick="toggleNav()" style="
-                background-color: rgb(43, 68, 124); 
-                color: white; 
-                border: none; 
-                border-radius: 5px; 
-                padding: 8px 12px; 
-                font-size: 14px; 
-                cursor: pointer; 
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                transition: background-color 0.3s, transform 0.3s;">
-                <!-- Smaller Hamburger Bars -->
-                <div style="width: 25px; height: 3px; background-color: white; margin: 4px 0;"></div>
-                <div style="width: 25px; height: 3px; background-color: white; margin: 4px 0;"></div>
-                <div style="width: 25px; height: 3px; background-color: white; margin: 4px 0;"></div>
-            </button>
-        </div>
-        
-    </nav>
+    </main>
     <script>
-        // Set the default width of the sidebar to 0px (closed) initially
-        document.getElementById("mySidebar").style.width = "0px";
+        function logout(event) {
+            event.preventDefault();  // Prevent default anchor behavior
     
-        function toggleNav() {
-            var sidebar = document.getElementById("mySidebar");
+            // Create a form element dynamically
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{% url 'surveyapp:poltaker_logout' %}";
     
-            // Toggle sidebar visibility
-            if (sidebar.style.width === "0px") {
-                openNav(); // Open the sidebar
-            } else {
-                closeNav(); // Close the sidebar
-            }
-        }
+            // Add CSRF token as a hidden field
+            var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            var csrfField = document.createElement('input');
+            csrfField.type = 'hidden';
+            csrfField.name = 'csrfmiddlewaretoken';
+            csrfField.value = csrfToken;
+            form.appendChild(csrfField);
     
-        function openNav() {
-            document.getElementById("mySidebar").style.width = "250px"; // Set desired width
-        }
-    
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0px"; // Hide sidebar
+            // Submit the form
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
-    {% block content %}{% endblock %}
-      
-    <script>
-        
-        /* Function to close the sidebar */
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-            document.getElementById("main").style.marginLeft = "0";
-        }
-        function toggleDropdown() {
-            var dropdown = document.getElementById("dropdown");
-            if (dropdown.style.display === "block") {
-                dropdown.style.display = "none"; // Hide the dropdown if it's already visible
-            } else {
-                dropdown.style.display = "block"; // Show the dropdown
-            }
-        }
-        
-              </script>
-
-<style>
-    @media screen and (max-width: 500px) {
-    .navbar-logo img {
-    width: 82px;
-    margin-left: -20px;
-}
-.navbar-welcome h2 {
-
-    margin-left: -20%;
-    font-size: 18px;
-}
-}
-@media screen and (max-width: 380px) {
-    .navbar-logo img {
-    width: 75px;
-    margin-left: -30px;
-}
-.navbar-welcome h2 {
-    font-size: 12px;
-    color: #000000;
-    font-weight: bold;
-}
-}
-</style>
-
-
+ 
  <!-- footer starts Here -->
+  
  <style>
 
-    /* FOOTER */
-    footer {
-        /* background: linear-gradient(135deg, #f6f6f6, #e0e0e0, #d1d1d1, #b0b0b0); */
-        /* Soft, premium gradient */
-        color: #333;
-        /* Dark text for readability */
-        margin-top: 0;
-        /* padding: 40px 0; */
-        text-align: center;
-        /* box-shadow: 0px -2px 15px rgba(0, 0, 0, 0.1); */
-        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-        /* margin-bottom: 0px; */
-        /* Subtle shadow for depth */
-    }
+        /* FOOTER */
+        footer {
+            /* background: linear-gradient(135deg, #f6f6f6, #e0e0e0, #d1d1d1, #b0b0b0); */
+            /* Soft, premium gradient */
+            color: #333;
+            /* Dark text for readability */
+            margin-top: 0;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0px -2px 15px rgba(0, 0, 0, 0.1);
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            /* Subtle shadow for depth */
+        }
 
-    footer a {
-        color: #333;
-        /* Dark text color for links */
-        font-size: 16px;
-        font-weight: 500;
-        /* Slightly bolder for readability */
-        text-decoration: none;
-        transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
-    }
+        footer a {
+            color: #333;
+            /* Dark text color for links */
+            font-size: 16px;
+            font-weight: 500;
+            /* Slightly bolder for readability */
+            text-decoration: none;
+            transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
 
-    footer a:hover {
-        color: #44BCDD;
-        /* Soft teal hover effect */
-        text-decoration: none;
-        transform: scale(1.05);
-        /* Subtle scale effect on hover */
-    }
+        footer a:hover {
+            color: #44BCDD;
+            /* Soft teal hover effect */
+            text-decoration: none;
+            transform: scale(1.05);
+            /* Subtle scale effect on hover */
+        }
 
-    .copy {
-        font-size: 14px;
-        padding: 20px;
-        border-top: 1px solid #000000;
-        /* Light gray border to separate footer content */
-        color: #000000;
-        /* Lighter color for the copyright text */
-    }
+        .copy {
+            font-size: 14px;
+            padding: 20px;
+            border-top: 1px solid #000000;
+            /* Light gray border to separate footer content */
+            color: #000000;
+            /* Lighter color for the copyright text */
+        }
 
-    .footer-middle {
-        padding-top: 2em;
-        color: #333;
-        font-size: 16px;
-        font-weight: 400;
-        line-height: 1.5;
-    }
+        .footer-middle {
+            padding-top: 2em;
+            color: #333;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
 
-    /* SOCIAL ICONS */
-    ul.social-network {
-        list-style: none;
-        display: inline-block;
-        margin: 0;
-        padding: 0;
-    }
+        /* SOCIAL ICONS */
+        ul.social-network {
+            list-style: none;
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
 
-    ul.social-network li {
-        display: inline-block;
-        margin: 0;
-        /* Removed margin between icons */
-    }
+        ul.social-network li {
+            display: inline-block;
+            margin: 0;
+            /* Removed margin between icons */
+        }
 
-    .social-network a {
-        display: inline-block;
-        position: relative;
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        background-color: #f6f6f6;
-        /* Light gray background for social icons */
-        color: #333;
-        /* Dark icon color */
-        font-size: 20px;
-        line-height: 45px;
-        text-align: center;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
+        .social-network a {
+            display: inline-block;
+            position: relative;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #f6f6f6;
+            /* Light gray background for social icons */
+            color: #333;
+            /* Dark icon color */
+            font-size: 20px;
+            line-height: 45px;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
 
-    .social-network a:hover {
-        background-color: #44BCDD;
-        /* Teal background when hovered */
-        transform: scale(1.1);
-        /* Slight zoom effect */
-    }
+        .social-network a:hover {
+            background-color: #44BCDD;
+            /* Teal background when hovered */
+            transform: scale(1.1);
+            /* Slight zoom effect */
+        }
 
-    .social-network a:hover i {
-        color: #fff;
-        /* Change icon color to white on hover */
-    }
+        .social-network a:hover i {
+            color: #fff;
+            /* Change icon color to white on hover */
+        }
 
-    .social-network a.icoFacebook:hover {
-        background-color: #3B5998;
-        /* Facebook blue */
-    }
+        .social-network a.icoFacebook:hover {
+            background-color: #3B5998;
+            /* Facebook blue */
+        }
 
-    .social-network a.icoLinkedin:hover {
-        background-color: #007bb7;
-        /* LinkedIn blue */
-    }
+        .social-network a.icoLinkedin:hover {
+            background-color: #007bb7;
+            /* LinkedIn blue */
+        }
 
-    .social-network a.icoTwitter:hover {
-        background-color: #1DA1F2;
-        /* Twitter blue */
-    }
+        .social-network a.icoTwitter:hover {
+            background-color: #1DA1F2;
+            /* Twitter blue */
+        }
 
-    .social-network a.icoInstagram:hover {
-        background-color: #E4405F;
-        /* Instagram pink */
-    }
+        .social-network a.icoInstagram:hover {
+            background-color: #E4405F;
+            /* Instagram pink */
+        }
 
-    .social-network a.icoFacebook i,
-    .social-network a.icoLinkedin i,
-    .social-network a.icoTwitter i,
-    .social-network a.icoInstagram i {
-        color: #000000;
-        /* Dark icon color by default */
-    }
+        .social-network a.icoFacebook i,
+        .social-network a.icoLinkedin i,
+        .social-network a.icoTwitter i,
+        .social-network a.icoInstagram i {
+            color: #000000;
+            /* Dark icon color by default */
+        }
 
-    .social-circle li {
-        display: inline-block;
-        margin: 0;
-        /* Removed margin between items */
-    }
+        .social-circle li {
+            display: inline-block;
+            margin: 0;
+            /* Removed margin between items */
+        }
 
-    .social-circle li a {
-        transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
-    }
+        .social-circle li a {
+            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
 
-    .social-circle li a:hover {
-        background-color: #44BCDD;
-        transform: rotate(360deg);
-        /* Spin effect for a more interactive look */
-    }
+        .social-circle li a:hover {
+            background-color: #44BCDD;
+            transform: rotate(360deg);
+            /* Spin effect for a more interactive look */
+        }
 
-    .social-circle li i {
-        font-size: 20px;
-        line-height: 45px;
-    }
+        .social-circle li i {
+            font-size: 20px;
+            line-height: 45px;
+        }
 
-    .social-network a:hover i {
-        color: #fff;
-        /* Icon color changes on hover */
-    }
-</style>
-<footer class="mainfooter" role="contentinfo" >
-    <div class="footer-middle">
-        <div class="container" id="footer-containers" style="height: 100%; min-height: 0px;">
-            <div class="row">
-                <div class="col-md-3 col-sm-6">
-                    <!--Column1-->
-                    <div class="footer-pad">
-                        <h4>Site Pages</h4>
-                        <ul class="list-unstyled">
-                            <li><a href="#"></a></li>
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Subscriptions</a></li>
-                            <li><a href="#">Surveys</a></li>
-                            <li><a href="#">Visits</a></li>
-                            <li><a href="#">FAQs</a></li>
-                        </ul>
+        .social-network a:hover i {
+            color: #fff;
+            /* Icon color changes on hover */
+        }
+    </style>
+    <footer class="mainfooter" role="contentinfo">
+        <div class="footer-middle">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Site Pages</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#"></a></li>
+                                <li><a href="#">Home</a></li>
+                                <li><a href="#">Subscriptions</a></li>
+                                <li><a href="#">Surveys</a></li>
+                                <li><a href="#">Visits</a></li>
+                                <li><a href="#">FAQs</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <!--Column1-->
-                    <div class="footer-pad">
-                        <h4>Features</h4>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Survey Operations</a></li>
-                            <li><a href="#">Accessibility</a></li>
-                            <li><a href="#">Content Manegement</a></li>
-                            <li><a href="">Maping</a></li>
-                            <li><a href="">Data Management</a></li>
+                    <div class="col-md-3 col-sm-6">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Features</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">Survey Operations</a></li>
+                                <li><a href="#">Accessibility</a></li>
+                                <li><a href="#">Content Manegement</a></li>
+                                <li><a href="">Maping</a></li>
+                                <li><a href="">Data Management</a></li>
 
 
-                        </ul>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3 col-sm-6">
-                    <!--Column1-->
-                    <div class="footer-pad">
-                        <h4>Administrator</h4>
-                        <ul class="list-unstyled">
-                            <li><a href="#">123-456-7890</a></li>
-                            <li><a href="mailto:example@example.com">example@example.com</a></li>
-                            <li><a href="#">1234 Elm Street, Springfield, IL</a></li>
-                            <li><a href="#">5678 Oak Avenue</a></li>
-                            <li><a href="https://www.example.com" target="_blank">www.example.com</a></li>
+                    <div class="col-md-3 col-sm-6">
+                        <!--Column1-->
+                        <div class="footer-pad">
+                            <h4>Administrator</h4>
+                            <ul class="list-unstyled">
+                                <li><a href="#">123-456-7890</a></li>
+                                <li><a href="mailto:example@example.com">example@example.com</a></li>
+                                <li><a href="#">1234 Elm Street, Springfield, IL</a></li>
+                                <li><a href="#">5678 Oak Avenue</a></li>
+                                <li><a href="https://www.example.com" target="_blank">www.example.com</a></li>
+                                
+                                <li>
+                                    <a href="#"></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <h4>Follow Us</h4>
+                        <ul class="social-network social-circle" >
+
+                            <li ><a href="#" class="icoFacebook" title="Facebook"  style="background-color: transparent;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" width="30" height="30">
+                            </a></li>
                             
-                            <li>
-                                <a href="#"></a>
-                            </li>
+              
+                          
+                               
+                                <li>
+                                    <a href="https://www.instagram.com" class="icoInstagram" title="Instagram" style="background-color: transparent;">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="30" height="30">
+                                    </a>
+                                </li>
+                               
+                                <li>
+                                    <a href="https://www.linkedin.com" class="icoLinkedIn" title="LinkedIn" style="background-color: transparent;">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="30" height="30">
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a href="https://www.pinterest.com" class="icoPinterest" title="Pinterest" style="background-color: transparent;">
+                                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest" width="30" height="30">
+                                    </a>
+                                </li>
+                               
                         </ul>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <h4>Follow Us</h4>
-                    <ul class="social-network social-circle" >
-
-                        <li ><a href="#" class="icoFacebook" title="Facebook"  style="background-color: transparent;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" width="30" height="30">
-                        </a></li>
-                        
-          
-                      
-                           
-                            <li>
-                                <a href="https://www.instagram.com" class="icoInstagram" title="Instagram" style="background-color: transparent;">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="30" height="30">
-                                </a>
-                            </li>
-                           
-                            <li>
-                                <a href="https://www.linkedin.com" class="icoLinkedIn" title="LinkedIn" style="background-color: transparent;">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="30" height="30">
-                                </a>
-                            </li>
-                            
-                            <li>
-                                <a href="https://www.pinterest.com" class="icoPinterest" title="Pinterest" style="background-color: transparent;">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest" width="30" height="30">
-                                </a>
-                            </li>
-                           
-                    </ul>
+                <div class="row">
+                    <div class="col-md-12 copy">
+                        <p class="text-center">&copy; 2024©WLP All rights reserved</p>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 copy">
-                    <p class="text-center">&copy; 2024©WLP All rights reserved</p>
-                </div>
-            </div>
 
 
+            </div>
         </div>
-    </div>
-</footer>
-<!-- footer ends here  -->
+    </footer>
+
+ <!-- footer ends here  -->
+
+ <!-- Responsive css          Start   -->
+ <style>
+    body{
+        background-color: white;
+    }
+    footer {
+  border: 1px solid rgb(244, 235, 235);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds subtle shadow */
+    border-radius: 10px;
+}
+.footer-middle {
+max-height: 0px;
+}
+.container {
+    min-height: auto;
+}
+.header {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+.responsive-wrapper {
+    width: 92%;
+    max-width: 3280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#logout-button-set{
+    display: block;
+}
+</style>
+ <!-- Responsive css          End   -->
+
 </body>
 </html>
+
+
+

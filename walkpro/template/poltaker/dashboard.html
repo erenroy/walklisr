@@ -280,7 +280,74 @@
                 <!-- Link to all surveys for that token -->
                 <a href="{% url 'surveyapp:all_token_survey' survey.survey_token %}" class="take-survey-btn">View Servey </a>
             </div>
+            {% empty %}
+            <div class="no-surveys-box">
+                <div class="icon-container">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>No Pending Surveys Available</h3>
+                <p>You have completed all your pending surveys. Kindly wait until you are assigned new surveys. Your contribution is truly valued. Thank you!</p>
+                <p>- <span class="manager-name">Manager</span></p>
+            </div>
+            
         {% endfor %}
+        <style>
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        
+            .no-surveys-box {
+                background: #f0f4f7; /* Subtle light grayish blue background */
+                border-radius: 12px;
+                padding: 40px 60px;
+                width: 100%;
+                max-width: 1800px;
+                margin: 0px auto;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+                text-align: center;
+                font-family: 'Roboto', sans-serif;
+                color: #333;
+                animation: fadeIn 1s ease-out;
+                border: 1px solid #ddd; /* Light border for definition */
+            }
+        
+            .icon-container {
+                font-size: 60px;
+                color: #28a745; /* Professional green (check-circle color) */
+                margin-bottom: 30px;
+            }
+        
+            .no-surveys-box h3 {
+                font-size: 32px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                color: #333; /* Darker color for text */
+                margin-bottom: 20px;
+            }
+        
+            .no-surveys-box p {
+                font-size: 18px;
+                margin-bottom: 20px;
+                line-height: 1.6;
+                color: #555; /* Slightly lighter gray for readability */
+            }
+        
+            .no-surveys-box p:last-child {
+                font-size: 16px;
+                font-weight: 500;
+            }
+        
+            .manager-name {
+                color: #007bff; /* Professional blue for manager emphasis */
+            }
+        </style>
     </div>
 </div>
 
