@@ -600,12 +600,84 @@ html {
                 </div>
             </div>
             
-            <a href="#" class="button" onclick="logout(event)">
+            <a href="#" id="big-screen-logout" class="button" onclick="logout(event)">
                 <i class="ph-list-bold"></i>
                 <span>Logout</span>
             </a>
             
-           
+            <div class="navbar-custom">
+                <div class="nav-menu-custom">
+                    <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a href="{% url 'surveyapp:poltaker_account' %}" class="{% if request.path == '/user-details/' %}active{% endif %}">
+                        <i class="fas fa-user-circle"></i> My Profile
+                    </a>
+                    <a href="{% url 'surveyapp:edit_poltaker_profile' %}" class="{% if request.path == '/update-details/' %}active{% endif %}">
+                        <i class="fas fa-edit"></i> Update Details
+                    </a>
+                    <a href="{% url 'surveyapp:forgot_password' %}" class="{% if request.path == '/reset-password/' %}active{% endif %}">
+                        <i class="fas fa-key"></i> Reset Password
+                    </a>
+                    
+                    <form method="post" id="logout-button-set" action="{% url 'surveyapp:poltaker_logout' %}" style="display: block;">
+                        {% csrf_token %}
+                        <button class="logout" id="navbutton" type="submit" 
+                        style="
+                            background: #ff2d07; /* Professional red color indicating logout */
+                            color: white; /* White text for contrast */
+                            font-size: 12px;
+                            padding: 8px 20px; /* Reduced padding for a smaller button */
+                            border: none;
+                            border-radius: 8px; /* Slightly rounded corners */
+                            cursor: pointer;
+                            text-transform: uppercase;
+                            font-weight: 600; /* Bold text */
+                            letter-spacing: 1px;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                            transition: all 0.3s ease;
+                            display: inline-block;
+                            text-align: center;
+                            outline: none;
+                            min-width: 100%; /* Smaller width */
+                            height: 60px;
+                        " 
+                        onmouseover="this.style.background = '#E04E38'; this.style.transform = 'scale(1.05)'; this.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.2)';"
+                        onmouseout="this.style.background = '#FF4B2B'; this.style.transform = 'scale(1)'; this.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';">
+                            <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Logout
+                        </button>
+                    </form>
+                                        
+                    
+                </div>
+            </div>
+            <button id="hamburger-custom-id " class="hamburger-custom" onclick="toggleMenu()" style="
+            background-color: #ffffff; /* White background */
+            border: 2px solid #6e8efb; /* Blue border */
+            padding: 0px 6px; /* Smaller padding */
+            border-radius: 4px; /* Smaller rounded corners */
+            cursor: pointer; /* Pointer cursor */
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: all 0.3s ease; /* Smooth transition */
+            outline: none; /* Remove default outline */
+            width: 50px;
+            height: 50px;
+        ">
+            <i class="fas fa-bars" style="font-size: 0.9em; color: #6e8efb;  "></i> <!-- Smaller icon -->
+        </button>
+        
+        <style>
+            .hamburger-custom:hover {
+                background-color: #6e8efb; /* Blue background on hover */
+                border-color: #ffffff; /* White border on hover */
+            }
+        
+            .hamburger-custom:focus {
+                outline: none; /* Remove outline when focused */
+            }
+        </style>
             
         </div>
     </header>
@@ -646,67 +718,7 @@ html {
                 </div>
             </div> -->
             <div class="content">
-                <div class="content-panel">
-                    <div class="vertical-tabs">
-                        <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Dashboard</a> -->
-                        <!-- <a href="{% url 'surveyapp:poltaker_account' %}" class="{% if request.path == '/surveyapp/poltaker_account/' %}active{% endif %}">My Profile</a> -->
-                        <!-- <a href="{% url 'surveyapp:all_the_survey' %}" class="{% if request.path == '/surveyapp/all_the_survey/' %}active{% endif %}">All Surveys</a> -->
-                        <!-- <a href="{% url 'surveyapp:edit_poltaker_profile' %}" class="{% if request.path == '/surveyapp/edit-poltaker-profile/' %}active{% endif %}">Update Details</a> -->
-                        <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Notifications</a> -->
-                        <!-- <a href="{% url 'surveyapp:forgot_password' %}" class="{% if request.path == '/surveyapp/forgot_password/' %}active{% endif %}">Reset Password</a> -->
-                        
-                        <!-- <a href="#" class="active">Integrations</a> -->
-                        <!-- <ul>
-                            <li>its new </li>
-                        </ul> -->
-                     
-                        
-                        
-
-                     <ul id="side-navdetails"  style="
-                         list-style: none;
-                         padding: 0;
-                         margin: 20px auto;
-                         max-width: 800px;
-                         animation: fadeIn 1s ease-in-out;
-                      
-                     ">
-                         <li style="
-                             margin-bottom: 10px;
-                             font-size: 1rem;
-                             color: #555;
-                             padding: 10px;
-                             border-left: 4px solid #6e8efb;
-                             background-color: #f9f9f9;
-                             border-radius: 5px;
-                         ">
-                             In Dashboard you can see all the survey assigned to you . You can check them out .
-                         </li>
-                         <li style="
-                             margin-bottom: 10px;
-                             font-size: 1rem;
-                             color: #555;
-                             padding: 10px;
-                             border-left: 4px solid #6e8efb;
-                             background-color: #f9f9f9;
-                             border-radius: 5px;
-                         ">
-                            In Survey map Red stands for Denied surveys, Green stands for completed, and Yellow stands for Pending surveys
-                         </li>
-                         <li style="
-                             margin-bottom: 10px;
-                             font-size: 1.1rem;
-                             color: #555;
-                             padding: 10px;
-                             border-left: 4px solid #6e8efb;
-                             background-color: #f9f9f9;
-                             border-radius: 5px;
-                         ">
-                             You can search the zipcode of the surveys by looking at the map , you can click on map to go to that specific survey 
-                         </li>
-                     </ul>
-                    </div>
-                </div>
+              
                 <div class="content-main">
                     {% block content %}
    
@@ -1200,6 +1212,260 @@ html {
     </footer>
 
  <!-- footer ends here  -->
+  <!-- small navabr for small screen goes here  -->
+    <!-- Small hamburger navbar site  -->
+  <style>
+    /* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Navbar Styling */
+.navbar-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #000000;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Brand Name */
+.navbar-brand-custom {
+    font-size: 1.8em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+/* Hamburger Button Styling (outside the navbar) */
+.hamburger-custom {
+    font-size: 2em;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: none;
+    outline: none;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    z-index: 20;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.hamburger-custom:hover {
+    transform: scale(1.1); /* Slight scaling on hover */
+    color: #FFD700; /* Gold color on hover */
+}
+
+/* Menu Styling (Visible on large screens) */
+.nav-menu-custom {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-menu-custom a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    font-size: 1.1em;
+    font-weight: 500;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu-custom a i {
+    margin-right: 12px;
+    font-size: 1.3em;
+}
+
+.nav-menu-custom a:hover {
+    background: #ffffff20; /* Semi-transparent background on hover */
+    transform: translateY(-5px); /* Slight upward movement on hover */
+    color: #FFD700; /* Gold color on hover */
+}
+.hamburger-custom {
+       height: 50px;
+       width: 60px;
+       padding-bottom: 10px;
+    }
+
+/* Menu Styling for Small Screens */
+@media (max-width: 1100px) {
+    .hamburger-custom {
+        display: block;
+    }
+
+    .nav-menu-custom {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 30px;
+        background: #333;
+        width: 250px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        z-index: 1000;
+    }
+
+    .nav-menu-custom.show {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .nav-menu-custom a {
+        padding: 15px 20px;
+        font-size: 1.2em;
+        border-bottom: 1px solid #444;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .nav-menu-custom a:last-child {
+        border-bottom: none;
+    }
+
+    .nav-menu-custom a:hover {
+        background: #6e8efb; /* Blue highlight on hover */
+        color: #fff;
+        transform: translateY(0);
+    }
+    
+}
+
+/* Menu Animation for Items */
+.nav-menu-custom a {
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+}
+
+.nav-menu-custom.show a {
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Backdrop for overlay when menu is open */
+.overlay-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 900;
+    transition: opacity 0.3s ease;
+}
+
+.overlay-custom.show {
+    display: block;
+    opacity: 1;
+}
+
+/* Smooth transition for Navbar when menu is toggled */
+.navbar-custom.open {
+    background: linear-gradient(135deg, #8e9af0, #a777e3); /* Darker gradient when menu is open */
+}
+
+/* Button on hover for action */
+.nav-menu-custom a:hover {
+    background-color: #6e8efb;
+    color: white;
+}
+
+/* Hide navbar by default */
+.navbar-custom, .hamburger {
+    display: none;
+}
+
+/* Show navbar and hamburger button when screen width is less than 500px */
+@media (max-width: 500px) {
+    .navbar-custom, .hamburger {
+        display: block;
+    }
+}
+.nav-menu-custom.show a {
+    opacity: 1;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for background and text color */
+}
+
+/* Hover effect for menu items */
+.nav-menu-custom.show a:hover {
+    background-color: #6e8efb; /* Change to your desired hover background color */
+    color: #fff; /* Change text color on hover */
+}
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensure it stays on top of other elements */
+    background-color: #ffffff; /* Optional: set the background color */
+}
+/* @media screen and (max-width: 500px) {
+    .horizontal-tabs {
+        display: none;
+    }
+} */
+@media screen and (max-width: 1100px) {
+    #big-screen-logout {
+        display: none;
+    }
+} 
+.header {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow at the bottom */
+}
+
+
+  </style>
+  
+  <script>
+    function toggleMenu() {
+        const menu = document.querySelector('.nav-menu-custom');
+        menu.classList.toggle('show');
+    }
+
+    // Check screen size and toggle visibility based on screen width
+function checkScreenSize() {
+const navbar = document.querySelector('.navbar-custom');
+const hamburgerButton = document.querySelector('.hamburger');
+
+if (window.innerWidth < 1100) {
+    navbar.style.display = 'flex'; // Show navbar for small screens
+    hamburgerButton.style.display = 'block'; // Show hamburger button
+} else {
+    navbar.style.display = 'none'; // Hide navbar for larger screens
+    hamburgerButton.style.display = 'none'; // Hide hamburger button
+}
+}
+
+// Call function on page load and on window resize
+window.addEventListener('load', checkScreenSize);
+window.addEventListener('resize', checkScreenSize);
+
+</script>
 </body>
 </html>
 

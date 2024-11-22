@@ -151,3 +151,6 @@ EMAIL_HOST_PASSWORD = 'gdpi idvs coiy fgdm'
 
 # Deleting data 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000  # Increase this number as needed
+
+
+# admin panel name change 

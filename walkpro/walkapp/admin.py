@@ -114,3 +114,12 @@ from .models import UserContactSearch
 
 admin.site.register(UserContactSearch)
 
+
+
+# admin.py
+from django.contrib import admin
+
+# Change the admin interface name
+admin.site.site_header = "Walk List Pro Administration"  # The header text on the admin page
+admin.site.site_title = "Walk List Pro Administration"    # The title of the admin page
+admin.site.index_title = "Walk List Pro Administration"  # The text displayed on the index page

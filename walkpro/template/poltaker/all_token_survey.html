@@ -446,12 +446,7 @@
     <input type="text" id="zipcode-search" placeholder="Search by Zipcode" oninput="searchSurveys()">
 </div>
 <!-- Status filter buttons -->
-<div class="status-filter">
-    <button onclick="filterByStatus('completed')">Completed</button>
-    <button onclick="filterByStatus('pending')">Pending</button>
-    <button onclick="filterByStatus('denied')">Denied</button>
-    <button onclick="filterByStatus('all')">Show All</button>
-</div>
+
 </div>
 <div id="survey-list">
     {% for survey in surveys %}
@@ -481,7 +476,17 @@
                         {% endif %}
                     </b>
                 </p>
-                <button class="show-map-btn" onclick="showSpecificLocation('{{ contact.zipcode }}', '{{ contact.city }}')">Show on Map</button>
+                <!-- <button class="show-map-btn" onclick="showSpecificLocations('{{ contact.zipcode }}', '{{ contact.city }}')">Show on Map</button> -->
+                <button class="show-map-btn" onclick="scrollToTop()">Show on Map</button>
+                <script>
+                    function scrollToTop() {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth' // Optional: adds smooth scrolling
+                        });
+                    }
+                    </script>
+                    
             </div>
         {% endfor %}
         <p>Survey Date: {{ survey.survey_date }}</p>

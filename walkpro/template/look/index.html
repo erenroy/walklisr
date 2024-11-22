@@ -575,58 +575,28 @@
     }
 </style>
     <!-- our plans  -->
-     <div class="our-plans" id="plan">
+    <div class="our-plans" id="plan">
         <h1>Our Plans</h1>
         <div class="subscription-container">
-            <!-- Basic Plan -->
-            <div class="subscription-plan">
-                <h2>Basic Plan</h2>
-                <div class="price">$85.00 <span>/month</span></div>
+            {% for plan in plans %}
+            <div class="subscription-plan{% if plan == plans.0 %} featured{% endif %}">
+                <h2>{{ plan.name }}</h2>
+                <div class="price">${{ plan.price }} <span>/month</span></div>
                 <ul class="features">
-                    <li>1 Manager</li>
-                    <li>1 Polltaker</li>
-                    <li>12 Surveys</li>
-                    <li>10,000 Contacts</li>
+                    <li>{{ plan.managers }} Manager{% if plan.managers > 1 %}s{% endif %}</li>
+                    <li>{{ plan.poltakers }} Polltaker{% if plan.poltakers > 1 %}s{% endif %}</li>
+                    <li>{{ plan.surveys }} Survey{% if plan.surveys > 1 %}s{% endif %}</li>
+                    <li>{{ plan.contacts }} Contact{% if plan.contacts > 1 %}s{% endif %}</li>
                     <li>Districting and Precinct</li>
                     <li>CSV Download with Voter Data and Election History</li>
                     <li>Additional Feature</li>
                 </ul>
-                <button class="subscribe-btn">Choose Plan</button>
+                <button class="subscribe-btn" onclick="window.location.href='/login/'">Choose Plan</button>
             </div>
-        
-            <!-- Team Plan -->
-            <div class="subscription-plan featured">
-                <h2>Team Plan</h2>
-                <div class="price">$99.00 <span>/month</span></div>
-                <ul class="features">
-                    <li>1 Manager</li>
-                    <li>10 Polltakers</li>
-                    <li>22 Surveys</li>
-                    <li>5,000 Contacts</li>
-                    <li>Districting and Precinct</li>
-                    <li>CSV Download with Voter Data and Election History</li>
-                    <li>Additional Feature</li>
-                </ul>
-                <button class="subscribe-btn">Choose Plan</button>
-            </div>
-        
-            <!-- Premium Plan -->
-            <div class="subscription-plan">
-                <h2>Premium Plan</h2>
-                <div class="price">$15,200.00 <span>/month</span></div>
-                <ul class="features">
-                    <li>999 Managers</li>
-                    <li>999 Polltakers</li>
-                    <li>999 Surveys</li>
-                    <li>15,000 Contacts</li>
-                    <li>Districting and Precinct</li>
-                    <li>CSV Download with Voter Data and Election History</li>
-                    <li>Additional Feature</li>
-                </ul>
-                <button class="subscribe-btn">Choose Plan</button>
-            </div>
+            {% endfor %}
         </div>
-     </div>
+    </div>
+    
     <!-- get in google apple  -->
 
 

@@ -1194,18 +1194,22 @@
 
 <!-- user questions -->
 {% if questions %}
-{% for question in questions %}
-<div class="row">
-    <div class="cell">{{ question.question_text }}</div>
-    <div class="cell">{{ question.question_type }}</div>
-    <div class="cell action-btn">
-        <button onclick="toggleOptions(this)">...</button>
-    </div>
-    <div class="options" style="display: none;">
-        <button onclick="deleteQuestion('{{ question.id }}')">Delete</button>
-    </div>
-</div>
-{% endfor %}
+<div class="questions-container">
+    {% for question in questions %}
+      <div class="row">
+        <div class="cell question-text">{{ question.question_text }}</div>
+        <div class="cell question-type">{{ question.question_type }}</div>
+        <div class="cell action-btn">
+          <button onclick="toggleOptions(this)">...</button>
+        </div>
+        <div class="options" style="display: none;">
+          <button onclick="deleteQuestion('{{ question.id }}')">Delete</button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  
 {% else %}
 <p>You have not added any questions yet.</p>
 {% endif %}
@@ -1522,6 +1526,63 @@ hr {
     padding: 0px;
     max-width: 3200px;
 }
+/* question responsive code  ---------------------------------  */
+/* Base styles */
+.questions-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.cell {
+  padding: 5px;
+}
+
+.action-btn {
+  position: relative;
+}
+
+.options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: none;
+}
+
+.action-btn:hover .options {
+  display: block;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+  .question-type {
+    display: none;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .question-text {
+    flex: 1;
+    padding-right: 10px;
+  }
+  
+  .action-btn {
+    flex: 0;
+  }
+}
+
 </style>
 
 <!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->

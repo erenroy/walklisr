@@ -256,6 +256,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 @login_required
+
 def create_survey(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -307,6 +308,10 @@ def create_survey(request):
 
         # Loop through the contacts and create a survey for each one
         for contact in contacts:
+            # Update the contact's status to 'pending'
+            contact.status = 'pending'
+            contact.save()
+
             for polltaker in polltakers:
                 # Create the survey for the current contact
                 survey = Survey.objects.create(
@@ -374,7 +379,6 @@ def create_survey(request):
         'username': username,
     }
     return render(request, 'poltaker/create_survey.html', context)
-
 # surveyapp/views.py
 # surveyapp/views.py
 from django.shortcuts import render, redirect
@@ -666,7 +670,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import Survey, Poltaker, UserContactList
-
 def complete_survey(request, survey_id):
     # Get the survey or return a 404 if it doesn't exist
     survey = get_object_or_404(Survey, id=survey_id)
@@ -674,42 +677,42 @@ def complete_survey(request, survey_id):
     # Fetch the Poltaker from the session to ensure they are logged in
     poltaker_id = request.session.get('poltaker_id')
     if not poltaker_id:
-        return redirect('surveyapp:poltaker_login')  # Redirect to login if Poltaker isn't logged in
+        return JsonResponse({'status': 'error', 'message': 'Poltaker not logged in!'})  # Return an error if Poltaker isn't logged in
 
     try:
         poltaker = Poltaker.objects.get(id=poltaker_id)
     except Poltaker.DoesNotExist:
-        return redirect('surveyapp:poltaker_login')  # Redirect if the Poltaker isn't found
+        return JsonResponse({'status': 'error', 'message': 'Poltaker not found!'})  # Return an error if Poltaker isn't found
 
     # Check if the poltaker is authorized to take this survey
     if survey.polltaker and poltaker != survey.polltaker:
-        return redirect('surveyapp:poltaker_dashboard')  # Redirect if the Poltaker is unauthorized
+        return JsonResponse({'status': 'error', 'message': 'Unauthorized access to survey!'})  # Unauthorized access
 
     # Mark the survey as completed and update the status
     if survey.status != 'completed':  # Only update if not already completed
         survey.status = 'completed'
         survey.save()
 
-        # Update the Poltaker's survey counts
-        survey.update_polltaker_counts()  # This ensures counts are updated for completed surveys
+        # Get the contacts related to this specific survey
+        contacts_related_to_survey = survey.contacts.all()
 
-        # Update the UserContactList status
-        # Assuming that each survey has related contacts and we want to update their status
-        for contact in survey.contacts.all():
-            contact.status = 'completed'
+        # Find all surveys that are assigned to the same contacts
+        related_surveys = Survey.objects.filter(contacts__in=contacts_related_to_survey).distinct()
+
+        # Update the status of these related surveys
+        for related_survey in related_surveys:
+            # Check if the contact is related to this specific survey and mark it as completed
+            if any(contact in contacts_related_to_survey for contact in related_survey.contacts.all()):
+                related_survey.status = 'completed'
+                related_survey.save()
+
+        # Now, update the status of all the related contacts as well
+        for contact in contacts_related_to_survey:
+            contact.status = 'completed'  # Assuming you have a `status` field on the Contact model
             contact.save()
 
-        # Show a success message
-        messages.success(request, 'Survey marked as completed successfully!')
-
-    # Return a JsonResponse to stay on the same page without redirecting
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({'status': 'success', 'message': 'Verification as human is done, kindly move to take survey'})
-
-    # If not an AJAX request, redirect to the dashboard
-    return redirect('surveyapp:poltaker_dashboard')  # Redirect to the dashboard if it's not an AJAX request
-
-
+    # Return a JsonResponse to confirm that the survey is completed and stay on the same page
+    return JsonResponse({'status': 'success', 'message': 'Survey completed successfully!'})
 
 def deny_survey(request, survey_id):
     # Get the survey or return a 404 if it doesn't exist
@@ -758,22 +761,20 @@ def deny_survey(request, survey_id):
 
 
 # new dashbaord  -----------------------------------------------------------------------------------------
+
 def poltaker_dashboard(request):
+    # Check if the polltaker is logged in
     if 'poltaker_id' not in request.session:
         return redirect('surveyapp:poltaker_login')
 
+    # Get the current logged-in polltaker
     poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
 
     # Get all surveys assigned to the polltaker
     assigned_surveys = Survey.objects.filter(polltaker=poltaker)
 
-    # Filter out surveys that the polltaker has completed
-    completed_survey_ids = SurveyResponse.objects.filter(
-        polltaker=poltaker, completed=True
-    ).values_list('survey_id', flat=True)
-
-    # Exclude completed surveys from the list
-    incomplete_surveys = assigned_surveys.exclude(id__in=completed_survey_ids)
+    # Exclude surveys that are marked as 'completed'
+    incomplete_surveys = assigned_surveys.exclude(status='completed')
 
     # Group surveys by their token (only show unique tokens)
     surveys_by_token = {}
@@ -781,6 +782,7 @@ def poltaker_dashboard(request):
         if survey.survey_token not in surveys_by_token:
             surveys_by_token[survey.survey_token] = survey
 
+    # Pass the context for rendering the dashboard
     context = {'poltaker': poltaker, 'surveys': surveys_by_token.values()}
     return render(request, 'poltaker/dashboard.html', context)
 

@@ -20,9 +20,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.cache import cache
 
-
 def first_look(request):
-    return render(request, 'look/index.html')
+    plans = SubscriptionPlan.objects.all()  # Fetch all subscription plans
+    return render(request, 'look/index.html', {'plans': plans})  # Pass plans to the template
 
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect

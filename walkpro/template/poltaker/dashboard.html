@@ -266,31 +266,31 @@
 
     <div class="survey-list">
         {% for survey in surveys %}
-            <div class="survey-item">
-                <h2 class="survey-title">
-                    {{ survey.title }}
-                    <span class="pending-tag">Pending</span>
-                </h2>
-                <p class="survey-description">{{ survey.description }}</p>
-                <div>
-                    <p>Survey Date - {{ survey.survey_date }}</p>
-                    <p>Created on - {{ survey.created_at }}</p>
-                </div>
+    <div class="survey-item">
+        <h2 class="survey-title">
+            {{ survey.title }}
+            <span class="pending-tag">Pending</span>
+        </h2>
+        <p class="survey-description">{{ survey.description }}</p>
+        <div>
+            <p>Survey Date - {{ survey.survey_date }}</p>
+            <p>Created on - {{ survey.created_at }}</p>
+        </div>
 
-                <!-- Link to all surveys for that token -->
-                <a href="{% url 'surveyapp:all_token_survey' survey.survey_token %}" class="take-survey-btn">View Servey </a>
-            </div>
-            {% empty %}
-            <div class="no-surveys-box">
-                <div class="icon-container">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h3>No Pending Surveys Available</h3>
-                <p>You have completed all your pending surveys. Kindly wait until you are assigned new surveys. Your contribution is truly valued. Thank you!</p>
-                <p>- <span class="manager-name">Manager</span></p>
-            </div>
-            
-        {% endfor %}
+        <!-- Link to all surveys for that token -->
+        <a href="{% url 'surveyapp:all_token_survey' survey.survey_token %}" class="take-survey-btn">View Survey</a>
+    </div>
+{% empty %}
+    <div class="no-surveys-box">
+        <div class="icon-container">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>No Pending Surveys Available</h3>
+        <p>You have completed all your pending surveys. Kindly wait until you are assigned new surveys. Your contribution is truly valued. Thank you!</p>
+        <p>- <span class="manager-name">Manager</span></p>
+    </div>
+{% endfor %}
+
         <style>
             @keyframes fadeIn {
                 from {
