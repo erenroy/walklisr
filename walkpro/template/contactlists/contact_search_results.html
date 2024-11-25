@@ -790,63 +790,12 @@ form {
 </head>
 <body>
    
-    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 9999;">
-        <button class="toggle-btns" onclick="closeNav()" style="
-            margin: 5px; 
-            background-color: rgb(43, 68, 124); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px 15px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;">
-            &#8592; Close
-        </button>
-        <button class="toggle-btns" onclick="openNav()" style="
-            margin: 5px; 
-            background-color: rgb(43, 68, 124); 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            padding: 10px 15px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s, transform 0.3s;">
-            Open &#8594;
-        </button>
-        </div>
-        
-        
+    
         
     <!-- Main Layout -->
     <div style="display: flex;">
         <!-- Sidebar -->
-        <div id="mySidebar" class="sidebar">
-            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" style="background-color: #f5f4f4; color: rgb(0, 0, 0);" onclick="location.href='{% url 'home' %}'">
-                <i class="fas fa-tasks"></i> Plan Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
-                <i class="fas fa-question-circle"></i> Question Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; color: rgb(0, 0, 0);  font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'accessed_contacts' %}'">
-                <i class="fas fa-user-check"></i> Voter Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'survey_work' %}'">
-                <i class="fas fa-chart-pie"></i> Survey Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
-                <i class="fas fa-users"></i> Polltaker Management
-            </div>
-        </div>
-        
-    
-        <div id="main" >
-           
-        </div>
+       
         <!-- Main Content -->
         <div class="main-content">
             <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
@@ -900,41 +849,48 @@ form {
 
 <!-- new start  -->
 {% if results %}
-                <div class="contact-list-container">
-                    <table class="contact-list-table">
-                        <thead>
-                            <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Street</th>
-                                <th>City</th>
-                                <th>State</th>
-                                <th>Country</th>
-                                <th>Zipcode</th>
-                                <th>Party Preference</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for contact in results %}
-                            <tr>
-                                <td>{{ contact.first_name }}</td>
-                                <td>{{ contact.last_name }}</td>
-                                <td>{{ contact.email }}</td>
-                                <td>{{ contact.street }}</td>
-                                <td>{{ contact.city }}</td>
-                                <td>{{ contact.state }}</td>
-                                <td>{{ contact.country }}</td>
-                                <td>{{ contact.zipcode }}</td>
-                                <td>{{ contact.party_preference }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <p>No contacts found based on your search.</p>
-            {% endif %}
+    <div class="contact-list-container">
+        <table class="contact-list-table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Zipcode</th>
+                    <th>Party Preference</th>
+                    <th>Precinct Number</th>
+                    <th>District</th>
+                    <th>Ward</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contact in results %}
+                <tr>
+                    <td>{{ contact.first_name }}</td>
+                    <td>{{ contact.last_name }}</td>
+                    <td>{{ contact.email }}</td>
+                    <td>{{ contact.street }}</td>
+                    <td>{{ contact.city }}</td>
+                    <td>{{ contact.state }}</td>
+                    <td>{{ contact.country }}</td>
+                    <td>{{ contact.zipcode }}</td>
+                    <td>{{ contact.pct_nbr }}</td>
+                    <td>{{ contact.precinct_number }}</td>
+                    <td>{{ contact.district }}</td>
+                    <td>{{ contact.ward }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No contacts found based on your search.</p>
+{% endif %}
+
 <!-- start End  -->
            
             
@@ -984,7 +940,36 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
 
 
 </script>
+<style>
+    .main-content{
+        min-width: 800px;
+    }
+    @media (max-width: 900px) {
+        .main-content{
+        min-width: 500px;
+        
+    }
+    .custom-search-button {
+        margin-top: 10px;
+        margin-left: 0%;
+    }
+    }
+   
+    @media (max-width: 600px) {
+        .main-content{
+        min-width: 300px;
+    }
+    }
+</style>
 <link rel="stylesheet" href="{% static 'css/accessed.css' %}">
+<style>
+     @media (max-width: 750px) {
+    .custom-search-button {
+        margin-top: 10px;
+        margin-left: 0px;
+    }
+    }
+</style>
    {% endblock %}
 
 

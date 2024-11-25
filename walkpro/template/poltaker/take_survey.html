@@ -318,7 +318,7 @@ showLocation(street, zipCode, city, mapId, status);
             <div class="contact-info" style="background-color: transparent;">
                 <div style="display: flex; align-items: center; gap: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
                     <p style="margin: 0;"><strong>Full Name:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
-                    <p style="margin: 0;"><strong>Email:</strong> {{ contact.email }}</p>
+                    <p style="margin: 0;"><strong>Contact Number:</strong> {{ contact.phone }}</p>
                 </div>
                 <!-- <p><strong>Street:</strong> {{ contact.street }}</p>
                 <p><strong>City:</strong> {{ contact.city }}</p>
@@ -571,10 +571,10 @@ showLocation(street, zipCode, city, mapId, status);
 <!-- Visible Second Form -->
 <form method="POST" class="survey-form" id="survey-form" onsubmit="submitBothForms(event)">
     {% csrf_token %}
-    <h3>Assigned Contact:</h3>
+    <!-- <h3>Assigned Contact:</h3>
     <div>
         <p>{{ assigned_contact.first_name }} {{ assigned_contact.last_name }} ({{ assigned_contact.email }})</p>
-    </div>
+    </div> -->
 
     <!-- Survey Questions Loop -->
     {% for question in questions %}
@@ -704,6 +704,13 @@ function submitBothForms(event) {
 
 .survey-form {
     max-width: 92%;
+}
+
+.container {
+    max-width: 2500px;
+}
+footer {
+    padding: 0px 0;
 }
 </style>
 

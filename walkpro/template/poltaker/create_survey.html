@@ -1045,7 +1045,7 @@
         font-family: Arial, sans-serif;
         max-width:100%;
         margin: 0 auto;
-        padding: 20px;
+        padding: 0px;
         background-color: #f9f9f9;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -1361,88 +1361,6 @@
 
 
 /* search filter  */
-/* Main container for filter set */
-.filet-set {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns for larger screens */
-    gap: 15px; /* Reduced space between inputs */
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    max-width: 1300px;
-    margin: 0 auto; /* Center horizontally */
-}
-
-/* For each filter input container */
-.filet-set div {
-    display: flex;
-    flex-direction: column;
-    gap: 5px; /* Reduced gap between label and input/select */
-}
-
-/* Label styling */
-.filet-set label {
-    font-size: 0.9em; /* Slightly smaller label */
-    color: #333;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0px;
-}
-
-/* Input and select styling */
-.filet-set input,
-.filet-set select {
-    padding: 8px; /* Reduced padding */
-    font-size: 0.95em; /* Slightly smaller font */
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    transition: 0.3s ease-in-out;
-    box-sizing: border-box;
-    margin-top: 0px;
-}
-
-/* Hover and focus effects for input/select */
-.filet-set input:hover,
-.filet-set select:hover,
-.filet-set input:focus,
-.filet-set select:focus {
-    border-color: #6c63ff; /* Purple on hover/focus */
-    background-color: #fafafa;
-    box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
-}
-
-/* Zip Code filter adjustments */
-#zip-filter-start,
-#zip-filter-end {
-    width: 48%; /* Display zip filters side by side */
-    display: inline-block;
-}
-
-#zip-filter-end {
-    margin-left: 0%;
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-    .filet-set {
-        grid-template-columns: 1fr; /* Single column layout for small screens */
-        padding: 15px;
-    }
-
-    #zip-filter-start,
-    #zip-filter-end {
-        width: 100%; /* Make zip filters full width on mobile */
-        margin-left: 0;
-    }
-
-    .filet-set input,
-    .filet-set select {
-        font-size: 1em; /* Ensuring inputs are legible on smaller screens */
-    }
-}
 
 
 
@@ -1547,10 +1465,10 @@
 
 <body>
 <!-- Loader HTML (Initially Visible) -->
-<div id="loader">
+<!-- <div id="loader">
     <div class="spinner"></div>
     <p>Loading your data based on Plan...</p>
-</div>
+</div> -->
 
 <script>
     // Wait for the DOM to load completely before hiding the loader
@@ -1584,7 +1502,7 @@
 
                 <!-- user questions  -->
                 <!-- <h1>Create a Survey</h1> -->
-                <form method="POST">
+                <form method="POST"  style="padding: 20px;">
                     {% csrf_token %}
                 
                     <!-- Step 1: Survey Title and Description -->
@@ -1609,7 +1527,7 @@
                         {% for question in questions %}
                         <div class="question-container">
                             <input type="checkbox" name="questions" value="{{ question.id }}">
-                            <p>{{ question.question_text }} <b style="color: #007bff;">( {{ question.question_type }} )</b></p>
+                            <p>{{ question.question_text }} </p>
                         </div>
                         {% endfor %}
                     </div>
@@ -1646,38 +1564,65 @@
                         <label>Select Contacts:</label>
                 
                         <!-- Button to show the filter form -->
-                        <button id="show-filters-btn" type="button">Filter Contact</button>
-                
+                        <button id="show-filters-btn" type="button" style="background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; transition: background-color 0.3s;">Filter Contact</button>
+
+                        <button type="button" id="select-all-btn" style="background-color: #28a745; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; transition: background-color 0.3s;" onclick="selectAllContacts()">Select All</button>
+                        
+                        <button type="button" id="deselect-all-btn" style="background-color: #ff851b; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; transition: background-color 0.3s;" onclick="deselectAllContacts()">Deselect All</button>
+                        
                         <!-- Filters (Initially hidden) -->
                         <div class="filet-set" id="filter-form" style="display: none;">
-                            <div>
-                                <label for="zip-filter-start">Filter by Zip Code Range:</label><br>
-                                <input type="number" id="zip-filter-start" placeholder="Start Zip Code">
-                                <input type="number" id="zip-filter-end" placeholder="End Zip Code">
+                            <div class="filter-row">
+                                <div class="filter-item">
+                                    <label for="pctnbr-filter">Filter by Pricent Number:</label><br>
+                                    <input type="text" id="pctnbr-filter" placeholder="Pricent Number">
+                                </div>
+                                <div class="filter-item">
+                                    <label for="zip-filter-start">Filter by Zip Code Range:</label><br>
+                                    <input type="number" id="zip-filter-start" placeholder="Start Zip Code">
+                                    <input type="number" id="zip-filter-end" placeholder="End Zip Code">
+                                </div>
                             </div>
-                            <div>
-                                <label for="city-filter">Filter by City:</label><br>
-                                <input type="text" id="city-filter" placeholder="City">
+                        
+                            <div class="filter-row">
+                                <div class="filter-item">
+                                    <label for="city-filter">Filter by City:</label><br>
+                                    <input type="text" id="city-filter" placeholder="City">
+                                </div>
+                                <div class="filter-item">
+                                    <label for="state-filter">Filter by State:</label><br>
+                                    <input type="text" id="state-filter" placeholder="State">
+                                </div>
                             </div>
-                            <div>
-                                <label for="state-filter">Filter by State:</label><br>
-                                <input type="text" id="state-filter" placeholder="State">
+                        
+                            <div class="filter-row">
+                                <div class="filter-item">
+                                    <label for="district-filter">Filter by District:</label><br>
+                                    <input type="text" id="district-filter" placeholder="District">
+                                </div>
+                                <div class="filter-item">
+                                    <label for="ward-filter">Filter by Ward:</label><br>
+                                    <input type="text" id="ward-filter" placeholder="Ward">
+                                </div>
                             </div>
-                            <div>
-                                <label for="country-filter">Filter by Country:</label><br>
-                                <input type="text" id="country-filter" placeholder="Country">
-                            </div>
-                            <div>
-                                <label for="party-preference-filter">Filter by Party Preference:</label><br>
-                                <select id="party-preference-filter">
-                                    <option value="">Select Party Preference</option>
-                                    <option value="Republican">Republican</option>
-                                    <option value="Democrat">Democrat</option>
-                                    <option value="Independent">Independent</option>
-                                </select>
+                        
+                            <div class="filter-row">
+                                <div class="filter-item" style="display: none;">
+                                    <label for="country-filter">Filter by Country:</label><br>
+                                    <input type="text" id="country-filter" placeholder="Country">
+                                </div>
+                                <div class="filter-item" style="display: none;">
+                                    <label for="party-preference-filter">Filter by Party Preference:</label><br>
+                                    <select id="party-preference-filter">
+                                        <option value="">Select Party Preference</option>
+                                        <option value="Republican">Republican</option>
+                                        <option value="Democrat">Democrat</option>
+                                        <option value="Independent">Independent</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                
+                     
                         <!-- Contacts List -->
                         <div id="contacts-list">
                             {% for contact in contacts %}
@@ -1685,17 +1630,47 @@
                                 data-zipcode="{{ contact.zipcode }}" 
                                 data-city="{{ contact.city }}" 
                                 data-state="{{ contact.state }}" 
+                                data-district="{{ contact.district }}"
                                 data-country="{{ contact.country }}"
+                                data-ward="{{ contact.ward }}"
+                                data-pctnbr="{{ contact.pct_nbr}}"
                                 data-party-preference="{{ contact.party_preference }}">
+                                
                                 <label>
                                     <div class="contact-container">
                                         <input type="checkbox" name="contacts" value="{{ contact.id }}">
-                                        <span>{{ contact.first_name }} {{ contact.last_name }} - {{ contact.email }} - {{ contact.zipcode }} - {{ contact.city }} - {{ contact.state }} - {{ contact.country }} - {{ contact.party_preference }}</span>
+                                        <span>{{ contact.first_name }} {{ contact.pct_nbr}} {{ contact.last_name }} - {{ contact.email }} - {{ contact.district }} - {{ contact.zipcode }} - {{ contact.city }} - {{ contact.state }} - {{ contact.country }} - {{ contact.party_preference }}</span>
                                     </div>
                                 </label><br>
                             </div>
                             {% endfor %}
                         </div>
+                        <script>
+             function selectAllContacts() {
+    // Get the filtered contacts (those that are visible)
+    const checkboxes = document.querySelectorAll('#contacts-list .contact-item input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        const contactItem = checkbox.closest('.contact-item');
+        // Check if the contact item is visible (not hidden due to the filter)
+        if (contactItem.style.display !== 'none') {
+            checkbox.checked = true;
+        }
+    });
+}
+function deselectAllContacts() {
+    // Get the filtered contacts (those that are visible)
+    const checkboxes = document.querySelectorAll('#contacts-list .contact-item input[type="checkbox"]');
+
+    checkboxes.forEach(checkbox => {
+        const contactItem = checkbox.closest('.contact-item');
+        // Check if the contact item is visible (not hidden due to the filter)
+        if (contactItem.style.display !== 'none') {
+            checkbox.checked = false;
+        }
+    });
+}
+                        </script>
                     </div>
                 
                     <!-- Step 5: Select Polltakers -->
@@ -1753,7 +1728,7 @@
                     }
                 
                     // Filtering contacts
-                    const filters = ['zip-filter-start', 'zip-filter-end', 'city-filter', 'state-filter', 'country-filter', 'party-preference-filter'];
+                    const filters = ['zip-filter-start', 'zip-filter-end', 'city-filter', 'state-filter', 'country-filter', 'party-preference-filter','district-filter','ward-filter','pctnbr-filter'];
                     filters.forEach(filterId => document.getElementById(filterId).addEventListener('input', filterContacts));
                 
                     function filterContacts() {
@@ -1763,6 +1738,11 @@
                         const state = document.getElementById('state-filter').value.toLowerCase();
                         const country = document.getElementById('country-filter').value.toLowerCase();
                         const partyPreference = document.getElementById('party-preference-filter').value.toLowerCase();
+                        const district = document.getElementById('district-filter').value.toLowerCase();  // New district filter value
+                        const ward = document.getElementById('ward-filter').value.toLowerCase();  // New district filter value
+                        const pctnbr = document.getElementById('pctnbr-filter').value.toLowerCase(); // Get the Ward filter value
+
+
                 
                         document.querySelectorAll('.contact-item').forEach(item => {
                             const itemZip = parseInt(item.getAttribute('data-zipcode'));
@@ -1770,13 +1750,20 @@
                             const itemState = item.getAttribute('data-state').toLowerCase();
                             const itemCountry = item.getAttribute('data-country').toLowerCase();
                             const itemParty = item.getAttribute('data-party-preference').toLowerCase();
-                
+                            const itemDistrict = item.getAttribute('data-district') ? item.getAttribute('data-district').toLowerCase() : ''; // Handle null or empty district
+                            const itemWard = item.getAttribute('data-ward') ? item.getAttribute('data-ward').toLowerCase() : ''; // Handle null or empty district
+                            const itemPctNbr = item.getAttribute('data-pctnbr') ? item.getAttribute('data-pctnbr').toLowerCase() : ''; // Handle null or empty pctnbr
+
                             const matches = (!startZip || itemZip >= startZip) &&
                                             (!endZip || itemZip <= endZip) &&
                                             (!city || itemCity.includes(city)) &&
                                             (!state || itemState.includes(state)) &&
                                             (!country || itemCountry.includes(country)) &&
-                                            (!partyPreference || itemParty.includes(partyPreference));
+                                            (!partyPreference || itemParty.includes(partyPreference)) &&
+                                            (!district || itemDistrict.includes(district)) &&
+                                            (!pctnbr || itemPctNbr.includes(pctnbr)) &&
+                                            (!ward || itemWard.includes(ward)); // Filter by district
+
                 
                             item.style.display = matches ? 'block' : 'none';
                         });
@@ -1926,5 +1913,106 @@
 .main-content{
     padding: 0px;
 }
+
+/* #create-survey-logout-design{
+   background-color: white;
+   border: none;
+}
+#logout-button-set{
+    background-color: white;
+    border: none;
+}
+form{
+    border: none;
+} */
+              /* Styling for the filter form */
+              #filter-form {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #f4f4f9;  /* Light grey background */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+}
+
+/* Flexbox layout for each row */
+.filter-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;  /* Wraps the filters in a new row if necessary */
+}
+
+/* Styling for individual filter items */
+.filter-item {
+    width: 48%; /* Each filter item takes up 48% of the row */
+    box-sizing: border-box;
+}
+
+/* Label styling */
+#filter-form label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333; /* Dark grey color for labels */
+    margin-bottom: 5px;
+}
+
+/* Input fields styling */
+#filter-form input[type="text"],
+#filter-form input[type="number"],
+#filter-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: #fff; /* White background for inputs */
+    margin-top: 5px;
+}
+
+/* Styling for select dropdown */
+#filter-form select {
+    background-color: #fff; /* White background for select */
+}
+
+/* Styling for placeholder text */
+#filter-form input::placeholder {
+    color: #999; /* Light grey placeholder text */
+}
+
+/* Hover effect for input fields */
+#filter-form input[type="text"]:hover,
+#filter-form input[type="number"]:hover,
+#filter-form select:hover {
+    border-color: #aaa; /* Slightly darker border on hover */
+}
+
+/* Focus effect for input fields */
+#filter-form input[type="text"]:focus,
+#filter-form input[type="number"]:focus,
+#filter-form select:focus {
+    border-color: #6e8efb; /* Blue border when focused */
+    outline: none;
+}
+
+/* Ensure select dropdown is styled well */
+#filter-form select {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .filter-item {
+        width: 100%;  /* Make filter items take full width on small screens */
+    }
+
+    .filter-row {
+        gap: 10px;  /* Reduced gap between items on smaller screens */
+    }
+}
+
 </style>
     {% endblock %}

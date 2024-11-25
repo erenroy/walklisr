@@ -2,6 +2,7 @@ django
 pillow
 pip install paypalrestsdk
 pip install django-paypal
+pip install -U django-jazzmin
 
 
 

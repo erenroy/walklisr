@@ -229,11 +229,14 @@ class UserContactSearch(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     state = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
+    pct_nbr = models.CharField(max_length=100, null=True, blank=True)
+    district = models.CharField(max_length=100, null=True, blank=True)
+    ward = models.CharField(max_length=100, null=True, blank=True)
+    zipcode = models.CharField(max_length=20, null=True, blank=True)
     search_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.search_date}"
-    
 
 
 # next trail 

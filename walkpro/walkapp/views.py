@@ -1513,18 +1513,23 @@ def contact_search(request):
         city = request.POST.get('city')
         state = request.POST.get('state')
         country = request.POST.get('country')
-        
+        precinct_number = request.POST.get('precinct_number')  # Now correctly using 'precinct_number'
+        district = request.POST.get('district')
+        ward = request.POST.get('ward')
+        zipcode = request.POST.get('zipcode')
 
         # Save or update the user's search in UserContactSearch model
         user_search, created = UserContactSearch.objects.get_or_create(user=request.user)
         user_search.city = city
         user_search.state = state
         user_search.country = country
+        user_search.pct_nbr = precinct_number  # Updated to 'pct_nbr'
+        user_search.district = district
+        user_search.ward = ward
+        user_search.zipcode = zipcode
         user_search.save()
 
         return redirect('contact_search_results')
-    
-    
 
     # Get the user's last search to prefill the form
     last_search = UserContactSearch.objects.filter(user=request.user).first()
@@ -1532,7 +1537,6 @@ def contact_search(request):
     # Get all search entries for the user to display
     search_history = UserContactSearch.objects.filter(user=request.user).order_by('-search_date')
     username = request.user.username if request.user.is_authenticated else None
-    
 
     context = {
         'last_search': last_search,
@@ -1553,14 +1557,14 @@ def contact_search_results(request):
     # Get the last search details
     user_search = UserContactSearch.objects.filter(user=request.user).first()
 
-    # Prepare the base queryset for the user's contacts and limit it to the first 10
-    queryset = UserContactList.objects.filter(user=request.user)[:contacts_limit]  # Get only the first 10 contacts
+    # Prepare the base queryset for the user's contacts and limit it to the user's subscription plan
+    queryset = UserContactList.objects.filter(user=request.user)[:contacts_limit]
 
     # Convert queryset to a list to filter in Python
-    limited_contacts = list(queryset)  # Convert to a list
+    limited_contacts = list(queryset)
 
     # Now, filter the limited contacts based on user input
-    results = limited_contacts  # Start with the limited contacts
+    results = limited_contacts
 
     if user_search:
         # Apply filtering based on user input
@@ -1570,16 +1574,23 @@ def contact_search_results(request):
             results = [contact for contact in results if user_search.state.lower() in contact.state.lower()]
         if user_search.country:
             results = [contact for contact in results if user_search.country.lower() in contact.country.lower()]
+        if user_search.zipcode:
+            results = [contact for contact in results if user_search.zipcode.lower() in contact.zipcode.lower()]
+        if user_search.district:
+            results = [contact for contact in results if user_search.district.lower() in contact.district.lower()]
+        if user_search.pct_nbr:  # Updated to use 'pct_nbr'
+            results = [contact for contact in results if user_search.pct_nbr.lower() in contact.pct_nbr.lower()]
+        if user_search.ward:
+            results = [contact for contact in results if user_search.ward.lower() in contact.ward.lower()]
 
     # Limit the results further based on the subscription limit if necessary
-    results = results[:contacts_limit]  # Limit to user's plan
+    results = results[:contacts_limit]
 
     context = {
         'results': results,
         'search': user_search,
     }
     return render(request, 'contactlists/contact_search_results.html', context)
-
 
 
 # Downloading data of contact  -----------------------------------------------------------------------

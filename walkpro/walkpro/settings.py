@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -153,4 +153,16 @@ EMAIL_HOST_PASSWORD = 'gdpi idvs coiy fgdm'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000000  # Increase this number as needed
 
 
-# admin panel name change 
+# admin panel name change  ------------------------------------------------
+JAZZMIN_SETTINGS = {
+"site_title": "Walk List Pro Administration",
+"site_brand": "Walk List Pro Admin",
+# "site_logo": "img/admin.png",  # Path to your logo image
+"login_logo": "img/admin.png",  # Path to your logo image for the login page
+"login_logo_dark": "img/admin.png",  # Path to your logo image for the dark mode login page
+
+"welcome_sign": "Welcome to Walk List Pro Administration",
+
+"copyright": "©2024©WLP All rights reserved",
+
+}

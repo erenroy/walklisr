@@ -547,8 +547,11 @@ html {
             </div>
             <div class="header-navigation">
                 <nav class="header-navigation-links">
-                    <a  href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Dashboard</a>
-                    <a href="{% url 'surveyapp:poltaker_account' %}" class="{% if request.path == '/surveyapp/poltaker_account/' %}active{% endif %}">My Profile</a>
+                    <a  href="{% url 'surveyapp:poltaker_dashboard' %}" class="nav-link home {% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Home</a>
+                    <a href="{% url 'surveyapp:poltaker_account' %}" class="nav-link home {% if request.path == '/surveyapp/poltaker_account/' %}active{% endif %}">My Profile</a>
+                    <a href="{% url 'surveyapp:edit_poltaker_profile' %}" class="nav-link home {% if request.path == '/surveyapp/edit-poltaker-profile/' %}active{% endif %}">Update Details</a>
+                    <a href="{% url 'surveyapp:forgot_password' %}" class="nav-link home {% if request.path == '/surveyapp/forgot-password/' %}active{% endif %}">Reset Password</a>
+
                     <!-- <a href="{% url 'surveyapp:all_the_survey' %}" class="{% if request.path == '/surveyapp/all_the_survey/' %}active{% endif %}">All Surveys</a> -->
 
                     <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Notifications</a> -->
@@ -588,15 +591,7 @@ html {
                     
                     </form>
                     
-                    <a href="#" class="icon-button">
-                        <i class="ph-gear-bold"></i>
-                    </a>
-                    <a href="#" class="icon-button">
-                        <i class="ph-bell-bold"></i>
-                    </a>
-                    <a href="{% url 'surveyapp:poltaker_account' %}" class="avatar">
-                        <img src="{% static 'img/poltaker.png' %}" alt="" />
-                    </a>
+                  
                 </div>
             </div>
             
@@ -692,15 +687,15 @@ html {
                     </button>
                 </div> -->
             </div>
-            <div class="horizontal-tabs">
+            <!-- <div class="horizontal-tabs">
                 <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Dashboard</a>
                 <a href="{% url 'surveyapp:poltaker_account' %}" class="{% if request.path == '/surveyapp/poltaker_account/' %}active{% endif %}">My Profile</a>
-                <!-- <a href="{% url 'surveyapp:all_the_survey' %}" class="{% if request.path == '/surveyapp/all_the_survey/' %}active{% endif %}">All Surveys</a> -->
+                <a href="{% url 'surveyapp:all_the_survey' %}" class="{% if request.path == '/surveyapp/all_the_survey/' %}active{% endif %}">All Surveys</a>
                 <a href="{% url 'surveyapp:edit_poltaker_profile' %}" class="{% if request.path == '/surveyapp/edit-poltaker-profile/' %}active{% endif %}">Update Details</a>
-                <!-- <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Notifications</a> -->
+                <a href="{% url 'surveyapp:poltaker_dashboard' %}" class="{% if request.path == '/surveyapp/dashboard/' %}active{% endif %}">Notifications</a>
                 <a href="{% url 'surveyapp:forgot_password' %}" class="{% if request.path == '/surveyapp/forgot_password/' %}active{% endif %}">Reset Password</a>
                 
-            </div>
+            </div> -->
             <!-- <div class="content-header">
                 <div class="content-header-intro">
                     <h2>Intergrations and connected apps</h2>
@@ -1438,7 +1433,49 @@ html {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow at the bottom */
 }
 
+.content {
+    margin-top: 0px;
+}
+/* navabar options high lighted -------------------------------------------------------------------------------------- start  */
+/* Default link style */
+.nav-link {
+  color: black;
+  text-decoration: none;
+  padding: 10px;
+}
 
+/* Active link style */
+.nav-link.active {
+  color: white;
+  background-color: #007bff;
+  border-radius: 5px;
+}
+.nav-link.active:hover {
+  color: rgb(255, 255, 255);
+  background-color: #007bff;
+  border-radius: 5px;
+}
+/* Optional: Different styles for each link */
+.nav-link.home.active {
+  background-color: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.nav-link.view-questions.active {
+  background-color: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.nav-link.contacts-list.active {
+  background-color: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.nav-link.surveys.active {
+  background-color: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.nav-link.user-profile.active {
+  background-color: linear-gradient(135deg, #007bff, #0056b3);/
+}
+/* navabr option highlighted --------------------------------------------------------------    End  */
   </style>
   
   <script>

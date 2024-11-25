@@ -893,43 +893,13 @@ table th {
         
         
     <!-- Main Layout -->
-    <div style="display: flex;">
+    <div >
         <!-- Sidebar -->
-        <div id="mySidebar" class="sidebar">
-            <!-- <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a> -->
-            <div class="sidebar-item active" onclick="location.href='{% url 'home' %}'" style="background-color: #f5f4f4; color: rgb(0, 0, 0);">
-                <i class="fas fa-tasks"></i> Plan Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'view_questions' %}'">
-                <i class="fas fa-question-circle"></i> Question Management
-            </div>
-            <div class="sidebar-item" style="background-color: rgb(43, 68, 124); color: white;  font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'contacts_list' %}'">
-                <i class="fas fa-user-check"></i> Contact Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'surveydata:my_surveys' %}'">
-                <i class="fas fa-chart-pie"></i> Survey Management
-            </div>
-            <div class="sidebar-item" style="background-color:#f5f4f4; font-size: 0.9rem; font-weight: 200;" onclick="location.href='{% url 'add_poltaker' %}'">
-                <i class="fas fa-users"></i> Polltaker Management
-            </div>
-            <!-- User Details - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#4CAF50; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 10%; width: 100%;" onclick="location.href='{% url 'user_details' %}'">
-        <i class="fas fa-user-circle"></i> User Details
-    </div>
-
-    <!-- Logout - Positioned at the bottom with a percentage of the sidebar height -->
-    <div class="sidebar-item" style="background-color:#fb5518; color:white; font-size: 0.9rem; font-weight: 200; position: absolute; bottom: 2%; width: 100%;" onclick="location.href='{% url 'logout' %}'">
-        <i class="fas fa-sign-out-alt"></i> Logout
-    </div>
-        </div>
-        
+       
     
-        <div id="main" >
-           
-        </div>
         <!-- Main Content -->
         <div class="main-content">
-            <div class="plan-details" style="margin-bottom: 30px; height: 100px;">
+            <div class="plan-details" style="margin-bottom:0px; height: 40px;">
                 <div class="custom-search-bar">
                     <label class="custom-label-title" >Contact Preference</label>
                     <div class="try" style="display: flex;">
@@ -982,14 +952,17 @@ table th {
             
             <div class="search-page-container">
                 <h2 style="font-size: 1.5rem; color: #333; margin-bottom: 10px; text-align: center;">Contacts Filter Choice</h2>
-
-
+            
                 {% if search_history %}
                     <table>
                         <thead>
                             <tr>
+                                <th>Precinct Number</th>
+                                <th>District</th>
+                                <th>Ward</th>
                                 <th>City</th>
                                 <th>State</th>
+                                <th>Zip Code</th>
                                 <th>Country</th>
                                 <th>Search Date</th>
                             </tr>
@@ -997,8 +970,12 @@ table th {
                         <tbody>
                             {% for search in search_history %}
                                 <tr>
+                                    <td>{{ search.pct_nbr }}</td> <!-- Updated field name for precinct_number -->
+                                    <td>{{ search.district }}</td>
+                                    <td>{{ search.ward }}</td>
                                     <td>{{ search.city }}</td>
                                     <td>{{ search.state }}</td>
+                                    <td>{{ search.zipcode }}</td>
                                     <td>{{ search.country }}</td>
                                     <td>{{ search.search_date }}</td>
                                 </tr>
@@ -1008,6 +985,7 @@ table th {
                 {% else %}
                     <p>No search history found.</p>
                 {% endif %}
+                
                 <p style="font-size: 1rem; color: #555; margin-bottom: 8px; line-height: 1.5; text-align: center;">
                     You can choose the city, state, or country you want and you will get to see all of the contacts from there.
                 </p>
@@ -1017,39 +995,47 @@ table th {
                 <p style="font-size: 1rem; color: #c0392b; font-weight: bold; margin-bottom: 20px; text-align: center;">
                     Remember, you only have contact access based on what your plan allows.
                 </p>
+                
                 <h1>Filter Your Contact List</h1>
-<hr style="margin-bottom: 1%;">
+                <hr style="margin-bottom: 1%;">
+                
                 <!-- Button to toggle form visibility -->
                 <button type="button" id="showFormButton" class="show-form-button">Filter Contacts</button>
                 
                 <!-- The search form, initially hidden -->
                 <form method="post" class="search-form" id="searchForm" style="display:none;">
                     {% csrf_token %}
+                    
+                    <label for="pct_nbr">Precinct Number:</label> <!-- Updated field name -->
+                    <input type="text" name="precinct_number" id="precinct_number" value="{{ last_search.pct_nbr|default:'' }}">
+            
+                    <label for="district">District:</label>
+                    <input type="text" name="district" id="district" value="{{ last_search.district|default:'' }}">
+            
+                    <label for="ward">Ward:</label>
+                    <input type="text" name="ward" id="ward" value="{{ last_search.ward|default:'' }}">
+            
                     <label for="city">City:</label>
                     <input type="text" name="city" id="city" value="{{ last_search.city|default:'' }}">
-                
+            
                     <label for="state">State:</label>
                     <input type="text" name="state" id="state" value="{{ last_search.state|default:'' }}">
-                
+            
+                    <label for="zipcode">Zip Code:</label>
+                    <input type="text" name="zipcode" id="zipcode" value="{{ last_search.zipcode|default:'' }}">
+            
                     <label for="country">Country:</label>
                     <input type="text" name="country" id="country" value="{{ last_search.country|default:'' }}">
-                
+            
                     <button type="submit" class="search-button">Search</button>
+            
                     <p>You can filter out your contact lists based on your requirement.</p>
-                <p>Remember, you will only have access to what your plan allows.</p>
-                <p>You can see all of your searched contacts. To see all contacts, kindly check out all contacts.</p>
+                    <p>Remember, you will only have access to what your plan allows.</p>
+                    <p>You can see all of your searched contacts. To see all contacts, kindly check out all contacts.</p>
                 </form>
-                
-                <!-- <p>You can filter out your contact lists based on your requirement.</p>
-                <p>Remember, you will only have access to what your plan allows.</p>
-                <p>You can see all of your searched contacts. To see all contacts, kindly check out all contacts.</p>
-             -->
-                <!-- <h2>Your Last Search</h2>
-                <p>City: {{ search.city }}</p>
-                <p>State: {{ search.state }}</p>
-                <p>Country: {{ search.country }}</p>
-                <p>Last Searched: {{ search.search_date }}</p> -->
             </div>
+            
+          
             
            
             
@@ -1109,6 +1095,152 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
     });
 
 </script>
+<style>
+    /* Container for the search form */
+    .search-page-container .search-form {
+    width: 100%;
+    max-width: 1000px;
+
+    }
+.search-form {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Styling for form labels */
+.search-form label {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+
+/* Input field styling */
+.search-form input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* Focus effect on input fields */
+.search-form input[type="text"]:focus {
+    border-color: #6e8efb;
+    background-color: #f1f8ff;
+    outline: none;
+}
+
+/* Submit button styling */
+.search-form button[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #6e8efb;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for the submit button */
+.search-form button[type="submit"]:hover {
+    background-color: #4a72d1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Button to toggle form visibility */
+#showFormButton {
+    background-color: #6e8efb;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Hover effect for show form button */
+#showFormButton:hover {
+    background-color: #4a72d1;
+    transform: scale(1.05);
+}
+
+/* Styling for the search form message text */
+.search-form p {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Add a subtle shadow to input fields */
+.search-form input[type="text"]:focus {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for search history section */
+table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #6e8efb;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f8f8f8;
+}
+
+table tr:hover {
+    background-color: #f1f8ff;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 768px) {
+    .search-form {
+        padding: 20px 30px;
+    }
+
+    #showFormButton {
+        font-size: 1.1rem;
+    }
+
+    .search-form input[type="text"] {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}
+
+</style>
 <link rel="stylesheet" href="{% static 'css/accessed.css' %}">
    {% endblock %}
 
