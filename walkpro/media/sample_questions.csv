@@ -1,0 +1,7 @@
+question_text,question_type,option1,option2,option3
+What is your favorite color?,mcq,Red,Blue,Green
+What is your name?,text
+Do you like coding?,yesno
+Select your preferred programming languages:,mcq,Python,JavaScript,C++,Java
+Describe your ideal vacation.,text
+Do you enjoy solving puzzles?,yesno

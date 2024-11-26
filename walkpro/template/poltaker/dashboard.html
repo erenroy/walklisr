@@ -1,8 +1,12 @@
 {% extends 'poltaker/surveybase.html' %}
-
+{% load static %}
 {% block title %}Survey Dashboard{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/poltakerdashboard.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/poltakerdashboard.js'%}"></script>
+
 <style>
     /* General Styles */
     body {
@@ -259,10 +263,13 @@
     }
 }
 </style>
+ <!-- Montserrat Font -->
+ <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+ <!-- Material Icons -->
+ <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<!-- 
 <div class="survey-dashboard">
-    <!-- <h1 class="welcome-heading">Welcome, {{ poltaker.name }}</h1>
-    <p class="survey-intro">Here are the surveys assigned to you:</p> -->
 
     <div class="survey-list">
         {% for survey in surveys %}
@@ -277,7 +284,6 @@
             <p>Created on - {{ survey.created_at }}</p>
         </div>
 
-        <!-- Link to all surveys for that token -->
         <a href="{% url 'surveyapp:all_token_survey' survey.survey_token %}" class="take-survey-btn">View Survey</a>
     </div>
 {% empty %}
@@ -349,8 +355,601 @@
             }
         </style>
     </div>
+</div> -->
+<main class="main-container">
+    <div class="main-title">
+      <p class="font-weight-bold">DASHBOARD</p>
+    </div>
+
+    <div class="main-cards">
+
+        <!-- Total Surveys Card -->
+        <div class="card">
+            <div class="card-inner">
+                <p class="text-primary">Total Surveys</p>
+                <span class="material-icons-outlined text-blue">inventory_2</span>
+            </div>
+            <span class="text-primary font-weight-bold">{{ poltaker.total_survey }}</span>
+        </div>
+    
+        <!-- Completed Surveys Card -->
+        <div class="card">
+            <div class="card-inner">
+                <p class="text-primary">Completed Surveys</p>
+                <span class="material-icons-outlined text-orange">check_circle</span> <!-- Updated icon for completed -->
+            </div>
+            <span class="text-primary font-weight-bold">{{ poltaker.completed_surveys }}</span>
+        </div>
+    
+        <!-- Pending Surveys Card -->
+        <div class="card">
+            <div class="card-inner">
+                <p class="text-primary">Pending Surveys</p>
+                <span class="material-icons-outlined text-yellow">hourglass_empty</span> <!-- Updated icon for pending -->
+            </div>
+            <span class="text-primary font-weight-bold">{{ poltaker.pending_surveys }}</span>
+        </div>
+    
+        <!-- Denied Surveys Card -->
+        <div class="card">
+            <div class="card-inner">
+                <p class="text-primary">Denied Surveys</p>
+                <span class="material-icons-outlined text-red">cancel</span> <!-- Updated icon for denied -->
+            </div>
+            <span class="text-primary font-weight-bold">{{ poltaker.inprogress_surveys }}</span>
+        </div>
+    
+    </div>
+    
+    <div class="charts" style="width: 100%; gap: 20px;">
+
+      <!-- Chart Card Structure -->
+<div class="charts-card" style="width: 100%;">
+    <p class="chart-title">Survey Data</p>
+    <div id="bar-chart" class="chart-container">
+        <canvas id="surveyChart"></canvas>
+    </div>
 </div>
 
+<script>
+    // Ensure the data is correctly passed from Django context
+    console.log('Total Survey:', {{ poltaker.total_survey }});
+    console.log('Completed Surveys:', {{ poltaker.completed_surveys }});
+    console.log('Pending Surveys:', {{ poltaker.pending_surveys }});
+    console.log('Denied Surveys:', {{ poltaker.inprogress_surveys }});
+
+    // Define the chart data
+    const data = {
+        labels: ['Total Surveys', 'Completed Surveys', 'Pending Surveys', 'Denied Surveys'],
+        datasets: [{
+            label: 'Survey Data',
+            data: [
+                {{ poltaker.total_survey }},
+                {{ poltaker.completed_surveys }},
+                {{ poltaker.pending_surveys }},
+                {{ poltaker.inprogress_surveys }}
+            ],
+            backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'], // Soft modern colors
+            borderColor: ['#0056b3', '#218838', '#e0a800', '#c82333'], // Darker shades for borders
+            borderWidth: 2,
+            hoverBackgroundColor: ['#0056b3', '#218838', '#e0a800', '#c82333'],
+            hoverBorderColor: '#fff',
+            hoverBorderWidth: 3
+        }]
+    };
+
+    // Chart.js configuration with smooth animations and customization
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1500, // Smooth transition for chart load
+                easing: 'easeOutQuart'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        borderColor: '#ddd',
+                        color: '#f0f0f0',
+                    },
+                    ticks: {
+                        stepSize: 1,
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif'
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' surveys'; // Customizing tooltips
+                        }
+                    },
+                    bodyFont: {
+                        size: 14,
+                        family: 'Arial, sans-serif'
+                    },
+                    footerFont: {
+                        size: 12,
+                        family: 'Arial, sans-serif'
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 16,
+                            family: 'Arial, sans-serif'
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // Render the chart
+    const surveyChart = new Chart(
+        document.getElementById('surveyChart'),
+        config
+    );
+</script>
+
+<!-- CSS for Professional Look of Chart Card -->
+<style>
+    /* Chart Card */
+    .charts-card {
+        width: 90%;
+        max-width: 1200px;
+        margin: 30px auto;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+        padding: 30px;
+        box-sizing: border-box;
+        text-align: center;
+        transition: transform 0.3s ease; /* Hover effect for interactivity */
+    }
+
+    .charts-card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    /* Title Styling */
+    .chart-title {
+        font-size: 28px;
+        font-family: 'Helvetica', sans-serif;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Chart Container */
+    .chart-container {
+        max-width: 100%;
+        height: 450px; /* Slightly larger height for a more prominent chart */
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: scale(1.02); /* Subtle zoom-in effect for the chart container */
+    }
+
+    /* Optional: Adjusting canvas style */
+    canvas {
+        height: 100% !important;
+        width: 100% !important;
+        border-radius: 8px;
+    }
+
+    /* Additional Styles for Visual Appeal */
+    .chart-title {
+        color: #2c3e50;
+    }
+
+    /* Responsive design adjustments */
+    @media (max-width: 768px) {
+        .charts-card {
+            width: 95%;
+        }
+        .chart-title {
+            font-size: 24px;
+        }
+    }
+</style>
+
+      <!-- Chart Card Structure for Area Chart -->
+<div class="charts-card" style="width: 100%;">
+    <p class="chart-title">Survey Progress</p>
+    <div id="area-chart" class="chart-container">
+        <canvas id="surveyAreaChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // Ensure the data is correctly passed from Django context
+    console.log('Total Survey:', {{ poltaker.total_survey }});
+    console.log('Completed Surveys:', {{ poltaker.completed_surveys }});
+    console.log('Pending Surveys:', {{ poltaker.pending_surveys }});
+    console.log('Denied Surveys:', {{ poltaker.inprogress_surveys }});
+
+    // Define the chart data for the area chart
+    const areaData = {
+        labels: ['Total Surveys', 'Completed Surveys', 'Pending Surveys', 'Denied Surveys'],
+        datasets: [{
+            label: 'Survey Progress',
+            data: [
+                {{ poltaker.total_survey }},
+                {{ poltaker.completed_surveys }},
+                {{ poltaker.pending_surveys }},
+                {{ poltaker.inprogress_surveys }}
+            ],
+            fill: true, // Enabling the area fill
+            backgroundColor: 'rgba(0, 123, 255, 0.2)', // Light blue fill
+            borderColor: '#007bff', // Blue border
+            borderWidth: 2,
+            pointBackgroundColor: '#007bff', // Blue points
+            pointBorderColor: '#fff', // White border for points
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            tension: 0.4 // Smoother curves
+        }]
+    };
+
+    // Chart.js configuration for the area chart
+    const areaConfig = {
+        type: 'line',
+        data: areaData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1500, // Smooth transition for chart load
+                easing: 'easeOutQuart'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        borderColor: '#ddd',
+                        color: '#f0f0f0',
+                    },
+                    ticks: {
+                        stepSize: 1,
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif'
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 14,
+                            family: 'Arial, sans-serif'
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' surveys'; // Customizing tooltips
+                        }
+                    },
+                    bodyFont: {
+                        size: 14,
+                        family: 'Arial, sans-serif'
+                    },
+                    footerFont: {
+                        size: 12,
+                        family: 'Arial, sans-serif'
+                    }
+                },
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 16,
+                            family: 'Arial, sans-serif'
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // Render the area chart
+    const surveyAreaChart = new Chart(
+        document.getElementById('surveyAreaChart'),
+        areaConfig
+    );
+</script>
+
+<!-- CSS for Professional Look of Area Chart Card -->
+<style>
+    /* Chart Card */
+    .charts-card {
+        width: 90%;
+        max-width: 1200px;
+        margin: 30px auto;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Enhanced shadow for depth */
+        padding: 30px;
+        box-sizing: border-box;
+        text-align: center;
+        transition: transform 0.3s ease; /* Hover effect for interactivity */
+    }
+
+    .charts-card:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    /* Title Styling */
+    .chart-title {
+        font-size: 28px;
+        font-family: 'Helvetica', sans-serif;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Chart Container */
+    .chart-container {
+        max-width: 100%;
+        height: 450px; /* Slightly larger height for a more prominent chart */
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        box-sizing: border-box;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: scale(1.02); /* Subtle zoom-in effect for the chart container */
+    }
+
+    /* Optional: Adjusting canvas style */
+    canvas {
+        height: 100% !important;
+        width: 100% !important;
+        border-radius: 8px;
+    }
+
+    /* Additional Styles for Visual Appeal */
+    .chart-title {
+        color: #2c3e50;
+    }
+
+    /* Responsive design adjustments */
+    @media (max-width: 768px) {
+        .charts-card {
+            width: 95%;
+        }
+        .chart-title {
+            font-size: 24px;
+        }
+    }
+</style>
+
+
+    </div>
+<!-- Information Section -->
+<div class="info-card">
+    <h2 class="section-title">Account Information</h2>
+    <div class="info-grid">
+        <div class="info-item">
+            <p class="info-label"><strong>Name:</strong></p>
+            <p class="info-value">{{ poltaker.name }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Email:</strong></p>
+            <p class="info-value">{{ poltaker.email }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Mobile:</strong></p>
+            <p class="info-value">{{ poltaker.mobile }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Zip Code:</strong></p>
+            <p class="info-value">{{ poltaker.zip_code }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Street:</strong></p>
+            <p class="info-value">{{ poltaker.Street }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>City:</strong></p>
+            <p class="info-value">{{ poltaker.city }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>State:</strong></p>
+            <p class="info-value">{{ poltaker.state }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Completed Surveys:</strong></p>
+            <p class="info-value">{{ poltaker.completed_surveys }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Pending Surveys:</strong></p>
+            <p class="info-value">{{ poltaker.pending_surveys }}</p>
+        </div>
+        <div class="info-item">
+            <p class="info-label"><strong>Total Surveys:</strong></p>
+            <p class="info-value">{{ poltaker.total_survey }}</p>
+        </div>
+    </div>
+    <!-- Button for editing details -->
+<!-- Button for editing details -->
+<button style="margin-top: 20px;" class="edit-button" onclick="window.location.href='{% url 'surveyapp:edit_poltaker_profile' %}'">
+    Edit Details
+</button>
+
+</div>
+
+<!-- CSS -->
+<style>
+    /* Card container */
+    .info-card {
+        width: 100%;
+        max-width: 2900px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        font-family: 'Poppins', sans-serif; /* Modern font */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .info-card:hover {
+        transform: scale(1.03); /* Smooth hover effect */
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 30px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    /* Grid layout for the info items */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); /* Flexible responsive grid */
+        gap: 15px; /* Reduced gap for a more compact look */
+    }
+
+    /* Information Item Container */
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 12px; /* Reduced padding */
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        border-left: 4px solid #3498db; /* Left border color for better aesthetics */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .info-item:hover {
+        background-color: #eaf1f6; /* Slight hover effect */
+        transform: translateY(-5px); /* Slight lift effect */
+    }
+
+    /* Label Styling */
+    .info-label {
+        font-size: 1em; /* Adjusted size */
+        color: #34495e;
+        font-weight: 600;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
+    }
+
+    /* Value Styling */
+    .info-value {
+        font-size: 1em; /* Adjusted size */
+        color: #16a085;
+        font-weight: 500;
+        margin-top: 5px;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 26px;
+        }
+
+        .info-label,
+        .info-value {
+            font-size: 0.95em;
+        }
+    }
+
+    /* Adding hover effect to the info-item */
+    .info-item:hover {
+        transform: scale(1.05);
+        background-color: #f0f4f7;
+    }
+
+  /* Button Styling */
+.edit-button {
+    font-size: 16px; /* Adjusting font size for readability */
+    padding: 10px 20px; /* Adjusting padding for a larger click area */
+    background-color: #3498db; /* Primary blue color */
+    color: #fff; /* White text color */
+    border: none; /* Removing default border */
+    border-radius: 8px; /* Rounded corners for a smooth look */
+    font-weight: 500; /* Slightly bolder text for emphasis */
+    cursor: pointer; /* Changing the cursor to pointer to indicate it's clickable */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+}
+
+/* Hover effect for the button */
+.edit-button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+    transform: translateY(-3px); /* Lifting the button slightly */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow effect */
+}
+
+/* Active state for button when clicked */
+.edit-button:active {
+    background-color: #1c6c8c; /* Even darker blue on click */
+    transform: translateY(1px); /* Slight push down effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Returning shadow to normal */
+}
+
+/* Focus state for accessibility */
+.edit-button:focus {
+    outline: none; /* Removing the default outline */
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5); /* Custom focus outline */
+}
+.edit-button {
+  
+    display: block;
+    margin: 0 auto; /* Centers the button horizontally */
+}
+.responsive-wrapper {
+    width: 75%;
+    max-width: 3280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
 
 {% endblock %}
 

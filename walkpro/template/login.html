@@ -310,15 +310,7 @@ html, body {
     <div class="container" id="container" >
        
         <div class="form-container sign-in-container">
-			{% if messages %}
-			<ul style="list-style-type: none; padding: 0; margin: 0; width: 100%;">
-				{% for message in messages %}
-					<li style="background-color: #e8f0fe; margin: 10px 0; padding: 15px 20px; border-left: 5px solid #4285f4; border-radius: 8px; color: #333; font-size: 16px; font-family: Arial, sans-serif; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); transition: transform 0.2s;">
-						{{ message }}
-					</li>
-				{% endfor %}
-			</ul>
-		{% endif %}
+			
 		
             <form action="{% url 'login' %}" method="POST"> <!-- Use the URL for login -->
                 {% csrf_token %}

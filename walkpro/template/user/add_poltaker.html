@@ -1550,20 +1550,7 @@ form {
                     </style>
                 </div>
                 <!-- List of Poltakers for the current user -->
-                {% if messages %}
-                <div class="message-container" id="messageContainer">
-                    <ul class="messages">
-                        {% for message in messages %}
-                        <li class="message{% if message.tags %} {{ message.tags }}{% endif %}">
-                            {{ message }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    <button class="close-btn" onclick="closeMessage(this);">Close</button>
-                    <!-- Close button at the bottom -->
-                </div>
-                {% endif %}
-
+               
 
 
             </div>
@@ -1971,6 +1958,8 @@ form {
 
 
              </style>
+<link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
+
             <!-- Adding new nav responsive css ------------------------------------------------------------------- END -->
 
 

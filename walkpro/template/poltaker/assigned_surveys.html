@@ -1,0 +1,357 @@
+{% extends 'poltaker/surveybase.html' %}
+
+{% block title %}Survey Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    /* General Styles */
+    body {
+        /* margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #f3f4f6, #e0e7ff); 
+        color: #333; */
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Survey Dashboard */
+    .survey-dashboard {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        width: 100%;
+        flex-grow: 1;
+    }
+
+    /* Welcome Heading */
+    .welcome-heading {
+        text-align: center;
+        color: #ff4b2b; /* Vibrant red color for emphasis */
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+    }
+
+    /* Survey Intro Text */
+    .survey-intro {
+        text-align: center;
+        color: #555;
+        font-size: 1.2rem;
+        margin-bottom: 25px;
+    }
+
+    /* Survey List */
+    .survey-list {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    /* Survey Item Styles */
+    .survey-item {
+        background-color: #f8f8f8; /* Light grey background for survey items */
+        padding: 18px 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .survey-item:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Survey Title */
+    .survey-title {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #333;
+        display: inline-block;
+        position: relative;
+    }
+
+    /* Pending Tag */
+    .pending-tag {
+        font-size: 0.9rem;
+        color: #fff;
+        background-color: #ff4b2b; /* Red for pending surveys */
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-left: 10px;
+        font-weight: bold;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    /* Survey Description */
+    .survey-description {
+        font-size: 1rem;
+        color: #777;
+    }
+
+    /* Survey Date and Time */
+    .survey-datetime {
+        font-size: 0.95rem;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    /* Take Survey Button */
+    .take-survey-btn {
+        display: inline-block;
+        padding: 8px 18px;
+        font-size: 1rem;
+        background-color: rgb(43, 68, 124); /* Blue for action button */
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+        align-self: flex-start;
+    }
+
+    .take-survey-btn:hover {
+        background-color: rgb(43, 68, 124); /* Blue on hover */
+    }
+
+    /* Fullscreen Layout */
+    .survey-dashboard {
+        min-height: 100vh; /* Ensure the dashboard takes the full height of the screen */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .survey-dashboard {
+            padding: 20px;
+        }
+        
+        .survey-item {
+            padding: 15px;
+        }
+
+        .survey-title {
+            font-size: 1.4rem;
+        }
+
+        .survey-description {
+            font-size: 1rem;
+        }
+
+        .pending-tag {
+            font-size: 0.8rem;
+        }
+
+        .take-survey-btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+
+    /* new css  */
+    /* Basic reset */
+/* Basic reset */
+
+/* Container for survey items */
+.survey-item {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px; /* Reduced padding */
+    margin: 16px 0; /* Reduced margin */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+}
+
+/* Hover effect */
+.survey-item:hover {
+    transform: translateY(-4px); /* Reduced hover lift */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); /* Adjusted shadow */
+}
+
+/* Survey title */
+.survey-title {
+    font-size: 1.5em; /* Reduced font size */
+    color: #333333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px; /* Reduced margin */
+    font-weight: 500;
+}
+
+/* Pending tag */
+.pending-tag {
+    background-color: #ff4b2b;
+    color: #ffffff;
+    padding: 2px 8px; /* Reduced padding */
+    border-radius: 4px;
+    font-size: 0.75em; /* Reduced font size */
+}
+
+/* Survey description */
+.survey-description {
+    font-size: 0.95em; /* Slightly reduced font size */
+    color: #666666;
+    margin-bottom: 12px; /* Reduced margin */
+    line-height: 1.4; /* Slightly reduced line height */
+}
+
+/* Date and creation info */
+.survey-item div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Reduced gap */
+    margin-bottom: 12px; /* Reduced margin */
+}
+
+.survey-item div p {
+    font-size: 0.85em; /* Slightly reduced font size */
+    color: #999999;
+}
+
+/* Button link */
+.take-survey-btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 8px 16px; /* Reduced padding */
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9em; /* Slightly reduced font size */
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 3px 5px rgba(0, 123, 255, 0.1); /* Adjusted shadow */
+}
+
+/* Button hover effect */
+.take-survey-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Reduced hover lift */
+    box-shadow: 0 5px 7px rgba(0, 123, 255, 0.2); /* Adjusted shadow */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .survey-item {
+        padding: 12px; /* Further reduced padding for mobile */
+    }
+
+    .survey-title {
+        font-size: 1.3em; /* Further reduced font size for mobile */
+    }
+
+    .survey-description {
+        font-size: 0.9em; /* Further reduced font size for mobile */
+    }
+
+    .take-survey-btn {
+        padding: 8px 14px; /* Further reduced padding for mobile */
+    }
+}
+</style>
+
+<div class="survey-dashboard">
+    <!-- <h1 class="welcome-heading">Welcome, {{ poltaker.name }}</h1>
+    <p class="survey-intro">Here are the surveys assigned to you:</p> -->
+
+    <div class="survey-list">
+        {% for survey in surveys %}
+    <div class="survey-item">
+        <h2 class="survey-title">
+            {{ survey.title }}
+            <span class="pending-tag">Pending</span>
+        </h2>
+        <p class="survey-description">{{ survey.description }}</p>
+        <div>
+            <p>Survey Date - {{ survey.survey_date }}</p>
+            <p>Created on - {{ survey.created_at }}</p>
+        </div>
+
+        <!-- Link to all surveys for that token -->
+        <a href="{% url 'surveyapp:all_token_survey' survey.survey_token %}" class="take-survey-btn">Start Survey</a>
+    </div>
+{% empty %}
+    <div class="no-surveys-box">
+        <div class="icon-container">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h3>No Pending Surveys Available</h3>
+        <p>You have completed all your pending surveys. Kindly wait until you are assigned new surveys. Your contribution is truly valued. Thank you!</p>
+        <p>- <span class="manager-name">Manager</span></p>
+    </div>
+{% endfor %}
+
+        <style>
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        
+            .no-surveys-box {
+                background: #f0f4f7; /* Subtle light grayish blue background */
+                border-radius: 12px;
+                padding: 40px 60px;
+                width: 100%;
+                max-width: 1800px;
+                margin: 0px auto;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+                text-align: center;
+                font-family: 'Roboto', sans-serif;
+                color: #333;
+                animation: fadeIn 1s ease-out;
+                border: 1px solid #ddd; /* Light border for definition */
+            }
+        
+            .icon-container {
+                font-size: 60px;
+                color: #28a745; /* Professional green (check-circle color) */
+                margin-bottom: 30px;
+            }
+        
+            .no-surveys-box h3 {
+                font-size: 32px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                color: #333; /* Darker color for text */
+                margin-bottom: 20px;
+            }
+        
+            .no-surveys-box p {
+                font-size: 18px;
+                margin-bottom: 20px;
+                line-height: 1.6;
+                color: #555; /* Slightly lighter gray for readability */
+            }
+        
+            .no-surveys-box p:last-child {
+                font-size: 16px;
+                font-weight: 500;
+            }
+        
+            .manager-name {
+                color: #007bff; /* Professional blue for manager emphasis */
+            }
+        </style>
+    </div>
+</div>
+
+
+{% endblock %}
+
+

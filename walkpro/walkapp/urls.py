@@ -84,6 +84,14 @@ urlpatterns = [
     path('poltakers/edit/<int:pk>/', views.poltaker_edit, name='poltaker_edit'),
     path('poltakers/delete/<int:pk>/', views.poltaker_delete, name='poltaker_delete'),
 
+    path('remove-question/<int:question_id>/', views.remove_question, name='remove_question'),
+
+    # URL to delete multiple selected questions
+    path('remove-selected-questions/', views.remove_selected_questions, name='remove_selected_questions'),
+
+    path('export-questions/', views.export_questions, name='export_questions'),
+
+
 
     # survey data 
     # path('my-surveys/', views.my_surveys, name='my_surveys'), 

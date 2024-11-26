@@ -153,18 +153,81 @@ def logout_view(request):
     logout(request)
     return redirect('first_look')
 
+from surveyapp.models import Survey
+
 @login_required
 def home_view(request):
+    # Fetching user-related data
     user_subscription = UserSubscription.objects.filter(user=request.user).first()
-
     username = request.user.username if request.user.is_authenticated else None
-    
+    user_profile = UserProfile.objects.filter(user=request.user).first()
+
+    # Ensure the user is logged in and filter surveys based on user (created_by)
+    surveys = Survey.objects.filter(created_by=request.user)
+
+    # Manually filter surveys by unique survey_token
+    seen_tokens = set()
+    unique_surveys = []
+
+    # Loop through the surveys and ensure only one survey per survey_token is added
+    for survey in surveys:
+        if survey.survey_token not in seen_tokens:
+            unique_surveys.append(survey)
+            seen_tokens.add(survey.survey_token)
+
+    # Count surveys by status for total surveys
+    successful_count = Survey.objects.filter(status='completed').count()
+    in_progress_count = Survey.objects.filter(status='pending').count()
+    denied_count = Survey.objects.filter(status='in_progress').count()
+
+    # Prepare data for the last 7 days
+    today = timezone.now()
+    last_7_days = [today - timedelta(days=i) for i in range(7)]  # Get last 7 days
+
+    successful_data = []
+    in_progress_data = []
+    denied_data = []
+    survey_labels = [day.strftime('%b %d') for day in last_7_days]  # Labels for the days
+
+    # Loop through the last 7 days and count surveys for each status
+    for day in last_7_days:
+        successful_count_day = Survey.objects.filter(
+            created_by=request.user,
+            status='completed',
+            created_at__date=day.date()
+        ).count()
+        in_progress_count_day = Survey.objects.filter(
+            created_by=request.user,
+            status='pending',
+            created_at__date=day.date()
+        ).count()
+        denied_count_day = Survey.objects.filter(
+            created_by=request.user,
+            status='in_progress',
+            created_at__date=day.date()
+        ).count()
+
+        successful_data.append(successful_count_day)
+        in_progress_data.append(in_progress_count_day)
+        denied_data.append(denied_count_day)
+
     context = {
         'subscription': user_subscription,
         'username': username,
+        'surveys': unique_surveys,
+        'profile': user_profile,
+        'user_email': request.user.email,
+        'successful_count': successful_count,
+        'in_progress_count': in_progress_count,
+        'denied_count': denied_count,
+        # Data for the last 7 days' chart
+        'successful_data': successful_data,
+        'in_progress_data': in_progress_data,
+        'denied_data': denied_data,
+        'survey_labels': survey_labels,
     }
-    return render(request, 'user/homeindex.html',context)  # Create a home.html template with a logout button
 
+    return render(request, 'user/homeindex.html', context)  # Render template with updated context
 # Login , Register end here ------------------------------------------------------------------------------------------------------------------------
 
 def cdata_view(request):
@@ -1112,28 +1175,58 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from .models import Question, Option
 
+import csv
+from django.core.files.storage import FileSystemStorage
 @login_required
 def add_questions(request):
     if request.method == 'POST':
+        # Check if a CSV file is uploaded
+        if 'csv_file' in request.FILES:
+            csv_file = request.FILES['csv_file']
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request, 'Please upload a CSV file.')
+                return redirect('add_questions')
+
+            # Save the uploaded file
+            fs = FileSystemStorage()
+            filename = fs.save(csv_file.name, csv_file)
+            file_path = fs.path(filename)
+
+            # Parse the CSV file
+            with open(file_path, newline='') as csvfile:
+                reader = csv.reader(csvfile)
+                for row in reader:
+                    question_text, question_type, *options = row
+                    if not question_text or not question_type:
+                        continue  # Skip incomplete rows
+
+                    question = Question.objects.create(user=request.user, question_text=question_text, question_type=question_type)
+
+                    if question_type == 'mcq' and options:
+                        for option_text in options:
+                            if option_text:
+                                Option.objects.create(question=question, option_text=option_text)
+
+            messages.success(request, 'Questions added successfully from CSV!')
+            return redirect('add_questions')
+
+        # Handle manual question form submission
         question_text = request.POST.get('question_text')
         question_type = request.POST.get('question_type')
         options = request.POST.getlist('options')
 
-        # Validate that a question and type is provided
         if not question_text or not question_type:
-            messages.error(request, "Please provide a question and select a question type.")
-            return redirect('add_questions')  # Redirect to the same page
+            messages.error(request, 'Please provide a question and select a question type.')
+            return redirect('add_questions')
 
-        # Create the question
         question = Question.objects.create(user=request.user, question_text=question_text, question_type=question_type)
 
-        # Create options if they exist and are associated with the question
         for option_text in options:
             if option_text:
                 Option.objects.create(question=question, option_text=option_text)
 
-        messages.success(request, "Question added successfully!")  # Add a success message
-        return redirect('add_questions')  # Redirect to the same page after saving
+        messages.success(request, 'Question added successfully!')
+        return redirect('add_questions')
 
     username = request.user.username if request.user.is_authenticated else None
     return render(request, 'questions/add_questions.html', {'username': username})
@@ -1947,3 +2040,75 @@ def poltaker_delete(request, pk):
         return redirect('add_poltaker')
     return render(request, 'poltaker/poltaker_confirm_delete.html', {'poltaker': poltaker})
 # Deleting poltaker End --------------------------------------------------------------------------------------------------------
+from django.http import JsonResponse
+from .models import Question
+from django.views.decorators.csrf import csrf_exempt
+
+# View to remove a single question
+def remove_question(request, question_id):
+    try:
+        question = Question.objects.get(id=question_id)
+        question.delete()
+        return JsonResponse({'success': True, 'message': 'Question removed successfully.'})
+    except Question.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Question not found.'})
+
+# View to remove multiple selected questions
+@csrf_exempt
+def remove_selected_questions(request):
+    if request.method == 'POST':
+        try:
+            # Parse the request body to get selected question IDs
+            import json
+            data = json.loads(request.body)
+            question_ids = data.get('question_ids', [])
+
+            # Remove the selected questions
+            questions = Question.objects.filter(id__in=question_ids)
+            questions.delete()
+
+            return JsonResponse({'success': True, 'message': 'Selected questions removed successfully.'})
+
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+
+import csv
+from django.http import HttpResponse
+from .models import Question
+@login_required
+def export_questions(request):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return HttpResponse("You are not authorized to export data.", status=403)
+
+    # Fetch the questions for the logged-in user
+    questions = Question.objects.filter(user=request.user).prefetch_related('options')
+
+    # Create an HttpResponse object with CSV content type
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="questions.csv"'
+
+    # Create a CSV writer object
+    writer = csv.writer(response)
+
+    # Write the header row (question text, question type, and options)
+    writer.writerow(['question_text', 'question_type', 'option1', 'option2', 'option3', 'option4'])
+
+    # Write questions and their options
+    for question in questions:
+        # Start with the question text and type
+        row = [question.question_text, question.question_type]
+        
+        # For MCQ questions, add options
+        if question.question_type == 'mcq':
+            options = [option.option_text for option in question.options.all()]
+            row.extend(options)  # Add options to the row
+
+        # For text and yesno questions, leave option columns empty
+        elif question.question_type == 'text' or question.question_type == 'yesno':
+            row.extend([''] * 4)  # Empty options for text/yesno questions
+
+        # Write the row to the CSV file
+        writer.writerow(row)
+
+    return response

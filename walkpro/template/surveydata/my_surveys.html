@@ -1145,19 +1145,7 @@ h2 {
                   </form>
                 </div>
             </div>
-            {% if messages %}
-            <div class="message-container">
-                <ul class="message-list">
-                    {% for message in messages %}
-                        <li class="message-item warning">
-                            <span class="message-text">{{ message }}</span>
-                            <button class="close-btn" onclick="this.parentElement.style.display='none';">×</button>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-        
+           
             
 
             <div class="container">
@@ -1173,12 +1161,13 @@ h2 {
     <div class="header-item"><strong>Export</strong></div>
     <div class="header-item"><strong>Actions</strong></div>
   </div>
-  
+  {% if surveys %}
   {% for survey in surveys %}
   <div class="survey-row">
     <div class="row-item">{{ survey.title }}</div>
     <div class="row-item">{{ survey.created_at|date:"Y-m-d" }}</div>
     <div class="row-item">{{ survey.status }}</div>
+
     <div class="row-item export-btn">
       <!-- Export Button under Export Column -->
       <a href="{% url 'surveydata:export_responses' survey.id %}">
@@ -1241,7 +1230,73 @@ h2 {
     
   </div>
 {% endfor %}
+{% else %}
+<div class="no-surveys-box">
+    <div class="icon-container">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    <h3>Kidly Create a Survey</h3>
+    <p>You dont have any ongoing or complted survey , Kidnly Create one .</p>
+    <p>- <span class="manager-name">Manager</span></p>
+</div>
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
+    .no-surveys-box {
+        background: #f0f4f7; /* Subtle light grayish blue background */
+        border-radius: 12px;
+        padding: 40px 60px;
+        width: 100%;
+        max-width: 1800px;
+        margin: 0px auto;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+        animation: fadeIn 1s ease-out;
+        border: 1px solid #ddd; /* Light border for definition */
+    }
+
+    .icon-container {
+        font-size: 60px;
+        color: #28a745; /* Professional green (check-circle color) */
+        margin-bottom: 30px;
+    }
+
+    .no-surveys-box h3 {
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #333; /* Darker color for text */
+        margin-bottom: 20px;
+    }
+
+    .no-surveys-box p {
+        font-size: 18px;
+        margin-bottom: 20px;
+        line-height: 1.6;
+        color: #555; /* Slightly lighter gray for readability */
+    }
+
+    .no-surveys-box p:last-child {
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .manager-name {
+        color: #007bff; /* Professional blue for manager emphasis */
+    }
+</style>
+{% endif %}
 
 
   
@@ -1626,6 +1681,8 @@ width: 175%;
 }
 
     </style>
+<link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
+
 <!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
 
     {% endblock %}

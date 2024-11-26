@@ -1,0 +1,12 @@
+.content {
+    width: 75%;
+    margin: 0 auto;
+}
+.content.full-width {
+    width: 100%;
+}
+@media (max-width: 800px) {
+    .content {
+        width: 100%;
+    }
+}

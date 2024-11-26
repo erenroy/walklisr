@@ -580,6 +580,8 @@ def poltaker_account(request):
     
     return render(request, 'poltaker/account.html', context)
 
+
+
 def all_the_survey(request):
     if 'poltaker_id' not in request.session:
         return redirect('surveyapp:poltaker_login')
@@ -782,9 +784,46 @@ def poltaker_dashboard(request):
         if survey.survey_token not in surveys_by_token:
             surveys_by_token[survey.survey_token] = survey
 
+    if 'poltaker_id' not in request.session:
+        return redirect('surveyapp:poltaker_login')
+    
+    # Get the Poltaker using the ID stored in session
+    poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
+    
     # Pass the context for rendering the dashboard
-    context = {'poltaker': poltaker, 'surveys': surveys_by_token.values()}
+    context = {'poltaker': poltaker,'poltaker': poltaker, 'surveys': surveys_by_token.values()}
     return render(request, 'poltaker/dashboard.html', context)
+
+def assigned_surveys_poltaker(request):
+    # Check if the polltaker is logged in
+    if 'poltaker_id' not in request.session:
+        return redirect('surveyapp:poltaker_login')
+
+    # Get the current logged-in polltaker
+    poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
+
+    # Get all surveys assigned to the polltaker
+    assigned_surveys = Survey.objects.filter(polltaker=poltaker)
+
+    # Exclude surveys that are marked as 'completed'
+    incomplete_surveys = assigned_surveys.exclude(status='completed')
+
+    # Group surveys by their token (only show unique tokens)
+    surveys_by_token = {}
+    for survey in incomplete_surveys:
+        if survey.survey_token not in surveys_by_token:
+            surveys_by_token[survey.survey_token] = survey
+
+    if 'poltaker_id' not in request.session:
+        return redirect('surveyapp:poltaker_login')
+    
+    # Get the Poltaker using the ID stored in session
+    poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
+    
+    # Pass the context for rendering the dashboard
+    context = {'poltaker': poltaker,'poltaker': poltaker, 'surveys': surveys_by_token.values()}
+    return render(request, 'poltaker/assigned_surveys.html', context)
+
 
 
 from django.db.models import Count, Q

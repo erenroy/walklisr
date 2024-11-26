@@ -818,9 +818,7 @@ form {
                         {% if contacts %}
                         <button style="background-color: red; height: 38px;" type="button" onclick="confirmAndSubmit();">Delete</button>
                     {% endif %}
-                    <form action="{% url 'contact_search' %}" method="get">
-                        <button style="background-color: rgb(43, 68, 124); height: 38px;" type="submit">Filter</button>
-                    </form>
+                  
                   
                     </div>
                     <style>
@@ -1287,8 +1285,18 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
     }
 }
 
+.plan-details {
+    height: 50px;
+}
 
+@media screen and (max-width:800px){
+    form {
+    display: block;
+    margin-top: 16%;
+}
+}
 </style>
+<link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
 
 <!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
 

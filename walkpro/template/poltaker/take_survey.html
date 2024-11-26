@@ -202,14 +202,56 @@ h1 {
     {% for contact in contacts %}
         <div>
 
-
-            <div id="map_{{ forloop.counter }}" style="height: 400px; width: 100%;"></div>
-
-<!-- Button for directions (this can be placed inside your HTML body) -->
-<!-- Button for directions (this can be placed anywhere in your HTML body) -->
+<!-- Button to toggle visibility of the div -->
 <div class="directions-container">
     <button id="directionsButton_{{ forloop.counter }}" class="directions-button">Get Directions</button>
+<button onclick="toggleVisibility()">Show/Hide Map</button>
+
 </div>
+<style>
+    /* Common button styles */
+button {
+    background-color: #4CAF50;  /* Green background */
+    color: white;               /* White text */
+    border: none;               /* Remove border */
+    padding: 10px 20px;         /* Top/Bottom padding of 10px, Left/Right padding of 20px */
+    font-size: 16px;            /* Set font size */
+    cursor: pointer;           /* Pointer cursor on hover */
+    border-radius: 5px;         /* Rounded corners */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #45a049;  /* Darker green on hover */
+    transform: scale(1.05);      /* Slight zoom effect */
+}
+
+
+
+
+</style>
+<!-- Div that will be toggled -->
+
+
+<div class="mymap" style="display: none;">
+            <div id="map_{{ forloop.counter }}" style="height: 400px; width: 100%;"></div>
+        </div>
+        <script>
+            function toggleVisibility() {
+                var div = document.querySelector('.mymap');
+                
+                // Toggle the display property
+                if (div.style.display === "none") {
+                    div.style.display = "block"; // Show the div
+                } else {
+                    div.style.display = "none";  // Hide the div
+                }
+            }
+        </script>
+<!-- Button for directions (this can be placed inside your HTML body) -->
+<!-- Button for directions (this can be placed anywhere in your HTML body) -->
+
             <script>
                // Function to show the location on the map and the driving directions button
 function showLocation(street, zipCode, city, mapId, status) {
@@ -711,6 +753,22 @@ function submitBothForms(event) {
 }
 footer {
     padding: 0px 0;
+}
+
+        #side-navdetails{
+            display: block;
+        }
+        .responsive-wrapper {
+    width: 70%;
+    max-width: 4000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (max-width: 800px) {
+.main {
+    padding-top: 3rem;
+    margin-left: -46px;
+}
 }
 </style>
 

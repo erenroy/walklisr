@@ -1488,12 +1488,12 @@
        
         <!-- Main Content -->
         <div class="main-content">
-            <div class="plan-details">
+            <!-- <div class="plan-details">
                 <div class="search-bar">
                     <label class="label-title">Survey Creation Page -</label>
 
                 </div>
-            </div>
+            </div> -->
 
 
 
@@ -1523,7 +1523,10 @@
                         </div>
                         <hr style="margin-bottom: 2%;">
                         <label>Select Existing Questions:</label>
-                        <button type="button" class="add-btn" style="background-color: #007bff;" onclick="nextStep(2, event)">Add Question</button>
+                        <!-- Select All Button -->
+                        <!-- <button type="button" class="select-all-btn" style="height: 50px; " onclick="selectAllQuestions()">Select All</button> -->
+    
+                        <button type="button" class="add-btn" style="background-color: #007bff;" onclick="selectAllQuestions()">Select All</button>
                         {% for question in questions %}
                         <div class="question-container">
                             <input type="checkbox" name="questions" value="{{ question.id }}">
@@ -1531,6 +1534,32 @@
                         </div>
                         {% endfor %}
                     </div>
+                    <script>
+                        let allSelected = false;  // To track whether all checkboxes are selected or not
+
+function selectAllQuestions() {
+    // Get all the checkbox elements inside the question container
+    const checkboxes = document.querySelectorAll('#step-2 .question-container input[type="checkbox"]');
+    
+    // Toggle the checkboxes based on the current state
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = !allSelected;
+    });
+    
+    // Toggle the allSelected flag
+    allSelected = !allSelected;
+    
+    // Change the button text based on the state
+    const selectAllBtn = document.querySelector('.select-all-btn');
+    if (allSelected) {
+        selectAllBtn.textContent = "Deselect All";
+    } else {
+        selectAllBtn.textContent = "Select All";
+    }
+}
+
+
+                    </script>
                 
                     <!-- Step 3: Add Custom Questions -->
                     <div id="step-3" class="form-step" style="display:none;">
@@ -1624,7 +1653,7 @@
                         </div>
                      
                         <!-- Contacts List -->
-                        <div id="contacts-list">
+                        <!-- <div id="contacts-list">
                             {% for contact in contacts %}
                             <div class="contact-item" 
                                 data-zipcode="{{ contact.zipcode }}" 
@@ -1644,7 +1673,46 @@
                                 </label><br>
                             </div>
                             {% endfor %}
+                        </div> -->
+                        <div id="contacts-list">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>select</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Address</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Zipcode</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contact in contacts %}
+                                    <tr class="contact-item" 
+                                        data-zipcode="{{ contact.zipcode }}" 
+                                        data-city="{{ contact.city }}" 
+                                        data-state="{{ contact.state }}" 
+                                        data-district="{{ contact.district }}"
+                                        data-country="{{ contact.country }}"
+                                        data-ward="{{ contact.ward }}"
+                                        data-pctnbr="{{ contact.pct_nbr}}"
+                                        data-party-preference="{{ contact.party_preference }}">
+                                        <td><input type="checkbox" name="contacts" value="{{ contact.id }}"></td>
+                                        <td>{{ contact.first_name }}</td>
+                                        <td>{{ contact.last_name }}</td>
+                                        <td>{{ contact.address }}</td>
+                                        <td>{{ contact.city }}</td>
+                                        <td>{{ contact.state }}</td>
+                                        <td>{{ contact.zipcode }}</td>
+                                        <td>{{ contact.phone }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
+                        
                         <script>
              function selectAllContacts() {
     // Get the filtered contacts (those that are visible)
@@ -1681,17 +1749,150 @@ function deselectAllContacts() {
                         </div>
                         <hr style="margin-bottom: 2%;">
                         <label>Select Polltakers:</label>
+                        <!-- Select All Button -->
+                         <button type="button" id="select-all-btn" onclick="toggleSelectAll()">Select All</button>
+
                         <div>
-                            {% for poltaker in poltakers %}
+                             <table>
+                                <thead>
+                                    <tr>
+                                        <th>select</th>
+                                        <th>First Name</th>
+                                        <th>Email</th>
+                                        <th>Mobile</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for poltaker in poltakers %}
+                                    <tr>
+                                        <td><input type="checkbox" name="polltaker" value="{{ poltaker.id }}"></td>
+                                        <td>{{ poltaker.name }}</td>
+                                        <td>{{ poltaker.email }}</td>
+                                        <td>{{ poltaker.mobile }}</td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <style>
+                                /* General Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Remove space between table cells */
+    margin: 20px 0;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around the table */
+}
+
+/* Table Headers */
+thead {
+    background-color: #4CAF50; /* Green background for header */
+    color: white;
+}
+
+th {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase; /* Uppercase text for header */
+}
+
+td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd; /* Light border under rows */
+}
+
+/* Table Rows */
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Alternate row background */
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Light background on hover */
+    cursor: pointer;
+}
+
+/* Checkbox Styling */
+input[type="checkbox"] {
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Styling for table cells with long content (wrap text) */
+td {
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+/* Styling for the entire table container */
+table-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+    
+    th, td {
+        padding: 10px;
+    }
+
+    th {
+        font-size: 14px;
+    }
+
+    td {
+        font-size: 12px;
+    }
+
+    input[type="checkbox"] {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+                            </style>
+                            <!-- {% for poltaker in poltakers %}
                             <label>
                                 <div class="polltaker-container">
                                     <input type="checkbox" name="polltaker" value="{{ poltaker.id }}">
                                     <span>{{ poltaker.name }}</span>
                                 </div>
                             </label><br>
-                            {% endfor %}
+                            {% endfor %} -->
                         </div>
                     </div>
+                    <script>
+                        function toggleSelectAll() {
+    const checkboxes = document.querySelectorAll('input[name="polltaker"]');
+    const selectAllButton = document.getElementById('select-all-btn');
+    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+
+    // Toggle all checkboxes based on current state
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = !allChecked;
+    });
+
+    // Update button text depending on the selection state
+    if (allChecked) {
+        selectAllButton.textContent = 'Select All';
+    } else {
+        selectAllButton.textContent = 'Deselect All';
+    }
+}
+
+                    </script>
                 </form>
                 
                 <script>
@@ -1765,7 +1966,8 @@ function deselectAllContacts() {
                                             (!ward || itemWard.includes(ward)); // Filter by district
 
                 
-                            item.style.display = matches ? 'block' : 'none';
+                            item.style.display = matches ? 'table-row' : 'none';
+
                         });
                     }
                 
@@ -2013,6 +2215,90 @@ form{
         gap: 10px;  /* Reduced gap between items on smaller screens */
     }
 }
+/* Table Container Styling */
+#contacts-list {
+    width: 100%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
 
+/* Table Styling */
+#contacts-list table {
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+#contacts-list th, 
+#contacts-list td {
+    text-align: left;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Header Row Styling */
+#contacts-list thead th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Row Styling */
+#contacts-list tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#contacts-list tbody tr:hover {
+    background-color: #e7f3e7;
+}
+
+/* Checkbox Styling */
+#contacts-list input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Responsive Styling */
+@media (max-width: 800px) {
+    #contacts-list {
+        font-size: 12px;
+    }
+
+    #contacts-list th,
+    #contacts-list td {
+        padding: 8px;
+    }
+}
+
+
+/* new code  */
+.contact-item {
+    position: relative; /* Ensure proper positioning relative to its container */
+    margin-top: 5px;    /* Add spacing to maintain alignment */
+    margin-left: 20px;  /* Indent to align under the option */
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the left */
+}
+
+select, input {
+    margin-bottom: 10px; /* Space between filters for clarity */
+}
+
+tbody{
+    max-width: 3200px;
+    width: 100%;
+}
+.contact-item{
+    max-width: 3200px;
+    width: 100%;
+}
 </style>
+<link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
+
     {% endblock %}

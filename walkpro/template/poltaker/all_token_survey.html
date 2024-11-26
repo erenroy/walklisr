@@ -233,10 +233,81 @@
     <div class="survey-details">
     
         <!-- Container for the map -->
-        <div id="survey-map" style="height: 500px; width: 100%;"></div>
+      
 
+        <div class="toggle-buttons">
+            <button id="show-surveys-btn" onclick="toggleView('survey')" class="active">Surveys</button>
+            <button id="show-map-btn" onclick="toggleView('map')">Map</button>
+        </div><!-- Keyframe animations -->
+        <div id="survey-map" >
+            <!-- Map will be embedded here -->
+        </div>
+        <style>
+            /* Container for the buttons */
+.toggle-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
 
-<!-- Keyframe animations -->
+/* Styling for the buttons */
+.toggle-buttons button {
+    padding: 12px 35px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    background: #f9f9f9; /* Light gray background */
+    border: 2px solid #ddd;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+}
+
+/* Hover effect */
+.toggle-buttons button:hover {
+    background: #e0e0e0; /* Darker gray */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Elevated hover effect */
+}
+
+/* Active button styling (for "Show Surveys") */
+.toggle-buttons button.active {
+    background: #007bff; /* Blue background for active button */
+    color: white;
+    border-color: #007bff;
+}
+
+/* Hover effect for active button */
+.toggle-buttons button.active:hover {
+    background: #0056b3; /* Darker blue */
+    border-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Styling for the "Show Map" button */
+#show-map-btn {
+    background: #28a745; /* Green background for "Show Map" */
+    color: white;
+    border-color: #28a745;
+}
+
+/* Hover effect for "Show Map" button */
+#show-map-btn:hover {
+    background: #218838; /* Darker green */
+    border-color: #218838;
+    transform: translateY(-2px);
+}
+
+/* Focus effect */
+.toggle-buttons button:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.6); /* Blue outline for accessibility */
+}
+
+        </style>
 <style>
 @keyframes fadeInDown {
     from {
@@ -467,34 +538,23 @@
                 <p style="font-size: 1.2rem;">
                     <strong>Status:</strong> 
                     <b style="{% if contact.status == 'completed' %}color: green;{% elif contact.status == 'pending' %}color: darkorange;{% else %}color: red;{% endif %}">
-                        {% if contact.status == 'completed' %}
-                            Completed
-                        {% elif contact.status == 'pending' %}
-                            Pending
-                        {% else %}
-                            Denied
-                        {% endif %}
+                        {% if contact.status == 'completed' %} Completed {% elif contact.status == 'pending' %} Pending {% else %} Denied {% endif %}
                     </b>
                 </p>
-                <!-- <button class="show-map-btn" onclick="showSpecificLocations('{{ contact.zipcode }}', '{{ contact.city }}')">Show on Map</button> -->
-                <button class="show-map-btn" onclick="scrollToTop()">Show on Map</button>
-                <script>
+                <!-- <button class="show-map-btn" onclick="scrollToTop()">Show on Map</button> -->
+                <!-- <script>
                     function scrollToTop() {
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth' // Optional: adds smooth scrolling
-                        });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
-                    </script>
-                    
+                </script> -->
             </div>
         {% endfor %}
         <p>Survey Date: {{ survey.survey_date }}</p>
         <div class="contact-survey">
-            <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Take Survey for Contact</a>
+            <a href="{% url 'surveyapp:take_survey' survey.id %}" class="take-survey-btn">Start Survey for Contact</a>
         </div>
     </div>
-{% endfor %}
+    {% endfor %}
 
     
         <!-- JavaScript for showing map with zip codes and status-based markers -->
@@ -683,7 +743,10 @@
 .notification.error {
     background-color: #dc3545; /* Red for error */
 }
+.survey-details {
+    max-width: 40000px;
 
+}
         </style>
     </div>
 </div>
@@ -726,5 +789,48 @@ function filterByStatus(status) {
         #side-navdetails{
             display: block;
         }
+        .responsive-wrapper {
+    width: 70%;
+    max-width: 4000px;
+    margin-left: auto;
+    margin-right: auto;
+}
     </style>
+
+<script>
+function toggleView(view) {
+    // Hide both sections initially
+    document.getElementById('survey-list').style.display = 'none';
+    document.getElementById('survey-map').style.display = 'none';
+
+    // Remove active class from both buttons
+    document.getElementById('show-surveys-btn').classList.remove('active');
+    document.getElementById('show-map-btn').classList.remove('active');
+
+    // Hide the search options when the map view is selected
+    const searchOptions = document.querySelector('.search-options');
+    if (view === 'survey') {
+        document.getElementById('survey-list').style.display = 'block';
+        document.getElementById('show-surveys-btn').classList.add('active');
+        
+        // Show the search options when the survey view is selected
+        searchOptions.style.display = 'block';
+    } else if (view === 'map') {
+        document.getElementById('survey-map').style.display = 'block';
+        document.getElementById('show-map-btn').classList.add('active');
+        
+        // Hide the search options when the map view is selected
+        searchOptions.style.display = 'none';
+    }
+}
+
+
+    // Initialize by showing Surveys by default
+    window.onload = function() {
+        toggleView('survey');
+    };
+
+    // map click 
+    
+</script>
     {% endblock %}
