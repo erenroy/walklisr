@@ -1784,11 +1784,24 @@ hr {
         margin-top: -1%;
     }
 }
-
+.plan-details {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #4CAF50;
+}
 </style>
 
 <!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
 
 <link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
-
+<style>
+    .content {
+    width: 60%;
+}
+@media (max-width: 1000px) {
+    .content {
+        width: 100%;
+    }
+}
+</style>
     {% endblock %}

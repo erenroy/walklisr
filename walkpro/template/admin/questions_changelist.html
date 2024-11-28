@@ -1,0 +1,13 @@
+<!-- questions/templates/admin/questions_changelist.html -->
+
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+<div class="object-tools">
+    <ul class="object-tools">
+        <li>
+            <a href="{% url 'upload_csv' %}" class="addlink">Upload CSV</a>
+        </li>
+    </ul>
+</div>
+{% endblock %}

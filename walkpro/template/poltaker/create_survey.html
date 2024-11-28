@@ -1497,7 +1497,7 @@
 
 
 
-            <div class="container">
+            <div class="container" style="background-color:#4CAF50;">
 
 
                 <!-- user questions  -->
@@ -2300,5 +2300,14 @@ tbody{
 }
 </style>
 <link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
-
+<style>
+    .content {
+    width: 60%;
+}
+@media (max-width: 1000px) {
+    .content {
+        width: 100%;
+    }
+}
+</style>
     {% endblock %}

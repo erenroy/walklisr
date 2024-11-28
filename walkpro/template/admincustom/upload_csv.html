@@ -1,0 +1,178 @@
+<!-- csvupload/templates/csvupload/upload_csv.html -->
+
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2d2d2d;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Heading decoration */
+h1::after {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 4px;
+    background-color: #6e8efb;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+form input[type="file"] {
+    width: 100%;
+    padding: 16px 18px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+    transition: all 0.4s ease-out;
+}
+
+form input[type="file"]:hover {
+    border-color: #6e8efb;
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(110, 142, 251, 0.3);
+}
+
+form input[type="file"]:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(110, 142, 251, 0.5);
+    transform: translateY(-3px);
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+button {
+    padding: 15px 30px;
+    background-color: #6e8efb;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    width: 100%;
+    transform: translateY(0);
+}
+
+button:hover {
+    background-color: #5b7efb;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+.messages {
+    margin-top: 20px;
+    color: #4caf50;
+    font-size: 14px;
+}
+
+/* Error messages */
+.error-message {
+    color: #f44336;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px;
+        width: 80%;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px 0;
+    }
+
+    form input[type="file"] {
+        padding: 14px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px;
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    form input[type="file"] {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+
+</style>
+<div class="container">
+<h1>Upload CSV</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="button">Upload</button>
+</form>
+
+<p style="margin-top: 10px;">Questions will get added to all the users on the site automatically </p>
+</div>
+{% endblock %}

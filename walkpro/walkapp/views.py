@@ -1195,6 +1195,7 @@ def add_questions(request):
             # Parse the CSV file
             with open(file_path, newline='') as csvfile:
                 reader = csv.reader(csvfile)
+                next(reader)  # Skip the header row
                 for row in reader:
                     question_text, question_type, *options = row
                     if not question_text or not question_type:
@@ -1230,7 +1231,6 @@ def add_questions(request):
 
     username = request.user.username if request.user.is_authenticated else None
     return render(request, 'questions/add_questions.html', {'username': username})
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Question  # Adjust the import as needed based on your project structure

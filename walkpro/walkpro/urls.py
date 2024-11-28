@@ -23,5 +23,6 @@ urlpatterns = [
     path('', include('walkapp.urls')),  # Replace 'myapp' with your app name
     path('surveyapp/', include('surveyapp.urls')),  # Include surveyapp URLs
     path('surveydata/', include('surveydata.urls')),  # Include the surveydata URLs
+    path('csvupload/', include('admincustomapp.urls')),
 ]
 

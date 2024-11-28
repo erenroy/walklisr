@@ -1296,7 +1296,16 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
 <link rel="stylesheet" href="{% static 'css/accessed.css' %}">
 <link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
 
-
+<style>
+    .content {
+    width: 60%;
+}
+@media (max-width: 1000px) {
+    .content {
+        width: 100%;
+    }
+}
+</style>
 
 
    {% endblock %}

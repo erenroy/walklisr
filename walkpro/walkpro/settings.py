@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'walkapp',
     'surveyapp',
     'surveydata',
+    'admincustomapp'
     
 ]
 
