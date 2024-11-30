@@ -15,20 +15,31 @@ from walkapp.models import Poltaker  # Import Poltaker model
 
 
 
+from collections import defaultdict
 
 def my_surveys(request):
     # Ensure the user is logged in and filter surveys based on user (created_by)
     surveys = Survey.objects.filter(created_by=request.user)
-
-    # Manually filter surveys by unique survey_token
-    seen_tokens = set()
-    unique_surveys = []
-
-    # Loop through the surveys and ensure only one survey per survey_token is added
+    
+    # Group surveys by survey_token
+    survey_groups = defaultdict(list)
     for survey in surveys:
-        if survey.survey_token not in seen_tokens:
-            unique_surveys.append(survey)
-            seen_tokens.add(survey.survey_token)
+        survey_groups[survey.survey_token].append(survey)
+
+    unique_surveys = []
+    for survey_token, group in survey_groups.items():
+        # Check how many surveys in the group are completed
+        completed_count = sum(survey.status == 'completed' for survey in group)
+        
+        # Determine if at least half of the surveys are completed
+        total_surveys = len(group)
+        polltaker_count = len(set(survey.polltaker for survey in group))
+        required_completed = total_surveys / polltaker_count
+
+        # Get a representative survey (e.g., the first one) and update its status
+        representative_survey = group[0]
+        representative_survey.status = 'completed' if completed_count >= required_completed else 'pending'
+        unique_surveys.append(representative_survey)
 
     username = request.user.username if request.user.is_authenticated else None
     
@@ -37,7 +48,6 @@ def my_surveys(request):
         'username': username
     }
     return render(request, 'surveydata/my_surveys.html', context)
-
 import csv
 from django.http import HttpResponse
 from surveyapp.models import SurveyResponse, Survey  # Import from surveyapp

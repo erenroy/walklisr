@@ -827,24 +827,22 @@ def assigned_surveys_poltaker(request):
 
 
 from django.db.models import Count, Q
-
 def all_token_survey(request, survey_token):
     if 'poltaker_id' not in request.session:
         return redirect('surveyapp:poltaker_login')
 
     poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
 
-    # Fetch surveys with at least one contact not marked as 'completed' or 'denied'
+    # Fetch surveys with at least one contact not marked as 'completed' or 'denied' and exclude surveys that are already 'completed'
     surveys = Survey.objects.filter(
         survey_token=survey_token,
         polltaker=poltaker
-    ).annotate(
+    ).exclude(status='completed').annotate(
         valid_contacts=Count('contacts', filter=~Q(contacts__status__in=['completed', 'denied']))
     ).filter(valid_contacts__gt=0)
 
     context = {'poltaker': poltaker, 'surveys': surveys}
     return render(request, 'poltaker/all_token_survey.html', context)
-
 
 # Poltaker information edit start -----------------------------------------
 # views.py

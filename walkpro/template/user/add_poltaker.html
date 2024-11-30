@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'pollbase.html' %}
 {% load static %}
 {% block title %}Confirm Subscription{% endblock %}
 
@@ -1401,8 +1401,8 @@ form {
             <table class="contact-list-table">
                 <thead>
                     <tr>
-                        <th>Profile-Image</th>
-                        <th>Poltaker-Name</th>
+                        <!-- <th>Profile-Image</th> -->
+                        <th>Polltaker-Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
                         <th>Completed surveys</th>
@@ -1416,7 +1416,7 @@ form {
                     {% if poltakers %}
                     {% for poltaker in poltakers %}
                     <tr>
-                        <td><img src="{% static 'img/logo2.png' %}" alt=""></td>
+                        <!-- <td><img src="{% static 'img/logo2.png' %}" alt=""></td> -->
                         <td>{{ poltaker.name }}</td>
                         <td>{{ poltaker.email }}</td>
                         <td>{{ poltaker.mobile }}</td>
@@ -1739,11 +1739,7 @@ form {
     .contact-list-table th:nth-child(6),
     .contact-list-table td:nth-child(6),
     .contact-list-table th:nth-child(7),
-    .contact-list-table td:nth-child(7),
-    .contact-list-table th:nth-child(8),
-    .contact-list-table td:nth-child(8),
-    .contact-list-table th:nth-child(1),
-    .contact-list-table td:nth-child(1) {
+    .contact-list-table td:nth-child(7) {
         display: none;
     }
 
@@ -1960,14 +1956,13 @@ form {
              </style>
 <link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
 <style>
-    .content {
-    width: 60%;
+
+.contact-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
 }
-@media (max-width: 1000px) {
-    .content {
-        width: 100%;
-    }
-}
+
 </style>
 
             <!-- Adding new nav responsive css ------------------------------------------------------------------- END -->
