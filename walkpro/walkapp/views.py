@@ -1177,6 +1177,7 @@ from .models import Question, Option
 
 import csv
 from django.core.files.storage import FileSystemStorage
+
 @login_required
 def add_questions(request):
     if request.method == 'POST':
@@ -1192,24 +1193,29 @@ def add_questions(request):
             filename = fs.save(csv_file.name, csv_file)
             file_path = fs.path(filename)
 
-            # Parse the CSV file
-            with open(file_path, newline='') as csvfile:
-                reader = csv.reader(csvfile)
-                next(reader)  # Skip the header row
-                for row in reader:
-                    question_text, question_type, *options = row
-                    if not question_text or not question_type:
-                        continue  # Skip incomplete rows
+            # Parse the CSV file with a different encoding to avoid UnicodeDecodeError
+            try:
+                with open(file_path, newline='', encoding='ISO-8859-1') as csvfile:
+                    reader = csv.reader(csvfile)
+                    next(reader)  # Skip the header row
+                    for row in reader:
+                        question_text, question_type, *options = row
+                        if not question_text or not question_type:
+                            continue  # Skip incomplete rows
 
-                    question = Question.objects.create(user=request.user, question_text=question_text, question_type=question_type)
+                        question = Question.objects.create(user=request.user, question_text=question_text, question_type=question_type)
 
-                    if question_type == 'mcq' and options:
-                        for option_text in options:
-                            if option_text:
-                                Option.objects.create(question=question, option_text=option_text)
+                        if question_type == 'mcq' and options:
+                            for option_text in options:
+                                if option_text:
+                                    Option.objects.create(question=question, option_text=option_text)
 
-            messages.success(request, 'Questions added successfully from CSV!')
-            return redirect('add_questions')
+                messages.success(request, 'Questions added successfully from CSV!')
+                return redirect('add_questions')
+
+            except UnicodeDecodeError as e:
+                messages.error(request, f"Error reading CSV file: {e}")
+                return redirect('add_questions')
 
         # Handle manual question form submission
         question_text = request.POST.get('question_text')
@@ -1231,6 +1237,7 @@ def add_questions(request):
 
     username = request.user.username if request.user.is_authenticated else None
     return render(request, 'questions/add_questions.html', {'username': username})
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Question  # Adjust the import as needed based on your project structure

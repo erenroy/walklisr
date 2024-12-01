@@ -343,14 +343,14 @@
         .why-use-wlp {
             margin-top: 5%;
         }
-
+    
         .why-use-wlp h1 {
             font-size: 1.8rem;
             font-weight: 700;
             font-family: Arial, Helvetica, sans-serif;
             text-align: center;
         }
-
+    
         .why-use-wlp p {
             width: 50%;
             font-size: 1rem;
@@ -359,14 +359,14 @@
             margin: 0 auto;
             /* This centers the element horizontally */
         }
-
+    
         .why-use-wlp-lists {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr); /* Changed to 3 columns */
             gap: 20px;
             padding: 20px;
         }
-
+    
         .point {
             background-color: #ffffff;
             border-radius: 10px;
@@ -374,43 +374,45 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
+    
         .point:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
-
+    
         @media (max-width: 1024px) {
             .why-use-wlp-lists {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-
+    
         @media (max-width: 600px) {
             .why-use-wlp-lists {
                 grid-template-columns: 1fr;
             }
         }
-
+    
         .point {
             font-size: 1em;
             color: #333;
         }
-
+    
         .point h2 {
             font-size: 1.8rem;
             color: #333;
             font-weight: 700;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         }
-
+    
         .point h6 {
             font-size: 1.2rem;
             color: #333;
             font-weight: 400;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         }
+        
     </style>
+    
     <!-- why do we use walk list pro  -->
     <div class="why-use-wlp" id="about">
         <h1>Why Use Walk List Pro</h1>
@@ -430,24 +432,16 @@
                 <span class="fas fa-bolt" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
                 <h2>Efficient Resource Use</h2>
                 <h6>With a well-constructed walk list, you can streamline your survey efforts, avoiding unnecessary
-                    visits and focusing on areas where you are more likely to get valuable responses. Efficiently
-                    targeting your survey efforts can reduce the time and costs associated with data collection.</h6>
+                    visits and focusing on areas where you are more likely to get valuable responses. </h6>
             </div>
             <div class="point"><!-- Location -->
                 <span class="fas fa-map-marker-alt"
                     style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
                 <h2>Improved Data Quality</h2>
                 <h6>Engaging with a targeted list of voters or residents can lead to higher response rates, as these
-                    individuals are more likely to be interested in or affected by the issues being surveyed. By
-                    focusing on relevant respondents, you can gather more precise and actionable insights about voter
-                    preferences and opinions.</h6>
+                    individuals are more likely to be interested in or affected by the issues being surveyed. </h6>
             </div>
-            <div class="point">
-                <h2>Enhanced Campaign Strategy</h2>
-                <h6>Enhanced campaign strategy involves optimizing marketing efforts through targeted planning, data
-                    analysis, and creative tactics to reach the right audience, improve engagement, and achieve
-                    measurable results in a competitive environment.</h6>
-            </div>
+          
             <div class="point">
             <span class="fas fa-bullhorn" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
 
@@ -456,14 +450,7 @@
                     address concerns, demonstrate responsiveness, and foster a stronger connection with voters or
                     communities.</h6>
             </div>
-            <div class="point">
-                <!-- Strategy -->
-                <span class="fas fa-lightbulb"
-                style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
 
-<h2>Strategic Planning</h2>
-<h6>Data from Walk List Pro can help in planning campaign resources more effectively, such as directing canvassers or allocating advertising budget based on survey results</h6>
-</div>
             <div class="point">
                            <!-- Progress Tracking -->
             <span class="fas fa-tasks" style="font-size: 40px; margin-bottom: 10px; color: rgb(43, 68, 124);"></span>
@@ -480,7 +467,8 @@
         </div>
 
     </div>
-<style>
+<!-- <style>
+    
     .our-plans {
         margin-top: 4%;
     }
@@ -573,9 +561,143 @@
             max-width: 90%;
         }
     }
-</style>
+</style> -->
     <!-- our plans  -->
-    <div class="our-plans" id="plan">
+     <style>
+        .our-all-plans{
+            /* background-color: red; */
+            width: 78%;
+            margin: 0 auto;
+        }
+        .subscription-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        padding: 20px;
+        margin: 0 auto;
+        max-width: 1200px; /* Centering the container */
+    }
+
+    .subscription-plan {
+        background: linear-gradient(145deg, #ffffff, #e6e6e6);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        flex: 1 1 calc(33.333% - 40px); /* Three plans per row with space between */
+        max-width: 1200px;
+        height: 550px;
+        box-sizing: border-box;
+        overflow: hidden;
+        position: relative;
+        gap: 20px;
+    }
+
+    .subscription-plan::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(145deg, #6e8efb, #a777e3);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 0;
+    }
+
+    .subscription-plan:hover::before {
+        opacity: 0.1;
+    }
+
+    .subscription-plan.featured {
+        border: 2px solid #6e8efb;
+        transform: scale(1.05);
+    }
+
+    .subscription-plan:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .subscription-plan h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .subscription-plan .price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #6e8efb;
+        margin-bottom: 25px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .subscription-plan .price span {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .subscription-plan .features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 25px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .subscription-plan .features li {
+        font-size: 1.1rem;
+        color: #333;
+        margin: 10px 0;
+    }
+
+    .subscription-plan .subscribe-btn {
+        background: linear-gradient(145deg, #6e8efb, #a777e3);
+        color: #ffffff;
+        font-size: 1.1rem;
+        font-weight: 700;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        position: relative;
+        z-index: 1;
+    }
+
+    .subscription-plan .subscribe-btn:hover {
+        background: linear-gradient(145deg, #5a75d6, #865cd6);
+        transform: scale(1.05);
+    }
+
+    @media (max-width: 1024px) {
+        .subscription-plan {
+            flex: 1 1 calc(50% - 40px); /* Two plans per row on medium screens */
+        }
+    }
+
+    @media (max-width: 768px) {
+        .subscription-plan {
+            flex: 1 1 100%; /* One plan per row on small screens */
+        }
+    }
+    .our-all-plans h1{
+        margin-top: 2%;
+        font-size: 1.8rem;
+    font-weight: 700;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    }
+     </style>
+    <div class="our-all-plans" id="plans">
         <h1>Our Plans</h1>
         <div class="subscription-container">
             {% for plan in plans %}
@@ -970,11 +1092,16 @@
                 }
 
                 .firstset input {
-                    width: 300px;
-                    height: 45px;
-                    border-radius: 10px;
-                    border: 1px solid rgb(0, 0, 0);
-                }
+                    max-width: 1200px;
+    width: 90%; /* Using percentage for responsiveness */
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid rgb(0, 0, 0);
+    padding: 0 15px; /* Added padding for better input spacing */
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
 
                 form {
                     margin-top: 10%;
@@ -1010,22 +1137,160 @@
                     border: 1px solid black;
                     font-size: 1.5rem;
                 }
+
+                .firstset {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    width: 100%; /* Make sure the parent container takes up full width */
+}
+
+.firstset input {
+    width: 95%; /* Full width within its container */
+    max-width: 600px; /* Limit the width to 600px for large screens */
+    height: 45px;
+    border-radius: 10px;
+    border: 1px solid rgb(0, 0, 0);
+    padding: 0 15px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Space between input fields */
+}
+
+.firstset .name, .firstset .email {
+    flex: 1; /* Make each input take equal width within the container */
+}
+#message {
+    width: 98%;
+    height: 120px;
+    border-radius: 10px;
+    border: 1px solid rgb(0, 0, 0);
+}
+#submit-button {
+    width: 98%;
+}
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+    .firstset input {
+        width: 100%; /* Full width for small screens */
+        max-width: none; /* No max-width on smaller screens */
+    }
+}
+
+
             </style>
-            <form action="">
-                <div class="firstset">
-                    <div class="name">
-                        <h2>Full Name</h2>
-                        <input type="text">
-                    </div>
-                    <div class="email">
-                        <h2>Email Address</h2>
-                        <input type="text">
-                    </div>
-                </div>
-                <h2>Message</h2>
-                <input type="text" id="message">
-                <button id="submit-button">Submit</button>
-            </form>
+         <!-- contact_form.html -->
+<!-- contact_form.html -->
+
+<form id="contact-form">
+    {% csrf_token %} <!-- CSRF token to protect against CSRF attacks -->
+    
+    <div class="firstset">
+        <div class="name">
+            <h2>Full Name</h2>
+            <input type="text" name="full_name" required>
+        </div>
+        <div class="email">
+            <h2>Email Address</h2>
+            <input type="email" name="email" required>
+        </div>
+    </div>
+    
+    <h2>Message</h2>
+    <textarea name="message" id="message" required></textarea>
+    
+    <button type="submit" id="submit-button">Submit</button>
+</form>
+
+<!-- Notification area -->
+<div id="notification" class="notification" style="display: none;">
+    <div class="notification-content">
+        <span id="close-notification" class="close-btn">&times;</span>
+        Your message has been submitted successfully!
+    </div>
+</div>
+
+<script>
+    // Wait for the document to load before executing the code
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the form element
+        const form = document.getElementById('contact-form');
+        
+        // Add submit event listener to the form
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();  // Prevent the form from submitting the default way
+            
+            // Create a FormData object to send form data
+            const formData = new FormData(form);
+            
+            // Send the form data using AJAX (XMLHttpRequest)
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url "contact_view" %}', true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); // Set header for AJAX request
+            
+            // Handle the response from the server
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        // Show the notification if submission is successful
+                        document.getElementById('notification').style.display = 'block';
+                        setTimeout(function() {
+                            document.getElementById('notification').style.display = 'none';
+                        }, 5000);  // Hide the notification after 5 seconds
+                    }
+                }
+            };
+            
+            // Send the form data
+            xhr.send(formData);
+        });
+
+        // Close the notification when the cross button is clicked
+        document.getElementById('close-notification').addEventListener('click', function () {
+            document.getElementById('notification').style.display = 'none';
+        });
+    });
+</script>
+<style>/* Notification Styles */
+    .notification {
+        position: fixed;
+        margin-left: 40%;
+        top: 50%; 
+        left: 50%; 
+        transform: translate(-50%, -50%); /* Center the notification */
+        z-index: 9999;  /* Keeps the notification on top */
+        width: 100%;  /* Full width to cover the screen */
+        height: 100%;  /* Full height to cover the screen */
+    }
+    
+    .notification-content {
+        background-color: #4CAF50;  /* Green background */
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 400px; /* Adjust width as per your design */
+        font-size: 16px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .close-btn {
+        font-size: 25px;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+    }
+    
+    .close-btn:hover {
+        color: #FF0000; /* Red color on hover */
+    }
+    </style>
+
         </div>
 
 
@@ -1280,5 +1545,39 @@
         </div>
     </footer>
 </body>
+<style>
+    .why-use-wlp-lists {
+    max-width: 3200px;
+    width: 70%;
+    margin: 0 auto;
+}
+.google-apple {
+    margin-top: 2%;
+    width: 70%;
+    margin-bottom: 2%;
+}
 
+.contact-form {
+    /* margin-top: 100px; */
+    width: 70%;
+    background-color: #f6f6f6;
+    margin: 0 auto;
+    border-radius: 50px;
+    margin-bottom: 2%;
+}
+
+@media (max-width: 1300px) {
+    .google-apple {
+    width: 95%;
+}
+    .contact-form {
+    width: 95%;
+}
+.why-use-wlp-lists {
+    width: 95%;
+}
+}
+</style>
+
+<!-- For sending form  -->
 </html>

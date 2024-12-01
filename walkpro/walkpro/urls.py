@@ -24,5 +24,6 @@ urlpatterns = [
     path('surveyapp/', include('surveyapp.urls')),  # Include surveyapp URLs
     path('surveydata/', include('surveydata.urls')),  # Include the surveydata URLs
     path('csvupload/', include('admincustomapp.urls')),
+    path('contactsms/', include('contactsms.urls')),  # Now the app URLs will be included under /contactsms/
 ]
 
