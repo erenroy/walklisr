@@ -741,246 +741,188 @@ html {
     </script>
  
  <!-- footer starts Here -->
-  
- <style>
-
-        /* FOOTER */
-        footer {
-            /* background: linear-gradient(135deg, #f6f6f6, #e0e0e0, #d1d1d1, #b0b0b0); */
-            /* Soft, premium gradient */
-            color: #333;
-            /* Dark text for readability */
-            margin-top: 0;
-            padding: 40px 0;
-            text-align: center;
-            box-shadow: 0px -2px 15px rgba(0, 0, 0, 0.1);
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            /* Subtle shadow for depth */
+ <footer class="compact-footer" role="contentinfo">
+    <style>
+        /* Compact Footer Styles */
+        .compact-footer {
+            background-color: #1d2d50;
+            color: white;
+            padding: 15px 0;
+            font-family: 'Roboto', sans-serif;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        footer a {
-            color: #333;
-            /* Dark text color for links */
+        .compact-footer .footer-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .compact-footer h4 {
             font-size: 16px;
-            font-weight: 500;
-            /* Slightly bolder for readability */
-            text-decoration: none;
-            transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
         }
 
-        footer a:hover {
-            color: #44BCDD;
-            /* Soft teal hover effect */
-            text-decoration: none;
-            transform: scale(1.05);
-            /* Subtle scale effect on hover */
-        }
-
-        .copy {
-            font-size: 14px;
-            padding: 20px;
-            border-top: 1px solid #000000;
-            /* Light gray border to separate footer content */
-            color: #000000;
-            /* Lighter color for the copyright text */
-        }
-
-        .footer-middle {
-            padding-top: 2em;
-            color: #333;
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 1.5;
-        }
-
-        /* SOCIAL ICONS */
-        ul.social-network {
+        .compact-footer .footer-column ul {
             list-style: none;
+            padding-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .compact-footer .footer-column ul li {
+            margin-bottom: 6px;
+        }
+
+        .compact-footer .footer-column ul li a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 13px;
             display: inline-block;
-            margin: 0;
+            transition: color 0.3s ease;
+        }
+
+        .compact-footer .footer-column ul li a:hover {
+            color: #ff6f61;
+        }
+
+        .compact-footer .social-media-icons {
+            display: flex;
+            justify-content: space-evenly;
+            margin-top: 10px;
             padding: 0;
+            list-style: none;
         }
 
-        ul.social-network li {
+        .compact-footer .social-media-icons li {
             display: inline-block;
-            margin: 0;
-            /* Removed margin between icons */
         }
 
-        .social-network a {
-            display: inline-block;
-            position: relative;
-            width: 45px;
-            height: 45px;
+        .compact-footer .social-media-icons li a {
+            display: block;
+            width: 40px; /* Increased size */
+            height: 40px; /* Increased size */
             border-radius: 50%;
-            background-color: #f6f6f6;
-            /* Light gray background for social icons */
-            color: #333;
-            /* Dark icon color */
-            font-size: 20px;
-            line-height: 45px;
+            background-color: #fff;
             text-align: center;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            line-height: 40px;
+            transition: all 0.3s ease;
         }
 
-        .social-network a:hover {
-            background-color: #44BCDD;
-            /* Teal background when hovered */
+        .compact-footer .social-media-icons li a:hover {
+            background-color: #ff6f61;
             transform: scale(1.1);
-            /* Slight zoom effect */
         }
 
-        .social-network a:hover i {
+        .compact-footer .social-media-icons li a img {
+            width: 24px; /* Increased logo size */
+            height: 24px; /* Increased logo size */
+            filter: none; /* Ensure logos appear in full color */
+            transition: filter 0.3s ease;
+        }
+
+        .compact-footer .social-media-icons li a:hover img {
+            filter: none; /* Keep logos in full color on hover */
+        }
+
+        .compact-footer .copy-right {
+            text-align: center;
+            font-size: 12px;
+            color: #bbb;
+            margin-top: 10px;
+        }
+
+        .compact-footer .copy-right a {
             color: #fff;
-            /* Change icon color to white on hover */
+            text-decoration: none;
         }
 
-        .social-network a.icoFacebook:hover {
-            background-color: #3B5998;
-            /* Facebook blue */
+        .compact-footer .copy-right a:hover {
+            color: #ff6f61;
         }
 
-        .social-network a.icoLinkedin:hover {
-            background-color: #007bb7;
-            /* LinkedIn blue */
-        }
+        @media (max-width: 768px) {
+            .compact-footer .footer-column {
+                text-align: center;
+                margin-bottom: 15px;
+            }
 
-        .social-network a.icoTwitter:hover {
-            background-color: #1DA1F2;
-            /* Twitter blue */
-        }
+            .compact-footer .social-media-icons {
+                justify-content: center;
+            }
 
-        .social-network a.icoInstagram:hover {
-            background-color: #E4405F;
-            /* Instagram pink */
+            .compact-footer .social-media-icons li {
+                margin: 0 8px;
+            }
         }
-
-        .social-network a.icoFacebook i,
-        .social-network a.icoLinkedin i,
-        .social-network a.icoTwitter i,
-        .social-network a.icoInstagram i {
-            color: #000000;
-            /* Dark icon color by default */
-        }
-
-        .social-circle li {
-            display: inline-block;
-            margin: 0;
-            /* Removed margin between items */
-        }
-
-        .social-circle li a {
-            transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
-        }
-
-        .social-circle li a:hover {
-            background-color: #44BCDD;
-            transform: rotate(360deg);
-            /* Spin effect for a more interactive look */
-        }
-
-        .social-circle li i {
-            font-size: 20px;
-            line-height: 45px;
-        }
-
-        .social-network a:hover i {
-            color: #fff;
-            /* Icon color changes on hover */
-        }
+        .compact-footer .social-media-icons li a img {
+    width: 40px;
+    height: 40px;
+    filter: none;
+    transition: filter 0.3s ease;
+}
     </style>
-    <footer class="mainfooter" role="contentinfo">
-        <div class="footer-middle">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6">
-                        <!--Column1-->
-                        <div class="footer-pad">
-                            <h4>Site Pages</h4>
-                            <ul class="list-unstyled">
-                                <li><a href="#"></a></li>
-                                <li><a href="#">Home</a></li>
-                                <li><a href="#">Subscriptions</a></li>
-                                <li><a href="#">Surveys</a></li>
-                                <li><a href="#">Visits</a></li>
-                                <li><a href="#">FAQs</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <!--Column1-->
-                        <div class="footer-pad">
-                            <h4>Features</h4>
-                            <ul class="list-unstyled">
-                                <li><a href="#">Survey Operations</a></li>
-                                <li><a href="#">Accessibility</a></li>
-                                <li><a href="#">Content Manegement</a></li>
-                                <li><a href="">Maping</a></li>
-                                <li><a href="">Data Management</a></li>
-
-
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <!--Column1-->
-                        <div class="footer-pad">
-                            <h4>Administrator</h4>
-                            <ul class="list-unstyled">
-                                <li><a href="#">123-456-7890</a></li>
-                                <li><a href="mailto:example@example.com">example@example.com</a></li>
-                                <li><a href="#">1234 Elm Street, Springfield, IL</a></li>
-                                <li><a href="#">5678 Oak Avenue</a></li>
-                                <li><a href="https://www.example.com" target="_blank">www.example.com</a></li>
-                                
-                                <li>
-                                    <a href="#"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <h4>Follow Us</h4>
-                        <ul class="social-network social-circle" >
-
-                            <li ><a href="#" class="icoFacebook" title="Facebook"  style="background-color: transparent;">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" width="30" height="30">
-                            </a></li>
-                            
-              
-                          
-                               
-                                <li>
-                                    <a href="https://www.instagram.com" class="icoInstagram" title="Instagram" style="background-color: transparent;">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram" width="30" height="30">
-                                    </a>
-                                </li>
-                               
-                                <li>
-                                    <a href="https://www.linkedin.com" class="icoLinkedIn" title="LinkedIn" style="background-color: transparent;">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" width="30" height="30">
-                                    </a>
-                                </li>
-                                
-                                <li>
-                                    <a href="https://www.pinterest.com" class="icoPinterest" title="Pinterest" style="background-color: transparent;">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest" width="30" height="30">
-                                    </a>
-                                </li>
-                               
-                        </ul>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 copy">
-                        <p class="text-center">&copy; 2024©WLP All rights reserved</p>
-                    </div>
-                </div>
-
-
+    <div class="footer-container">
+        <div class="row">
+            <div class="col-md-3 footer-column">
+                <h4>Site Pages</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Subscriptions</a></li>
+                    <li><a href="#">Surveys</a></li>
+                    <li><a href="#">Visits</a></li>
+                    <li><a href="#">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-column">
+                <h4>Features</h4>
+                <ul>
+                    <li><a href="#">Survey Operations</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                    <li><a href="#">Content Management</a></li>
+                    <li><a href="#">Mapping</a></li>
+                    <li><a href="#">Data Management</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-column">
+                <h4>Administrator</h4>
+                <ul>
+                    <li><a href="#">123-456-7890</a></li>
+                    <li><a href="mailto:example@example.com">example@example.com</a></li>
+                    <li><a href="#">1234 Elm Street, Springfield, IL</a></li>
+                    <li><a href="#">5678 Oak Avenue</a></li>
+                    <li><a href="https://www.example.com" target="_blank">www.example.com</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 footer-column">
+                <h4 style="margin-left: 8%;"> Follow Us</h4>
+                <ul class="social-media-icons">
+                    <li><a href="#" class="facebook-icon" title="Facebook">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+                    </a></li>
+                    <li><a href="https://www.instagram.com" class="instagram-icon" title="Instagram">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+                    </a></li>
+                    <li><a href="https://www.linkedin.com" class="linkedin-icon" title="LinkedIn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn">
+                    </a></li>
+                    <li><a href="https://www.pinterest.com" class="pinterest-icon" title="Pinterest">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest">
+                    </a></li>
+                </ul>
             </div>
         </div>
-    </footer>
+        <hr>
+        <div class="copy-right">
+            <p>&copy; 2024 WLP All rights reserved</p>
+        </div>
+    </div>
+</footer>
+
+
+
 
  <!-- footer ends here  -->
 

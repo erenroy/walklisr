@@ -20,8 +20,23 @@ def upload_csv(request):
             filename = fs.save(csv_file.name, csv_file)
             file_path = fs.path(filename)
 
-            # Parse the CSV file
-            with open(file_path, newline='') as csvfile:
+            # Try reading the CSV file with different encodings
+            encodings = ['utf-8-sig', 'utf-8', 'ISO-8859-1', 'latin1']
+            file_content = None
+            for encoding in encodings:
+                try:
+                    with open(file_path, newline='', encoding=encoding) as csvfile:
+                        file_content = csvfile.read()  # Try to read the content to detect the proper encoding
+                        break
+                except UnicodeDecodeError:
+                    continue  # If decoding fails, try the next encoding
+
+            if file_content is None:
+                messages.error(request, "Failed to decode the CSV file. Please check the file encoding.")
+                return redirect("upload_csv")
+
+            # Parse the CSV file using the correct encoding
+            with open(file_path, newline='', encoding=encoding) as csvfile:
                 reader = csv.reader(csvfile)
                 next(reader)  # Skip the header row
                 

@@ -155,9 +155,12 @@ def logout_view(request):
 
 from surveyapp.models import Survey
 
+# Dashboard view starts here -------------------------------------------------------------------------------------------------------------
+
+
 @login_required
 def home_view(request):
-    # Fetching user-related data
+    # Fetch user-related data
     user_subscription = UserSubscription.objects.filter(user=request.user).first()
     username = request.user.username if request.user.is_authenticated else None
     user_profile = UserProfile.objects.filter(user=request.user).first()
@@ -175,11 +178,6 @@ def home_view(request):
             unique_surveys.append(survey)
             seen_tokens.add(survey.survey_token)
 
-    # Count surveys by status for total surveys
-    successful_count = Survey.objects.filter(status='completed').count()
-    in_progress_count = Survey.objects.filter(status='pending').count()
-    denied_count = Survey.objects.filter(status='in_progress').count()
-
     # Prepare data for the last 7 days
     today = timezone.now()
     last_7_days = [today - timedelta(days=i) for i in range(7)]  # Get last 7 days
@@ -189,23 +187,27 @@ def home_view(request):
     denied_data = []
     survey_labels = [day.strftime('%b %d') for day in last_7_days]  # Labels for the days
 
-    # Loop through the last 7 days and count surveys for each status
+    # Loop through the last 7 days and count unique surveys for each status
     for day in last_7_days:
-        successful_count_day = Survey.objects.filter(
-            created_by=request.user,
-            status='completed',
-            created_at__date=day.date()
-        ).count()
-        in_progress_count_day = Survey.objects.filter(
-            created_by=request.user,
-            status='pending',
-            created_at__date=day.date()
-        ).count()
-        denied_count_day = Survey.objects.filter(
-            created_by=request.user,
-            status='in_progress',
-            created_at__date=day.date()
-        ).count()
+        successful_count_day = 0
+        in_progress_count_day = 0
+        denied_count_day = 0
+
+        for token in seen_tokens:
+            # Get all surveys for the current token
+            related_surveys = Survey.objects.filter(survey_token=token)
+
+            # Check the statuses of the related surveys
+            completed_count = related_surveys.filter(status='completed', created_at__date=day.date()).count()
+            in_progress_count = related_surveys.filter(status='pending', created_at__date=day.date()).count()
+            pending_count = related_surveys.filter(status='in_progress', created_at__date=day.date()).count()
+
+            if completed_count == related_surveys.count():
+                successful_count_day += 1
+            elif in_progress_count > 0:
+                in_progress_count_day += 1
+            elif pending_count > 0:
+                denied_count_day += 1
 
         successful_data.append(successful_count_day)
         in_progress_data.append(in_progress_count_day)
@@ -217,9 +219,9 @@ def home_view(request):
         'surveys': unique_surveys,
         'profile': user_profile,
         'user_email': request.user.email,
-        'successful_count': successful_count,
-        'in_progress_count': in_progress_count,
-        'denied_count': denied_count,
+        'successful_count': sum(successful_data),
+        'in_progress_count': sum(in_progress_data),
+        'denied_count': sum(denied_data),
         # Data for the last 7 days' chart
         'successful_data': successful_data,
         'in_progress_data': in_progress_data,
@@ -228,6 +230,9 @@ def home_view(request):
     }
 
     return render(request, 'user/homeindex.html', context)  # Render template with updated context
+# Dashboard view Ends here -------------------------------------------------------------------------------------------------------------
+
+
 # Login , Register end here ------------------------------------------------------------------------------------------------------------------------
 
 def cdata_view(request):
@@ -1211,11 +1216,11 @@ def add_questions(request):
                                     Option.objects.create(question=question, option_text=option_text)
 
                 messages.success(request, 'Questions added successfully from CSV!')
-                return redirect('add_questions')
+                return redirect('view_questions')
 
             except UnicodeDecodeError as e:
                 messages.error(request, f"Error reading CSV file: {e}")
-                return redirect('add_questions')
+                return redirect('view_questions')
 
         # Handle manual question form submission
         question_text = request.POST.get('question_text')
@@ -1233,7 +1238,7 @@ def add_questions(request):
                 Option.objects.create(question=question, option_text=option_text)
 
         messages.success(request, 'Question added successfully!')
-        return redirect('add_questions')
+        return redirect('view_questions')
 
     username = request.user.username if request.user.is_authenticated else None
     return render(request, 'questions/add_questions.html', {'username': username})

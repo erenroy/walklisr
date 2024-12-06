@@ -603,7 +603,7 @@ ul {
 <div class="main-content">
     
     <div class="container" style="background-color: #ffffff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); max-width: 500px; margin: 2rem auto; font-family: 'Arial', sans-serif;">
-        <h2 style="color: #333; text-align: center; margin-bottom: 1.5rem;"> <b> Upload</b></h2>
+        <h2 style="color: #333; text-align: center; margin-bottom: 1.5rem;"> <b> Upload Questions</b></h2>
         <hr>
 
         {% if messages %}
@@ -627,10 +627,12 @@ ul {
                 <input type="file" name="csv_file" id="csv_file" accept=".csv" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 1rem;">
             </div>
         
-            <button type="submit" style="background-color: #28a745; margin-bottom: 20px; color: white; padding: 0.75rem; border: none; border-radius: 5px; cursor: pointer; width: 100%;">Add Question</button>
+            <button type="submit" style="background-color: #28a745; margin-bottom: 20px; color: white; padding: 0.75rem; border: none; border-radius: 5px; cursor: pointer; width: 100%;">Uplaod</button>
         </form>
+        <hr style="height: 5px; background-color: rgb(41, 88, 255);">
         <form action="{% url 'add_questions' %}" method="post" id="questionForm" >
             {% csrf_token %}
+        <h2 style="color: #333; text-align: center; margin-bottom: 1.5rem;"> <b> Manual Entry</b></h2>
             
             <div class="form-group" >
                 <label for="question_text">Question:</label>

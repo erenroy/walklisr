@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ survey.title }} - Survey Responses{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+    }
+
+    .container {
+        max-width: 100%;
+    }
+
+    .table-container {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        overflow-x: auto; /* Makes the table horizontally scrollable */
+    }
+
+    .table thead {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+
+    .table thead th {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #dee2e6;
+    }
+
+    .table tbody tr:nth-of-type(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tbody td {
+        padding: 12px;
+        border: 1px solid #dee2e6;
+        color: #333;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-back {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #ffffff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .btn-back:hover {
+        background-color: #0056b3;
+    }
+    @media (max-width: 4000px) {
+        .container {
+            width: 80%;
+        }
+    }
+    /* Make the table and buttons responsive */
+    @media (max-width: 1200px) {
+        .container {
+            padding: 15px;
+            width: 100%;
+        }
+    }
+
+    /* For smaller devices like tablets and mobile phones */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            padding: 10px;
+            overflow-x: auto; /* Ensures table can scroll horizontally */
+        }
+
+        .table thead th, .table tbody td {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            width: 100%;
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .d-flex {
+            flex-direction: column; /* Stack buttons vertically */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn.btn-success {
+            width: 100%;
+            margin-bottom: 10px; /* Space between buttons */
+        }
+
+        /* Hide certain columns on small screens */
+        .hide-on-small {
+            display: none;
+        }
+
+        /* For very small screens like mobile phones */
+        @media (max-width: 480px) {
+            .table thead th, .table tbody td {
+                font-size: 12px; /* Adjust font size */
+            }
+
+            .btn-back {
+                font-size: 12px; /* Adjust button text size */
+            }
+
+            /* Hide some extra columns for mobile */
+            .hide-mobile {
+                display: none;
+            }
+
+            /* Ensure buttons fit the screen on small screens */
+            .btn-back {
+                font-size: 12px;
+                padding: 10px;
+            }
+        }
+    }
+</style>
+
+<div class="container">
+    <h1>{{ survey.title }} - Survey Responses</h1>
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    {% for header in data.0 %}
+                        <th class="{% if forloop.counter > 3 %} hide-on-small {% endif %}">{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data|slice:"1:" %}
+                    <tr>
+                        {% for cell in row %}
+                            <td class="{% if forloop.counter > 3 %} hide-on-small {% endif %}">{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center">
+        <a href="{% url 'surveydata:export_responses' survey.id %}" class="btn btn-success mx-2">
+            Download Data
+        </a>
+        <button class="btn-back mx-2" onclick="window.history.back()">Go Back</button>
+    </div>
+</div>
+
+{% endblock content %}

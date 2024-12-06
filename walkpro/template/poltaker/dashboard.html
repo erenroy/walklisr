@@ -362,14 +362,17 @@
     </div>
 
     <div class="main-cards">
-
+        <!-- <li><strong>Pending Surveys:</strong> {{ pending_count }}</li>
+        <li><strong>In Progress Surveys:</strong> {{ in_progress_count }}</li>
+        <li><strong>Completed Surveys:</strong> {{ completed_count }}</li>
+        <li><strong>Total Surveys:</strong> {{ total_count }}</li> -->
         <!-- Total Surveys Card -->
         <div class="card">
             <div class="card-inner">
                 <p class="text-primary">Total Surveys</p>
                 <span class="material-icons-outlined text-blue">inventory_2</span>
             </div>
-            <span class="text-primary font-weight-bold">{{ poltaker.total_survey }}</span>
+            <span class="text-primary font-weight-bold">{{ total_count }}</span>
         </div>
     
         <!-- Completed Surveys Card -->
@@ -378,7 +381,7 @@
                 <p class="text-primary">Completed Surveys</p>
                 <span class="material-icons-outlined text-orange">check_circle</span> <!-- Updated icon for completed -->
             </div>
-            <span class="text-primary font-weight-bold">{{ poltaker.completed_surveys }}</span>
+            <span class="text-primary font-weight-bold">{{ completed_count }}</span>
         </div>
     
         <!-- Pending Surveys Card -->
@@ -387,18 +390,23 @@
                 <p class="text-primary">Pending Surveys</p>
                 <span class="material-icons-outlined text-yellow">hourglass_empty</span> <!-- Updated icon for pending -->
             </div>
-            <span class="text-primary font-weight-bold">{{ poltaker.pending_surveys }}</span>
+            <span class="text-primary font-weight-bold">{{ pending_count }}</span>
         </div>
     
         <!-- Denied Surveys Card -->
         <div class="card">
             <div class="card-inner">
-                <p class="text-primary">Denied Surveys</p>
-                <span class="material-icons-outlined text-red">cancel</span> <!-- Updated icon for denied -->
+                <p class="text-primary">Today's Survey</p>
+                <span class="material-icons-outlined text-primary">today</span> <!-- Icon for today's survey -->
             </div>
-            <span class="text-primary font-weight-bold">{{ poltaker.inprogress_surveys }}</span>
+            <span class="text-primary font-weight-bold">{{ todays_survey_count }}</span>
         </div>
-    
+        
+        <style>
+            .card:nth-child(4) {
+    border-left: 7px solid #3fcc3c;
+}
+        </style>        
     </div>
     
     <div class="charts" style="width: 100%; gap: 20px;">
@@ -410,24 +418,23 @@
         <canvas id="surveyChart"></canvas>
     </div>
 </div>
-
 <script>
     // Ensure the data is correctly passed from Django context
-    console.log('Total Survey:', {{ poltaker.total_survey }});
-    console.log('Completed Surveys:', {{ poltaker.completed_surveys }});
-    console.log('Pending Surveys:', {{ poltaker.pending_surveys }});
-    console.log('Denied Surveys:', {{ poltaker.inprogress_surveys }});
+    console.log('Total Surveys:', {{ total_count }});
+    console.log('Completed Surveys:', {{ completed_count }});
+    console.log('Pending Surveys:', {{ pending_count }});
+    console.log('In Progress Surveys:', {{ in_progress_count }});
 
     // Define the chart data
     const data = {
-        labels: ['Total Surveys', 'Completed Surveys', 'Pending Surveys', 'Denied Surveys'],
+        labels: ['Total Surveys', 'Completed Surveys', 'Pending Surveys', 'In Progress Surveys'],
         datasets: [{
             label: 'Survey Data',
             data: [
-                {{ poltaker.total_survey }},
-                {{ poltaker.completed_surveys }},
-                {{ poltaker.pending_surveys }},
-                {{ poltaker.inprogress_surveys }}
+                {{ total_count }},
+                {{ completed_count }},
+                {{ pending_count }},
+                {{ in_progress_count }}
             ],
             backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545'], // Soft modern colors
             borderColor: ['#0056b3', '#218838', '#e0a800', '#c82333'], // Darker shades for borders
@@ -509,6 +516,7 @@
     );
 </script>
 
+
 <!-- CSS for Professional Look of Chart Card -->
 <style>
     /* Chart Card */
@@ -588,21 +596,21 @@
 
 <script>
     // Ensure the data is correctly passed from Django context
-    console.log('Total Survey:', {{ poltaker.total_survey }});
-    console.log('Completed Surveys:', {{ poltaker.completed_surveys }});
-    console.log('Pending Surveys:', {{ poltaker.pending_surveys }});
-    console.log('Denied Surveys:', {{ poltaker.inprogress_surveys }});
+    console.log('Total Surveys:', {{ total_count }});
+    console.log('Completed Surveys:', {{ completed_count }});
+    console.log('Pending Surveys:', {{ pending_count }});
+    console.log('In Progress Surveys:', {{ in_progress_count }});
 
     // Define the chart data for the area chart
     const areaData = {
-        labels: ['Total Surveys', 'Completed Surveys', 'Pending Surveys', 'Denied Surveys'],
+        labels: ['Total Surveys', 'Completed Surveys', 'Pending Surveys', 'In Progress Surveys'],
         datasets: [{
             label: 'Survey Progress',
             data: [
-                {{ poltaker.total_survey }},
-                {{ poltaker.completed_surveys }},
-                {{ poltaker.pending_surveys }},
-                {{ poltaker.inprogress_surveys }}
+                {{ total_count }},
+                {{ completed_count }},
+                {{ pending_count }},
+                {{ in_progress_count }}
             ],
             fill: true, // Enabling the area fill
             backgroundColor: 'rgba(0, 123, 255, 0.2)', // Light blue fill
@@ -686,6 +694,7 @@
         areaConfig
     );
 </script>
+
 
 <!-- CSS for Professional Look of Area Chart Card -->
 <style>

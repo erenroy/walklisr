@@ -57,6 +57,7 @@ import csv
 from django.http import HttpResponse
 from surveyapp.models import Survey, SurveyResponse
 
+
 def export_responses_as_csv(request, survey_id):
     # Get the selected survey object
     survey = Survey.objects.get(id=survey_id)
@@ -81,6 +82,9 @@ def export_responses_as_csv(request, survey_id):
     # Add question text to the header
     for question in questions:
         header.append(question.question_text)
+
+    # Add Denial Reason to the header
+    header.append('Denial Reason')  # Add a column for the denial reason
 
     writer.writerow(header)  # Write the header row to the CSV
 
@@ -122,9 +126,14 @@ def export_responses_as_csv(request, survey_id):
 
                 row.append(answer)  # Append the answer to the row
 
+            # Add Denial Reason if available
+            denial_reason = response_data.denial_reason if hasattr(response_data, 'denial_reason') else ''
+            row.append(denial_reason)  # Append the denial reason to the row
+
             writer.writerow(row)  # Write the row to the CSV
 
     return response
+
 
 # views.py
 from django.shortcuts import render, redirect, get_object_or_404
@@ -259,10 +268,10 @@ def edit_survey(request, survey_id):
     
     if surveys_with_same_token.exclude(status='pending').exists():
         # If any survey has a status other than 'pending', deny access to edit
-        messages.error(request, 'You cannot edit the survey because one or more surveys with the same token are not in pending status.')
+        messages.error(request, 'You cannot edit the survey because it has already started or Completed')
         return redirect('surveydata:my_surveys')
     
-    print(survey.status)
+    # print(survey.status)
     
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -309,3 +318,84 @@ def edit_survey(request, survey_id):
     return render(request, 'surveyapp/edit_survey.html', context)
 
 # Edit survey ends here 
+
+
+
+
+
+
+
+# new cieww -----------------------------------------------------
+
+
+def view_responses(request, survey_id):
+    # Get the selected survey object
+    survey = Survey.objects.get(id=survey_id)
+
+    # Fetch all surveys with the same token
+    surveys_with_same_token = Survey.objects.filter(survey_token=survey.survey_token)
+
+    # Prepare data to be displayed in the browser
+    data = []
+
+    # Prepare header row
+    header = ['Survey Name', 'Survey Date', 'Polltaker Name', 'Polltaker Mobile', 'Polltaker Email',
+              'Contact Name', 'Contact Email']
+
+    # Add question text to the header
+    questions = list(survey.questions.all())  # List of questions for this survey
+    for question in questions:
+        header.append(question.question_text)
+    header.append('Denial Reason')  # Add a column for the denial reason
+    data.append(header)
+
+    # Loop through each survey with the same token and export responses
+    for survey in surveys_with_same_token:
+        # Fetch all responses for this survey
+        responses = SurveyResponse.objects.filter(survey=survey)
+
+        # Loop through each survey response and prepare data for the browser
+        for response_data in responses:
+            row = [survey.title, survey.survey_date.strftime('%Y-%m-%d')]  # Survey name and formatted date
+
+            # Polltaker Data
+            polltaker = response_data.polltaker
+            row.append(polltaker.name)  # Polltaker's name
+            row.append(polltaker.mobile)  # Polltaker's mobile
+            row.append(polltaker.email)  # Polltaker's email
+
+            # Contact Name and Email (Ensure the contact is assigned to the survey)
+            contact = response_data.contact  # ForeignKey reference
+            row.append(f'{contact.first_name} {contact.last_name}' if contact else '')  # Full name of the contact
+            row.append(contact.email if contact else '')  # Contact's email
+
+            # Loop through each question and its corresponding answer
+            for question in questions:
+                answer = ''
+                # If the question is of type 'mcq' (Multiple Choice)
+                if question.question_type == 'mcq':
+                    selected_option = response_data.responses.get(question.question_text, {}).get('selected_option', '')
+                    answer = selected_option  # Get the selected option
+
+                # If the question is of type 'text' (Open Text)
+                elif question.question_type == 'text':
+                    answer = response_data.responses.get(question.question_text, {}).get('answer_text', '')
+
+                # If the question is of type 'yesno' (Yes/No)
+                elif question.question_type == 'yesno':
+                    answer = response_data.responses.get(question.question_text, {}).get('answer_text', '')
+
+                row.append(answer)  # Append the answer to the row
+
+            # Add Denial Reason if available
+            denial_reason = response_data.denial_reason if hasattr(response_data, 'denial_reason') else ''
+            row.append(denial_reason)  # Append the denial reason to the row
+
+            data.append(row)  # Append the row to the data list
+
+    context = {
+        'survey': survey,
+        'data': data,
+    }
+
+    return render(request, 'surveydata/view_responses.html', context)

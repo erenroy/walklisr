@@ -1174,8 +1174,11 @@
                     <label class="label-title-questions">Questions Management</label>
                 
                     <div class="button-container-questions">
-                        <a href="{% url 'add_questions' %}" id="add-button-questions">
+                        <!-- <a href="{% url 'add_questions' %}" id="add-button-questions">
                             <button type="button" class="unique-search-button-questions" style="background-color: #007BFF;">Import</button>
+                        </a> -->
+                        <a href="{% url 'add_questions' %}" id="add-button-questions">
+                            <button type="button" class="unique-search-button-questions" style="background-color: #007BFF;">Add</button>
                         </a>
                 
                         <form method="get" action="{% url 'export_questions' %}">
@@ -1263,7 +1266,15 @@ button {
             </div>
             
             
-
+            {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
             <div class="container">
 
 <!-- user questions -->

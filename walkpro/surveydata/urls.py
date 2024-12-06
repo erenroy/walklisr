@@ -10,5 +10,6 @@ urlpatterns = [
 
     path('delete_survey/<int:survey_id>/', views.delete_survey, name='delete_survey'),
     path('edit_survey/<int:survey_id>/', views.edit_survey, name='edit_survey'),
-
+    path('view/<int:survey_id>/', views.view_responses, name='view_responses'),
+    
 ]

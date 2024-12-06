@@ -22,7 +22,8 @@ class Survey(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     survey_date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('in_progress', 'In Progress'), ('completed', 'Completed')], default='pending')
-    
+    # denial_reason = models.CharField(max_length=255, blank=True, null=True)  # Add this line
+
     # Add the survey_token field to store the random token
     survey_token = models.CharField(max_length=15)  # Unique constraint here
     def generate_token(self):
@@ -80,6 +81,7 @@ class SurveyResponse(models.Model):
     responses = models.JSONField()  # Store responses as JSON
     submitted_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=True)  # New field to mark completion
+    denial_reason = models.TextField(null=True, blank=True)  # New field for denial reason
 
     def __str__(self):
         return f"Response by {self.polltaker} for survey '{self.survey.title}'"

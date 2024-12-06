@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-3">
+    <h2 class="text-center mb-4">Reuse Survey: {{ survey.title }}</h2>
+
+    <!-- Fixed buttons at the top of the page -->
+    <div class="fixed-buttons d-flex justify-content-center mb-4">
+      <button type="button" class="btn btn-primary mx-2" onclick="showPolltakers()">Choose Polltakers</button>
+      <button type="button" class="btn btn-primary mx-2" onclick="showContacts()">Choose Contacts</button>
+      <button type="button" class="btn btn-primary mx-2" id="createSurveyBtn" onclick="showConfirmation()">Create Survey</button>
+    </div>
+
+    <!-- Survey form -->
+    <form method="post" action="{% url 'surveyapp:reuse_survey' survey.id %}" id="surveyForm">
+      {% csrf_token %}
+      
+      <!-- Polltakers Section -->
+      <div id="polltakers-section">
+        <div class="form-group mb-4">
+          <label class="form-label"><strong>Select Polltakers:</strong></label>
+          <div class="checkbox-group">
+            <table class="table table-bordered table-striped table-responsive" >
+              <thead class="thead-dark">
+                <tr>
+                  <th>Select</th>
+                  <th style="width: 10%;">First Name</th>
+                  <th style="width: 10%;">Email</th>
+                  <th style="width: 10%;">Mobile</th>
+                  <th style="width: 10%;">Street</th>
+                  <th style="width: 10%;">City</th>
+                  <th style="width: 10%;">State</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                {% for poltaker in poltakers %}
+                <tr>
+                  <td><input type="checkbox" name="polltaker" value="{{ poltaker.id }}"></td>
+                  <td>{{ poltaker.name }}</td>
+                  <td>{{ poltaker.email }}</td>
+                  <td>{{ poltaker.mobile }}</td>
+                  <td>{{ poltaker.Street }}</td>
+                  <td>{{ poltaker.city }}</td>
+                  <td>{{ poltaker.state }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contacts Section -->
+      <div id="contacts-section" class="d-none">
+        <div class="form-group mb-4">
+          <label class="form-label"><strong>Select Contacts:</strong></label>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Select</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Address</th>
+                  <th>City</th>
+                  <th>State</th>
+                  <th>Zipcode</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for contact in contacts %}
+                <tr>
+                  <td><input class="form-check-input" type="checkbox" name="contacts" value="{{ contact.id }}" id="contact{{ contact.id }}"></td>
+                  <td>{{ contact.first_name }}</td>
+                  <td>{{ contact.last_name }}</td>
+                  <td>{{ contact.address }}</td>
+                  <td>{{ contact.city }}</td>
+                  <td>{{ contact.state }}</td>
+                  <td>{{ contact.zipcode }}</td>
+                  <td>{{ contact.phone }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmation Section (Modal) -->
+      <div id="confirmation-section" class="confirmation-modal d-none">
+        <div class="confirmation-modal-content">
+          <div class="alert alert-warning" role="alert">
+            Are you sure you want to create the survey with the selected options?
+          </div>
+          <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-danger mx-2 btn-small" style="margin-top: 5%;" onclick="cancelSurvey()">Cancel</button>
+            <button type="submit" class="btn btn-success mx-2 btn-small">Confirm</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <style>
+    .btn-small {
+      height: 40px;
+      padding: 0 20px;
+      font-size: 16px;
+      line-height: 40px;
+    }
+
+    .checkbox-group .form-check {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    .table-responsive {
+      margin-top: 10px;
+      overflow-x: auto;
+    }
+
+    .form-check-input {
+      margin-top: 0.3rem;
+    }
+
+    .btn-success {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .thead-dark {
+      background-color: #343a40;
+      color: white;
+    }
+
+    .thead-dark th {
+      padding: 10px;
+      text-align: left;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #ddd;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    tbody td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    tbody td input[type="checkbox"] {
+      margin: 0;
+      transform: scale(1.2);
+    }
+
+    @media (max-width: 768px) {
+      .thead-dark th, tbody td {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      .table-responsive {
+        overflow-x: scroll;
+      }
+
+      .table th:nth-child(n+5), 
+      .table td:nth-child(n+5) {
+        display: none;
+      }
+
+      .confirmation-modal-content {
+        width: 90%;
+      }
+
+      .fixed-buttons button {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+    }
+
+    /* New for screens under 600px */
+    @media (max-width: 600px) {
+      .table th, .table td {
+        font-size: 12px;
+        padding: 5px;
+      }
+
+      .btn-small {
+        font-size: 14px;
+        height: 35px;
+      }
+
+      .checkbox-group .form-check {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      /* Modify button size and layout on small screens */
+      .fixed-buttons {
+        flex-direction: column;
+      }
+
+      .fixed-buttons button {
+        font-size: 14px;
+        margin: 5px;
+      }
+
+      .confirmation-modal-content {
+        padding: 15px;
+        width: 90%;
+      }
+
+      .table-responsive {
+        margin-top: 10px;
+        overflow-x: auto;
+      }
+    }
+
+    /* Fixed buttons style */
+    .fixed-buttons {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+    }
+
+    .fixed-buttons button {
+      font-size: 16px;
+    }
+
+    /* Modal styles */
+    .confirmation-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .confirmation-modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .confirmation-modal button {
+      font-size: 16px;
+    }
+
+
+    /* For extremely large screens (above 3000px) */
+@media (min-width: 3000px) {
+  .table th, .table td {
+    font-size: 18px; /* Increase font size for readability on very large screens */
+    padding: 15px;   /* Add more padding for spacious content */
+  }
+
+  /* Adjust table layout for larger screens */
+  .table {
+    width: 100%;  /* Ensure the table takes full width */
+    table-layout: fixed;  /* Prevent columns from shrinking too much */
+  }
+
+  .table th, .table td {
+    word-wrap: break-word;
+    white-space: nowrap; /* Prevent wrapping and make sure text stays on one line */
+  }
+
+  .fixed-buttons button {
+    font-size: 20px; /* Larger buttons for better visibility */
+    padding: 12px 20px; /* More padding for better button click area */
+  }
+
+  /* Adjust the width of columns for larger screens */
+  .table th, .table td {
+    max-width: 400px; /* Set a maximum width for table cells */
+  }
+
+  .table-responsive {
+    max-width: 100%; /* Allow the table to take full width of its container */
+    overflow-x: auto; /* Allow horizontal scrolling if necessary */
+  }
+
+  /* Adjust modal content width */
+  .confirmation-modal-content {
+    width: 40%; /* Make the modal width smaller relative to screen size */
+  }
+
+  /* Ensure overall layout doesn't feel too spread out */
+  .container {
+    width: 90%; /* Restrict the container's width to avoid it stretching too far */
+  }
+}
+
+  </style>
+
+  <script>
+    function showPolltakers() {
+      document.getElementById('contacts-section').classList.add('d-none');
+      document.getElementById('polltakers-section').classList.remove('d-none');
+    }
+
+    function showContacts() {
+      document.getElementById('polltakers-section').classList.add('d-none');
+      document.getElementById('contacts-section').classList.remove('d-none');
+    }
+
+    function showConfirmation() {
+      document.getElementById('createSurveyBtn').classList.add('d-none');
+      document.getElementById('confirmation-section').classList.remove('d-none');
+    }
+
+    function cancelSurvey() {
+      document.getElementById('createSurveyBtn').classList.remove('d-none');
+      document.getElementById('confirmation-section').classList.add('d-none');
+    }
+  </script>
+
+{% endblock %}

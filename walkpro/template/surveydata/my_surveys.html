@@ -1161,19 +1161,44 @@ h2 {
     <div class="header-item"><strong>Export</strong></div>
     <div class="header-item"><strong>Actions</strong></div>
   </div>
+  {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+            <div class="alert alert-danger" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
   {% if surveys %}
   {% for survey in surveys %}
   <div class="survey-row">
     <div class="row-item">{{ survey.title }}</div>
     <div class="row-item">{{ survey.created_at|date:"Y-m-d" }}</div>
     <div class="row-item">{{ survey.status }}</div>
-
     <div class="row-item export-btn">
-      <!-- Export Button under Export Column -->
-      <a href="{% url 'surveydata:export_responses' survey.id %}">
-        <button class="btn btn-primary">Data</button>
-      </a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #007bff; border-color: #007bff;">
+                Data
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'surveydata:export_responses' survey.id %}" style="color: white; background-color: #28a745;">
+                    Download
+                </a>
+                <a class="dropdown-item" href="{% url 'surveydata:view_responses' survey.id %}" style="color: white; background-color: #17a2b8;">
+                    View
+                </a>
+            </div>
+            
+        </div>
     </div>
+    
+    <!-- Include Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-pzjw8f+ua7Kw1TIqEkSffR0xJ6lt8J/4piOdM4Z6YyTfz1jgnM4jO1p6r4pbxE6P" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4Agc6q10DOEuBAx2imZQX+j5i3yDG0zxQs1lKz0L9GNCScs7oIHk" crossorigin="anonymous"></script>
+    
     <div class="row-item actions" style="position: relative;">
         <!-- First Button: Toggle Action Buttons -->
         <button 
@@ -1210,6 +1235,13 @@ h2 {
                     class="btn btn-warning" 
                     style="background-color: rgb(43, 68, 124); color: white; margin-top: 5px; width: 100%; text-align: center; padding: 8px 15px; font-size: 14px; border-radius: 5px; border: none; cursor: pointer; transition: all 0.3s ease; outline: none;">
                     Edit
+                </button>
+            </a>
+            <a href="{% url 'surveyapp:reuse_survey' survey.id %}">
+                <button 
+                    class="btn btn-success" 
+                    style="background-color: #28a745; color: white; margin-top: 5px; width: 100%; text-align: center; padding: 8px 15px; font-size: 14px; border-radius: 5px; border: none; cursor: pointer; transition: all 0.3s ease; outline: none;">
+                    Reuse
                 </button>
             </a>
         </div>
@@ -1688,6 +1720,18 @@ width: 175%;
     background-color: #3498db;
 
 }
+
+
+
+/* For screens smaller than 600px */
+@media (max-width: 700px) {
+  
+.compact-footer {
+    max-width: 700px;
+    width: 100%;
+}
+}
+
     </style>
 <link rel="stylesheet" href="{% static 'css/widthcss.css'%}">
 <style>

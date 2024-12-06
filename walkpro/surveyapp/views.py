@@ -379,6 +379,8 @@ def create_survey(request):
         'username': username,
     }
     return render(request, 'poltaker/create_survey.html', context)
+
+
 # surveyapp/views.py
 # surveyapp/views.py
 from django.shortcuts import render, redirect
@@ -454,47 +456,65 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from .models import Survey,  SurveyResponse
 from walkapp.models import Poltaker
-# Ensure the view is dependent only on Poltaker login
 def take_survey(request, survey_id):
-    # Get the survey or return a 404 if it doesn't exist
     survey = get_object_or_404(Survey, id=survey_id)
-
-    # Fetch the Poltaker from the session to ensure they are logged in
     poltaker_id = request.session.get('poltaker_id')
+
     if not poltaker_id:
-        return redirect('surveyapp:poltaker_login')  # Redirect to login if Poltaker isn't logged in
+        return redirect('surveyapp:poltaker_login')
 
     try:
         poltaker = Poltaker.objects.get(id=poltaker_id)
     except Poltaker.DoesNotExist:
-        return redirect('surveyapp:poltaker_login')  # Redirect if Poltaker isn't found
+        return redirect('surveyapp:poltaker_login')
 
-    # Check if the poltaker is authorized to take this survey
     if survey.polltaker and poltaker != survey.polltaker:
-        return redirect('surveyapp:poltaker_dashboard')  # Redirect if the Poltaker is unauthorized
+        return redirect('surveyapp:poltaker_dashboard')
+    
 
-    # Fetch the contacts related to this survey
     contacts = survey.contacts.all()
-
-    # Create a dictionary to hold detailed contact information (optional)
     contact_details = {}
     for contact in contacts:
         user_contact = UserContactList.objects.filter(user=contact.user).first()
         if user_contact:
-            contact_details[contact.id] = user_contact  # Store the contact information
+            contact_details[contact.id] = user_contact
 
-    # Automatically assign the first contact or customize this logic if necessary
     assigned_contact = contacts.first()
 
     if request.method == 'POST':
-        responses_data = {}
+        if 'deny_survey' in request.POST:
+            # Handle denial reason
+            denial_reason = request.POST.get('denial_reason', '')
 
-        # Loop through each question to collect answers
+            # Create SurveyResponse with the denial reason
+            SurveyResponse.objects.create(
+                survey=survey,
+                polltaker=poltaker,
+                contact=assigned_contact,
+                responses={},  # Empty responses as no survey is being submitted
+                completed=False,  # Mark as incomplete
+                denial_reason=denial_reason  # Store the denial reason
+            )
+
+            # Mark the survey as completed after denial
+            survey.status = 'completed'
+            survey.save()
+
+            messages.success(request, 'Survey denied successfully!')
+             # Check if all surveys for the same token are marked as completed
+            surveys = Survey.objects.filter(survey_token=survey.survey_token)
+            if surveys.filter(status='completed').count() == surveys.count():
+                return redirect('surveyapp:poltaker_dashboard')
+
+            # Redirect to the same page (same behavior as normal survey submission)
+            return redirect('surveyapp:all_token_survey', survey_token=survey.survey_token)
+
+        # Collect survey responses
+        responses_data = {}
         for question in survey.questions.all():
             answer_text = request.POST.get(f'answer_{question.id}', '')
             selected_option = request.POST.get(f'option_{question.id}', '')
 
-            # Save responses based on question type
             if question.question_type == 'mcq' and selected_option:
                 responses_data[question.question_text] = {'selected_option': selected_option}
             elif question.question_type == 'text' and answer_text:
@@ -502,19 +522,21 @@ def take_survey(request, survey_id):
             elif question.question_type == 'yesno' and answer_text:
                 responses_data[question.question_text] = {'answer_text': answer_text}
 
-        # Create a SurveyResponse with the data collected
+        # Save the responses
         SurveyResponse.objects.create(
             survey=survey,
-            polltaker=poltaker,  # The current logged-in Poltaker
-            contact=assigned_contact,  # The assigned contact
+            polltaker=poltaker,
+            contact=assigned_contact,
             responses=responses_data,
         )
 
-        # Show success message and redirect
+        # Mark survey as completed after submission
+        survey.status = 'completed'
+        survey.save()
+
         messages.success(request, 'Survey submitted successfully!')
-        # return redirect('surveyapp:poltaker_dashboard')  # Redirect after submission
-        # return redirect('surveyapp:all_token_survey', survey_token=survey.survey_token)
-        # Check if there are any surveys with the token and valid contacts
+
+        # Check if any valid contacts remain
         surveys = Survey.objects.filter(
             survey_token=survey.survey_token,
             polltaker=poltaker
@@ -522,22 +544,17 @@ def take_survey(request, survey_id):
             valid_contacts=Count('contacts', filter=~Q(contacts__status__in=['completed', 'denied']))
         ).filter(valid_contacts__gt=0)
 
-        # If no valid surveys, redirect to the dashboard
         if not surveys.exists():
-            return redirect('surveyapp:poltaker_dashboard')  # Redirect to dashboard if no valid surveys
+            return redirect('surveyapp:poltaker_dashboard')
 
-        # Redirect to the all_token_survey page with the survey_token
         return redirect('surveyapp:all_token_survey', survey_token=survey.survey_token)
 
-        
-    # print()
-    # Render the form with context data for GET requests
     context = {
         'survey': survey,
-        'questions': survey.questions.all(),  # Questions for display
-        'contacts': contacts,  # All contacts related to the survey
-        'contact_details': contact_details,  # Detailed contact info if needed
-        'assigned_contact': assigned_contact,  # Contact to show in the form
+        'questions': survey.questions.all(),
+        'contacts': contacts,
+        'contact_details': contact_details,
+        'assigned_contact': assigned_contact,
     }
     return render(request, 'poltaker/take_survey.html', context)
 
@@ -763,6 +780,7 @@ def deny_survey(request, survey_id):
 
 
 # new dashbaord  -----------------------------------------------------------------------------------------
+from datetime import date
 
 def poltaker_dashboard(request):
     # Check if the polltaker is logged in
@@ -775,24 +793,56 @@ def poltaker_dashboard(request):
     # Get all surveys assigned to the polltaker
     assigned_surveys = Survey.objects.filter(polltaker=poltaker)
 
-    # Exclude surveys that are marked as 'completed'
-    incomplete_surveys = assigned_surveys.exclude(status='completed')
+    # Identify tokens for pending and in-progress surveys
+    pending_tokens = assigned_surveys.filter(status='pending').values_list('survey_token', flat=True).distinct()
+    in_progress_tokens = assigned_surveys.filter(status='in_progress').values_list('survey_token', flat=True).distinct()
 
-    # Group surveys by their token (only show unique tokens)
-    surveys_by_token = {}
-    for survey in incomplete_surveys:
-        if survey.survey_token not in surveys_by_token:
-            surveys_by_token[survey.survey_token] = survey
+    # Identify tokens that are completed only if all associated surveys are completed
+    all_tokens = assigned_surveys.values('survey_token').distinct()
+    completed_tokens = []
+    for token_dict in all_tokens:
+        token = token_dict['survey_token']
+        token_surveys = assigned_surveys.filter(survey_token=token)
+        if all(survey.status == 'completed' for survey in token_surveys):
+            completed_tokens.append(token)
 
-    if 'poltaker_id' not in request.session:
-        return redirect('surveyapp:poltaker_login')
-    
-    # Get the Poltaker using the ID stored in session
-    poltaker = Poltaker.objects.get(id=request.session['poltaker_id'])
-    
-    # Pass the context for rendering the dashboard
-    context = {'poltaker': poltaker,'poltaker': poltaker, 'surveys': surveys_by_token.values()}
+    # Convert to sets for easy management
+    pending_tokens_set = set(pending_tokens)
+    in_progress_tokens_set = set(in_progress_tokens)
+    completed_tokens_set = set(completed_tokens)
+
+    # Calculate counts
+    pending_count = len(pending_tokens_set)
+    in_progress_count = len(in_progress_tokens_set)
+    completed_count = len(completed_tokens_set)
+
+    # Total count of unique survey tokens
+    total_count = len(all_tokens)
+
+    # Get today's date
+    today = date.today()
+
+    # Filter surveys with today's date and distinct tokens
+    # We use distinct() to ensure we count each token only once
+    todays_survey_tokens = assigned_surveys.filter(survey_date=today).values('survey_token').distinct()
+
+    # Count distinct survey tokens for today's surveys
+    todays_survey_count = len(todays_survey_tokens)
+
+    # Pass the context for rendering the dashboard with the counts
+    context = {
+        'poltaker': poltaker,
+        'pending_count': pending_count,
+        'in_progress_count': in_progress_count,
+        'completed_count': completed_count,
+        'total_count': total_count,
+        'todays_survey_count': todays_survey_count,  # Add today's survey count
+    }
+
     return render(request, 'poltaker/dashboard.html', context)
+
+
+
 
 def assigned_surveys_poltaker(request):
     # Check if the polltaker is logged in
@@ -900,3 +950,77 @@ def edit_poltaker_profile(request):
 # Poltaker information edit start -----------------------------------------
 
 
+# Resue survey set up ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.utils import timezone
+import string
+import random
+
+# Helper function to generate a unique token
+def generate_unique_token():
+    characters = string.ascii_letters + string.digits
+    token = ''.join(random.choice(characters) for _ in range(random.randint(10, 15)))
+    return token
+
+def reuse_survey(request, survey_id):
+    survey = get_object_or_404(Survey, id=survey_id, created_by=request.user)
+
+    if request.method == 'POST':
+        polltaker_ids = request.POST.getlist('polltaker')
+        contact_ids = request.POST.getlist('contacts')
+
+        # Validate and retrieve selected Polltakers
+        polltakers = []
+        for polltaker_id in polltaker_ids:
+            try:
+                polltaker = Poltaker.objects.get(id=polltaker_id, user=request.user)
+                polltakers.append(polltaker)
+            except Poltaker.DoesNotExist:
+                messages.error(request, "Invalid Polltaker selection.")
+                return redirect('surveyapp:reuse_survey', survey_id=survey_id)
+
+        # Validate and retrieve selected Contacts
+        contacts = []
+        for contact_id in contact_ids:
+            try:
+                contact = UserContactList.objects.get(id=contact_id, user=request.user)
+                contacts.append(contact)
+            except UserContactList.DoesNotExist:
+                messages.error(request, "Invalid Contact selection.")
+                return redirect('surveyapp:reuse_survey', survey_id=survey_id)
+
+        survey_token = generate_unique_token()
+
+        for contact in contacts:
+            contact.status = 'pending'
+            contact.save()
+
+            for polltaker in polltakers:
+                new_survey = Survey.objects.create(
+                    title=survey.title,
+                    description=survey.description,
+                    created_by=request.user,
+                    polltaker=polltaker,
+                    survey_date=timezone.now().date(),
+                    survey_token=survey_token,
+                )
+                new_survey.questions.set(survey.questions.all())
+                new_survey.contacts.add(contact)
+
+        messages.success(request, 'Survey reused successfully.')
+        return redirect('surveydata:my_surveys')
+
+    # Fetch polltakers and contacts for the user
+    poltakers = Poltaker.objects.filter(user=request.user)
+    contacts = UserContactList.objects.filter(user=request.user)
+
+    context = {
+        'survey': survey,
+        'poltakers': poltakers,
+        'contacts': contacts,
+    }
+    return render(request, 'poltaker/reuse_survey.html', context)
+
+# Resue survey set up End ----------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -206,9 +206,29 @@ h1 {
 <div class="directions-container">
     <button id="directionsButton_{{ forloop.counter }}" class="directions-button">Get Directions</button>
 <button onclick="toggleVisibility()">Show/Hide Map</button>
+<button type="button" style="background-color: red;" class="deny-btn" onclick="toggleDenyModal()">Deny Survey</button>
 
+<!-- Modal for denying survey -->
+<div id="denyModal" class="deny-modal">
+    <div class="deny-modal-content">
+        <form method="post">
+            {% csrf_token %}
+            <label for="denial_reason">Select reason for denial:</label>
+            <select name="denial_reason" id="denial_reason">
+                <option value="contact not found">Contact not found</option>
+                <option value="wrong address">Wrong address</option>
+                <option value="wrong address">Reject Participation</option>
+                <option value="other">Other</option>
+            </select>
+            <button type="submit" name="deny_survey" class="deny-submit-btn">Submit Denial</button>
+        </form>
+    </div>
+</div>
+
+<!-- Button to open modal -->
 </div>
 <style>
+    
     /* Common button styles */
 button {
     background-color: #4CAF50;  /* Green background */
@@ -646,6 +666,94 @@ showLocation(street, zipCode, city, mapId, status);
     <button type="submit">Submit Survey</button>
 </form>
 
+<style>
+    /* Modal Styling */
+.deny-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed modal position */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    overflow: auto;
+    padding-top: 50px; /* Position modal content */
+}
+
+.deny-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.deny-modal-content label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.deny-modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.deny-submit-btn {
+    background-color: #FF4B2B; /* Use your preferred color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+}
+
+.deny-submit-btn:hover {
+    background-color: #e93b23;
+}
+
+/* Button to open modal */
+.deny-btn {
+    background-color: #6e8efb; /* A nice blue color */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.deny-btn:hover {
+    background-color: #5078d4; /* Darker shade on hover */
+}
+
+.deny-btn:focus {
+    outline: none; /* Remove focus outline */
+}
+
+/* Media Query for Mobile */
+@media (max-width: 600px) {
+    .deny-modal-content {
+        width: 90%;
+    }
+}
+
+</style>
+
+<script>
+    function toggleDenyModal() {
+        var modal = document.getElementById('denyModal');
+        modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
+    }
+</script>
 <script>
 function submitBothForms(event) {
     event.preventDefault();  // Prevent the default form submission
@@ -780,6 +888,60 @@ footer {
     .content {
         width: 100%;
     }
+    .responsive-wrapper {
+        width: 90%;
+    }
+    .main-header {
+    display: block;
+}
+.container {
+    max-width: 500px;
+    width: 100%;
+}
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 16px;
+}
+.content {
+    margin-top: -50px;
+}
+}
+.survey-form {
+    max-width: 100%;
+}
+
+/* General button styling */
+.directions-button, .deny-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Media query for screens smaller than 500px */
+@media (max-width: 500px) {
+    .directions-button, .deny-btn {
+        padding: 6px 12px;
+        font-size: 12px; /* Smaller text */
+        width: 100%; /* Make buttons stretch across the width */
+    }
+
+    /* Optional: Customize other buttons like the 'Show/Hide Map' button */
+    button {
+        padding: 6px 12px;
+        font-size: 12px;
+        width: 100%;
+    }
+    .responsive-wrapper {
+        width: 90%;
+        margin-left: 40px;
+    }
+}
+.main-header {
+    display: none;
 }
 </style>
 {% endblock %}

@@ -1499,7 +1499,15 @@
 
             <div class="container" style="background-color:#4CAF50;">
 
-
+                {% if messages %}
+                <div class="alert-container">
+                    {% for message in messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
                 <!-- user questions  -->
                 <!-- <h1>Create a Survey</h1> -->
                 <form method="POST"  style="padding: 20px;">

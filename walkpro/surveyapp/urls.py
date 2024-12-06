@@ -44,6 +44,6 @@ urlpatterns = [
     path('edit-poltaker-profile/', views.edit_poltaker_profile, name='edit_poltaker_profile'),
     path('assigned_surveys_poltaker/', views.assigned_surveys_poltaker, name='assigned_surveys_poltaker'),
 
-
+    path('reuse_survey/<int:survey_id>/', views.reuse_survey, name='reuse_survey'),
 
 ]

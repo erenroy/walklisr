@@ -23,16 +23,17 @@ class UserSubscriptionAdmin(admin.ModelAdmin):
 admin.site.register(UserProfile)
 
 
+
 from .models import UserSearch
 
-admin.site.register(UserSearch)
+# admin.site.register(UserSearch)
 
 
 # admin.py
 from django.contrib import admin
 from .models import UserContactAccess
 
-@admin.register(UserContactAccess)
+# @admin.register(UserContactAccess)
 class UserContactAccessAdmin(admin.ModelAdmin):
     list_display = ('user', 'person', 'accessed_at')
     search_fields = ('user__username', 'person__first_name', 'person__last_name')
@@ -89,7 +90,7 @@ class GeneralQuestionAdmin(admin.ModelAdmin):
     list_display = ('question_text', 'question_type')
     search_fields = ('question_text',)
 
-admin.site.register(GeneralQuestion, GeneralQuestionAdmin)
+# admin.site.register(GeneralQuestion, GeneralQuestionAdmin)
 
 
 admin.site.register(PasswordReset)
@@ -112,7 +113,7 @@ class UserContactListAdmin(admin.ModelAdmin):
 from django.contrib import admin
 from .models import UserContactSearch
 
-admin.site.register(UserContactSearch)
+# admin.site.register(UserContactSearch)
 
 
 
