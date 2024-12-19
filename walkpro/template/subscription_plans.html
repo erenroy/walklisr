@@ -268,43 +268,31 @@ h1 {
     <h1>Choose a Subscription Plan</h1>
     <div class="all" >
     <div class="pricing-container">
-        {% for plan in plans %}
-        <div class="pricing-card">
-            <h3>{{ plan.name }}</h3>
-            <p class="price">${{ plan.price }}<span>/month</span></p>
-            <ul>
-                <li>{{ plan.managers }} manager(s)</li>
-                <li>{{ plan.poltakers }} poltaker(s)</li>
-                <li>{{ plan.surveys }} survey(s)</li>
-                <li>{{ plan.contacts }} contact(s)</li>
-                <li>Districting and precinct</li>
-                <li>CSV downlaod with voter data and election history</li>
-                <li>Additional Feature</li>
-            </ul>
-            <form action="{% url 'choose_plan' plan.id %}" method="get">
-                <button type="submit" class="choose-plan-btn">Choose Plan</button>
-            </form>
-        </div>
-        {% endfor %}
+       
+{% for plan in plans %}
+<div class="pricing-card">
+    <h3>{{ plan.name }}</h3>
+    <p class="price">${{ plan.price }}<span>/month</span></p>
+    <ul>
+        <li>{{ plan.managers }} manager(s)</li>
+        <li>{{ plan.poltakers }} poltaker(s)</li>
+        <li>{{ plan.surveys }} survey(s)</li>
+        <li>{{ plan.contacts }} contact(s)</li>
+        <li>Districting and precinct</li>
+        <li>CSV download with voter data and election history</li>
+        <li>Additional Feature</li>
+    </ul>
+
+    <!-- Payment Method Selection -->
+    <form action="{% url 'choose_plan' plan.id %}" method="get">
+        
+        <button type="submit" class="choose-plan-btn">Choose Plan</button>
+    </form>
+</div>
+{% endfor %}
     </div>
 </div>
       
-    <script>
-        
-        /* Function to close the sidebar */
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-            document.getElementById("main").style.marginLeft = "0";
-        }
-        function toggleDropdown() {
-            var dropdown = document.getElementById("dropdown");
-            if (dropdown.style.display === "block") {
-                dropdown.style.display = "none"; // Hide the dropdown if it's already visible
-            } else {
-                dropdown.style.display = "block"; // Show the dropdown
-            }
-        }
-        
-              </script>
+
 </body>
 </html>

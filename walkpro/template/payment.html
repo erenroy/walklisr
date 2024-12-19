@@ -1,9 +1,15 @@
-<!-- templates/confirm_subscription.html -->
-{% extends 'base.html' %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
 
-{% block title %}Confirm Subscription{% endblock %}
 
-{% block content %}
+
 <style>
 /* General Styles for the Confirmation Page */
 .confirmation-container {
@@ -94,7 +100,118 @@ h3 {
 }
 
 </style>
+<style>
+    .navbar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
 
+.navbar-logo img {
+    width: 90px;
+    height: auto;
+}
+
+.navbar-welcome {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.navbar-welcome h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.navbar-user {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.user-icon {
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.user-name {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 150px;
+}
+
+.dropdown-option {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.dropdown-option:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+#logout_button {
+    background: none;
+    border: none;
+    color: #333;
+    text-align: left;
+    width: 100%;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#logout_button:hover {
+    background-color: #f1f1f1;
+}
+
+</style>
+<nav class="navbar">
+    <div class="navbar-logo">
+        <img src="{% static 'img/logo.png' %}" alt="Logo">
+    </div>
+    <div class="navbar-welcome">
+        <h2>Welcome To Walk List Pro</h2>
+    </div>
+    <div class="navbar-user">
+        <img onclick="toggleDropdown()" src="{% static 'img/logo2.png' %}" alt="User Icon" class="user-icon" style="margin-top: 0px; vertical-align: middle; width: 40px; height: 40px;">
+
+        <span class="user-name" onclick="toggleDropdown()">{{username}} ↓</span>
+        
+        <!-- Image added here -->
+    
+        <div class="dropdown-menu" id="dropdown">
+            <a href="{% url 'user_details' %}" class="dropdown-option" style="text-align: center;">My Account</a>
+            <form action="{% url 'logout' %}" method="POST">
+                {% csrf_token %}
+                <button id="logout_button" type="submit" class="dropdown-option">Logout</button>
+            </form>
+        </div>
+        
+    </div>
+    
+</nav>
 <div class="confirmation-container">
     <h1>Confirm Your Subscription to {{ plan.name }}</h1>
     
@@ -102,11 +219,275 @@ h3 {
         <p style="margin-bottom: 5px;"><strong>Price:</strong> ${{ plan.price }} / monthly</p>
         <p>You're about to pay <strong id="annual-price">${{ plan.price }}</strong> for your subscription </p>
         <p>( Billed Annually )</p>
-        <form action="{% url 'process_payment' %}" method="post" class="payment-form">
-            {% csrf_token %}
-            <input type="hidden" name="plan_id" value="{{ plan.id }}">
-            <button type="submit" class="pay-button">Pay Now</button>
-        </form>
+        <!-- Payment Form -->
+<!-- Payment Form -->
+<form action="{% url 'process_payment' %}" method="post" class="payment-form" id="paymentForm">
+    {% csrf_token %}
+    <input type="hidden" name="plan_id" value="{{ plan.id }}">
+
+    <div class="terms-conditions">
+        <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+        <label for="acceptTerms">
+            I agree to the <span class="link" onclick="openModal('privacyPolicyModal')">Terms and Conditions</span> and the <span class="link" onclick="openModal('termsConditionsModal')">Privacy Policy </span>.
+        </label>
+    </div>
+
+    <button type="submit" class="pay-button" id="payButton" disabled>Pay Now</button>
+</form>
+
+<!-- Privacy Policy Modal -->
+<div id="privacyPolicyModal" class="modal" >
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('privacyPolicyModal')">&times;</span>
+        <div class="modal-body" style="background-color: #fafafa;">
+            <h1 style="color: #2c3e50; text-align: center; padding: 20px 0;">Terms and Conditions</h1>
+<p style="font-size: 14px; color: #7f8c8d; text-align: center; margin-bottom: 40px;">Effective: July 01, 2024</p>
+
+<h2 style="color: #2980b9;">Welcome to the Walk List Pro Web site</h2>
+<p style="font-size: 16px; color: #2c3e50;">These Terms of Use explain how you can and can’t use this site. By using or accessing this Web site in any way, you agree to our Privacy Policy (to view our Privacy Policy click here) and the following Terms of Use. If you don’t agree to our Privacy Policy or to anything in these Terms of Use, please do not use our Site.</p>
+
+<h2 style="color: #2980b9;">Modifications</h2>
+<p style="font-size: 16px; color: #2c3e50;">We may, without prior notice, modify, or revise the Privacy Policy and these Terms of Use at any time. We will post any changes on this Web site, and your continued use of our Site indicates your acceptance of any changes in the Privacy Policy and these Terms of Use.</p>
+
+<h2 style="color: #2980b9;">General Information</h2>
+<p style="font-size: 16px; color: #2c3e50;">This Web site offers general information and examples. It does not constitute an offering, contract or proposal, and is not a guarantee or warranty for any information or assertion contained therein. No agency or other relationship is generated by your use or reliance on this Web site or the information contained within it.</p>
+
+<h2 style="color: #2980b9;">Conditions of Use</h2>
+<p style="font-size: 16px; color: #2c3e50;">As a condition of your use of this Web site, you will not use this Web site for any purpose that is unlawful or prohibited by these Terms of Use or in any way which infringes the rights of anyone else or restricts or inhibits anyone else’s use of this Web site. You may not use this Web site in any manner that could damage, disable, overburden, interfere or impair this Web site, the networks connected to this Web site or any other party’s use and enjoyment of this Web site.</p>
+
+<h2 style="color: #2980b9;">Unauthorized Access</h2>
+<p style="font-size: 16px; color: #2c3e50;">You may not attempt to gain unauthorized access to any Walk List Pro account, computer system or network through hacking, password mining or any other means not intentionally made available through this Web site. Walk List Pro reserves the right to grant or deny access to its Web sites as it deems appropriate.</p>
+
+<h2 style="color: #2980b9;">Jurisdiction and Law</h2>
+<p style="font-size: 16px; color: #2c3e50;">You have chosen to access the information on this Web site, which is located in the Commonwealth of Tennessee, U.S.A. Thus, all information is deemed to have been provided to you in Tennessee and Tennessee law shall govern the provision of this information and your use of this Web site. You agree to submit to the exclusive jurisdiction of the courts of Tennessee for any issue in any way arising out of or in connection with these Terms of Use.</p>
+
+<h2 style="color: #2980b9;">Disclaimers</h2>
+<p style="font-size: 16px; color: #2c3e50;">EXCEPT AS EXPRESSLY PROVIDED TO THE CONTRARY, THE SITE, THE SITE MATERIALS CONTAINED THEREIN AND THE SERVICES PROVIDED ON OR IN CONNECTION THEREWITH (THE “SERVICES”) ARE PROVIDED ON AN “AS IS” BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. Walk List Pro DISCLAIMS ANY AND ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT AND ACCURACY OR RELIABILITY OF THE INFORMATION, CONTENT, FORMS OR OTHER SITE MATERIALS ACCESSED THROUGH THE SITE. Walk List Pro DOES NOT REPRESENT OR WARRANT THAT THE SITE, THE SITE MATERIALS OR THE SERVICES ARE ACCURATE, COMPLETE, RELIABLE, CURRENT OR ERROR-FREE. Walk List Pro IS NOT RESPONSIBLE FOR TYPOGRAPHICAL ERRORS OR OMISSIONS.</p>
+<p style="font-size: 16px; color: #2c3e50;">WHILE Walk List Pro ATTEMPTS TO MAKE YOUR ACCESS AND USE OF THE SITE AND SERVICES SAFE, Walk List Pro DOES NOT WARRANT THAT THE SITE IS FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS; YOU SHOULD USE ANTI-VIRUS SOFTWARE.</p>
+
+<h2 style="color: #2980b9;">Limitation of Liability</h2>
+<p style="font-size: 16px; color: #2c3e50;">IN NO EVENT SHALL Walk List Pro OR OUR AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, TRUSTEES, AND AGENTS BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES, OR ANY OTHER DAMAGES OF ANY KIND, INCLUDING BUT NOT LIMITED TO LOSS OF USE, LOSS OF PROFITS OR LOSS OF DATA, WHETHER IN AN ACTION IN CONTRACT, TORT (INCLUDING BUT NOT LIMITED TO NEGLIGENCE) OR OTHERWISE, ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OF OR INABILITY TO USE THE SITE OR THAT RESULT FROM MISTAKES, OMISSIONS, INTERRUPTIONS, DELETION OF FILES OR EMAIL, ERRORS, DEFECTS, VIRUSES, DELAYS IN OPERATION OR TRANSMISSION OR ANY FAILURE OF PERFORMANCE, WHETHER OR NOT RESULTING FROM ACTS OF Walk List Pro, COMMUNICATIONS FAILURE, THEFT, DESTRUCTION OR UNAUTHORIZED ACCESS TO Walk List Pro’S RECORDS, PROGRAMS OR SERVICES. IN NO EVENT SHALL THE AGGREGATE LIABILITY OF Walk List Pro, WHETHER IN CONTRACT, WARRANTY, TORT (INCLUDING NEGLIGENCE, WHETHER ACTIVE, PASSIVE OR IMPUTED), PRODUCT LIABILITY, STRICT LIABILITY OR OTHER THEORY, ARISING OUT OF OR RELATING TO THE USE OF OR INABILITY TO USE THE SITE OR THE SITE MATERIALS EXCEED ANY COMPENSATION YOU PAY, IF ANY, TO Walk List Pro FOR ACCESS TO OR USE OF THE SITE. CERTAIN STATE LAWS DO NOT ALLOW LIMITATIONS ON IMPLIED WARRANTIES OR THE EXCLUSION OF LIMITATION OF CERTAIN DAMAGES. THEREFORE, SOME OR ALL OF THE ABOVE DISCLAIMERS, EXCLUSIONS, OR LIMITATIONS MAY NOT APPLY TO YOU, AND YOU MIGHT HAVE ADDITIONAL RIGHTS.</p>
+
+<h2 style="color: #2980b9;">DMCA Information</h2>
+<p style="font-size: 16px; color: #2c3e50;">Walk List Pro does not permit copyright infringing activities and infringement of intellectual property rights, and Walk List Pro will remove the infringing content if properly notified of infringement.</p>
+<p style="font-size: 16px; color: #2c3e50;">Take-Down Notices: As required by the Digital Millennium Copyright Act Section 512(c)(2), if you believe that any material or content on the Walk List Pro Site infringes your copyright, you must send a notice of claimed infringement to Walk List Pro’s Designated Agent at the following address:</p>
+<p style="font-size: 16px; color: #2c3e50;">DMCA Notifications<br>
+Walk List Pro, LLC<br>
+PO BOX XXX<br>
+Nashville, TN 37011<br>
+Email: <a href="mailto:info@walklistpro.com" style="color: #2980b9;">info@walklistpro.com</a></p>
+
+<h2 style="color: #2980b9;">Links to Other Sites</h2>
+<p style="font-size: 16px; color: #2c3e50;">The Walk List Pro Site may contain hyperlinks to websites operated by others. You agree that Walk List Pro is not responsible for the content or operation of any and all such outside websites. A hyperlink from the Walk List Pro Site to another website does not imply or mean that Walk List Pro endorses the content on that website or the operator or operations of that site. You are solely responsible for determining the extent to which you may or should use any content located at any other website to which you might link from the Walk List Pro Site.</p>
+<button onclick="closeModal('privacyPolicyModal')" style="display: block; margin: 30px auto; padding: 10px 20px; font-size: 16px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
+    I Agree
+  </button>
+  
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div id="termsConditionsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('termsConditionsModal')">&times;</span>
+        <h2>Walk List Pro, LLC Privacy Policy</h2>
+        <div class="modal-body">
+            <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #fafafa;"  >
+                 <!-- <h1 style="font-size: 32px; color: #333; text-align: center;">Walk List Pro, LLC Privacy Policy</h1> -->
+                <p style="font-size: 16px; color: #0594fb; text-align: center;">Last Updated: April 10, 2024</p>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    This Privacy Policy was developed to explain our practices regarding personal information we collect from you or about you on our sites online, offline via written or verbal communications with us, Walk List Pro’s desktop and/or mobile-based software applications (collectively referred to as “apps”), social networking presence, or from other sources. This Privacy Policy is not a contract and does not create any contractual rights or obligations.
+                </p>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    We recommend that you read this entire Privacy Policy to ensure you are fully informed. However, if you only want to access a particular section of this Privacy Policy, you may scroll down to the section(s) of interest to you:
+                </p>
+                <ul style="font-size: 16px; color: #333; line-height: 1.6;">
+                    <li>Personal Information We Collect and How We Use It</li>
+                    <li>Information We Collect by Automated Means</li>
+                    <li>With Whom We Share Your Information</li>
+                    <li>Automated Decisions About You</li>
+                    <li>User-Generated Content</li>
+                    <li>Links to Other Sites</li>
+                    <li>How We Protect Personal Information</li>
+                    <li>How Long is Personal Information Retained</li>
+                    <li>Your Personal Information Rights</li>
+                    <li>Children</li>
+                    <li>State Required Notices</li>
+                    <li>Updates to Our Privacy Policy</li>
+                    <li>How to Contact Us</li>
+                </ul>
+                
+                <h2 style="font-size: 28px; color: #333; margin-top: 30px;">Personal Information We Collect and How We Use It</h2>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    We may collect personal information from individuals through our websites or by other means (such as email, mail, phone, apps, our affiliates, business partners, and other third parties such as commercial data vendors and public databases). The principal ways you may provide the information and the types of information you may submit, as well as the ways we may use the information, are listed below.
+                </p>
+                
+                <h3 style="font-size: 24px; color: #333; margin-top: 20px;">Business Alerts, Newsletters, and Other Communications</h3>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    You may provide personal information such as your name and contact details to receive business alerts, newsletters, and other communications (including emails). It is in our legitimate business interests to use the information you provide to send you the communications and information you have requested and to communicate with you about our products and services. If you no longer want us to send you business alerts, newsletters, or other communications, you may unsubscribe at any time by contacting us via the contact information provided in the “How to Contact Us” section of this Privacy Policy.
+                </p>
+            
+                <h3 style="font-size: 24px; color: #333; margin-top: 20px;">Business Purposes</h3>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    On our websites and apps you may be able to register using your personal information to gain access to information related to your business relationship with Walk List Pro or Walk List Pro products. We use these details to provide you with access to information about your business relationship with us and to facilitate your use of the websites or apps. You may also choose to provide, or we may obtain, your personal information at conferences. It is in our legitimate business interests to use this information so that we can manage our business relationships and carry out marketing and sales activities.
+                </p>
+                
+                <h3 style="font-size: 24px; color: #333; margin-top: 20px;">Careers</h3>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    Individuals may apply for jobs through our websites, third-party job posting sites, or physical locations. The information job seekers provide through this process is often maintained by third-party service providers. This information may be maintained in locations within the United States, accessible to our global recruiting team, and be shared with our corporate affiliates for the purpose of evaluating you for positions within our company. The information submitted by job seekers, such as name, contact details, and any other information relevant to the application is used to evaluate their qualifications for employment and to contact them regarding possible employment opportunities. It is in our legitimate business interests to use this information in the selection process and to communicate with you, and it will be necessary to provide us with this information so that we can assess your application.
+                </p>
+                
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    To allow the Company to meet certain government recordkeeping and reporting obligations (particularly in the U.S.), job seekers may choose to provide sensitive personal information, such as race, gender, disability status, or ethnic background. This information will not be considered in evaluating candidates’ qualifications for employment.
+                </p>
+            
+                <h3 style="font-size: 24px; color: #333; margin-top: 20px;">Contact</h3>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    If you contact us with questions, requests, or comments through the “Contact” link on our website or via the contact information provided in the “How to Contact Us” section of this Privacy Policy, we may process your personal information to verify your identity or to track the inquiry internally to ensure we respond to your questions, requests, or comments.
+                </p>
+            
+                <h3 style="font-size: 24px; color: #333; margin-top: 20px;">Contractual Obligations</h3>
+                <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                    If you are a vendor or a contractor, we may ask you to provide personal information such as your name, photo, contact details, or business and financial details to establish and administer your account, process payments, and for compliance with internal and legal requirements. We use your information for this purpose so that we can comply with our contractual obligations to you.
+                </p>
+
+                <h3 style="font-weight: bold; color: #333;">Data From Other Information Providers and Customers</h3>
+<p style="font-size: 16px; line-height: 1.6;">Walk List Pro obtains personal information from other information providers and its customers with legal and contractual obligations to lawfully provide such information to Walk List Pro. Such information may include demographic information, contact information, and survey information.</p>
+
+<h3 style="font-weight: bold; color: #333;">Feedback</h3>
+<p style="font-size: 16px; line-height: 1.6;">You may be able to submit feedback on our websites. If you choose to give us your feedback, we may ask you for your personal information. We may also ask you about your experience using our websites. It is in our legitimate business interests to use the information you provide to enhance our websites, evaluate the quality of our products, or to communicate with you about products and services.</p>
+
+<h3 style="font-weight: bold; color: #333;">Incidents and Allegations</h3>
+<p style="font-size: 16px; line-height: 1.6;">When you provide information about an incident or allegation, detailed personal information including your name, contact details, and any relevant information about the incident or allegation may be collected. We use these details to investigate and comply with any applicable company or legal requirement. We may transfer and disclose your information to third parties as required during the investigation or to comply with any legal obligation related to the information you provide.</p>
+
+<h3 style="font-weight: bold; color: #333;">Information Technology/Physical Security</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may collect personal information when detecting and defending against security threats in accordance with our legitimate business interests and our legal obligations. We use various IT tools to detect and defend against online security threats (e.g., attacks, viruses, malware, spam, phishing, malicious web content), to promote business continuity of our information systems and assets, and to maintain optimal performance of our IT systems. Likewise, to ensure physical security of our facilities we may, where permitted under local law, document your presence, verify your identity, utilize surveillance systems, and/or use location tracking while you are on Company property.</p>
+
+<h3 style="font-weight: bold; color: #333;">Non-Personal Information</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may collect and share non-personal information, such as aggregate user statistics, demographic information, and usage information with third parties.</p>
+
+<h3 style="font-weight: bold; color: #333;">Opt-In Information</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may obtain your explicit consent to collect and use certain types of personal information when we are required to do so by law (for example, in relation to our direct marketing activities). If we ask for your consent to process your personal information, you may request to withdraw your consent at any time by contacting us using the details at the end of this Privacy Policy. We may also present you with the opportunity to consent to the sharing of your information with third parties. If you agree to have your personal information shared, your personal information will be disclosed to the third-party subject to the privacy notice and business practices of that third party.</p>
+
+<h3 style="font-weight: bold; color: #333;">Other Uses of Information</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may use the personal information you provide to us for internal general business purposes in accordance with our legitimate business interests. These purposes include administration of our websites, data analytics, fraud prevention, and compliance with our legal obligations, standards, policies, and procedures (i.e., due diligence checks and sanction screening where applicable).</p>
+
+<h3 style="font-weight: bold; color: #333;">Publicly Available Information</h3>
+<p style="font-size: 16px; line-height: 1.6;">We obtain personal information that is lawfully made available from federal, state, and local government records. We also obtain personal information from third parties which have lawfully collected such information directly from consumers, government records, from widely distributed media, or other sources which have the right to share such information with the third party. We use all the foregoing publicly available information to advance our legitimate business interests, including, but not limited to, providing data and technology services to our customers, in accordance with applicable law.</p>
+
+<h3 style="font-weight: bold; color: #333;">IP Address</h3>
+<p style="font-size: 16px; line-height: 1.6;">Your IP address is a number that is automatically assigned to the computer that you are using by your Internet Service Provider (ISP). An IP address may be identified and logged automatically in our server log files whenever a user accesses the online services, along with the time of the visit and the page(s) that were visited. Collecting IP addresses is standard practice and is done automatically by many websites, apps, and other services. We use IP addresses for purposes such as calculating usage levels, diagnosing server problems, and administering our online services. We may also derive your approximate location from your IP address to understand from what regions of the world our website visitors come.</p>
+
+<h3 style="font-weight: bold; color: #333;">Geolocation Based Services</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may collect geolocation data (i.e., the physical location of your device) if you have consented to us doing so, by, for example, using satellite, cell phone tower, Wi-Fi signals, or other technologies. We may use your device’s physical location to provide you with location-based services and content. For example, if you download one of our apps for use in performing activities for a non-profit organizations, political organization, or other entity, we may collect the geolocation of your mobile device (if you consent to the collection of this data) to provide information for the benefit of you and other users.</p>
+
+<h3 style="font-weight: bold; color: #333;">Pixel Tags or Similar Technologies</h3>
+<p style="font-size: 16px; line-height: 1.6;">Pixel tags (also known as web beacons and clear GIFs) may be used in connection with some online services to, among other things, track the actions of users of the online services (including email recipients), measure the success of our marketing campaigns and compile statistics about usage of the online services and response rates. We also use Google Analytics, Facebook Pixels, and similar services which use cookies and similar technologies to collect and analyze information about use of our services and report on activities and trends. These services may collect information regarding the use of other websites, apps, and online resources. You can learn about Google’s practices by going to www.google.com/policies/privacy/partners/, and opt-out by downloading the Google Analytics opt-out browser add-on, available at https://tools.google.com/dlpage/gaoptout. You can learn about Facebook’s practices by going to https://www.facebook.com/ads/about/?entry_product=ad_preferences and opt-out by visiting http://www.aboutads.info/choices.</p>
+
+<h3 style="font-weight: bold; color: #333;">With Whom We Share Your Information</h3>
+<p style="font-size: 16px; line-height: 1.6;">In connection with certain of our products and services, we may sell certain personal information we obtain about you for monetary consideration. You have the right to opt out of such sale of your information or sharing of your personal information, as detailed below in Your Personal Information Rights section.</p>
+
+<h3 style="font-weight: bold; color: #333;">Business Transfers</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may disclose your personal information, usage information, and other information about you to parties acquiring part or all our assets, as well as to attorneys and consultants. If we transfer your information to an acquirer, we will use reasonable efforts to direct the acquirer to use your information in a manner that is consistent with this Privacy Policy. Also, if any bankruptcy or reorganization proceeding is brought by or against us, your information may be considered a company asset that may be sold or transferred to third parties.</p>
+
+<h3 style="font-weight: bold; color: #333;">Corporate Affiliates</h3>
+<p style="font-size: 16px; line-height: 1.6;">We share personal information and the information you provide within our company and with our affiliates for purposes described in this Privacy Policy. We do this because our affiliates may assist us in carrying out our legitimate business interests.</p>
+
+<h3 style="font-weight: bold; color: #333;">Customers</h3>
+<p style="font-size: 16px; line-height: 1.6;">For a customer to use Walk List Pro’s products, it must enter into a contract with Walk List Pro. Walk List Pro’s products containing personal information are used by approved non-profit organizations, political organizations, and companies to advance their efforts which typically include outreach to relevant audiences. Many of these services are described in greater detail on our website, https://walklistpro.com.</p>
+
+<h3 style="font-weight: bold; color: #333;">Law Enforcement Agencies, Courts, Regulators, Government Authorities or other Third Parties</h3>
+<p style="font-size: 16px; line-height: 1.6;">We may transfer and disclose your information to third parties (i) to comply with a legal obligation, (ii) when we believe in good faith that the law requires it, (iii) at the request of governmental authorities conducting an investigation, (iv) to verify or enforce our policies, Terms of Use, and other agreements or to protect the rights, property, or safety of Walk List Pro, our customers, or others (v) to respond to an emergency, (vi) when we believe disclosure is necessary or appropriate to prevent physical harm or financial loss or in connection with an investigation of suspected or actual illegal activity, or (vii) otherwise to protect the rights, property, safety, or security of third parties, users of our services, or the public.</p>
+
+<h3 style="font-weight: bold; color: #333;">Third-Party Service Providers</h3>
+<p style="font-size: 16px; line-height: 1.6;">In order to carry out your requests, to make various features, services, and materials available to you through the services, to respond to your inquiries, and for other purposes described in the “How We Use Your Information” section of this Privacy Policy, we may share your personal information or usage information with third parties that perform functions on our behalf (or on behalf of our partners), such as companies or individuals that: host or operate our sites; analyze data; provide customer service; manage payments; marketing and advertising companies (e.g., The Trade Desk); e-commerce activities, or assist with risk management, compliance, legal and audit functions. These service providers are not authorized by us to use or disclose the information except as necessary to perform services on our behalf or comply with legal requirements.</p>
+
+<h3 style="font-weight: bold; color: #333;">Usage Data</h3>
+<p style="font-size: 16px; line-height: 1.6;">When you use Walk List Pro products (e.g., apps), for example, as an employee, volunteer, or representative of an Walk List Pro customer, you are agreeing that Walk List Pro has the right to share information related to your usage of the Walk List Pro product with the corresponding Walk List Pro customer.</p>
+
+<h3 style="font-weight: bold; color: #333;">Automated Decisions About You</h3>
+<p style="font-size: 16px; line-height: 1.6;">Automated processing may be used when evaluating large numbers of applicants for job vacancies. For these purposes we would request that you create a profile and answer some job-related questions to evaluate your skills as compared to the published job requirements. An algorithm may then be used to determine which candidates will be allowed to proceed to the next step within the selection process. We consider this data and process to be relevant because it will assist us to select the applicant most suitable for our vacancies. The outcome of the evaluation may have an impact on whether you are offered a role for the vacancy to which you applied.</p>
+
+<h3 style="font-weight: bold; color: #333;">User-Generated Content</h3>
+<p style="font-size: 16px; line-height: 1.6;">Some of our services and social networking features may enable you to submit your own content for public posting. Information you post in this fashion becomes public information and is not subject to this Privacy Policy. Certain areas of our websites and our social media pages may enable users to submit personal information to Walk List Pro. Such information will be used in accordance with the website’s Privacy Policy. Postings, letters, and other submissions become the property of Walk List Pro and may be reproduced in whole or in part, including your name, for any purpose and in any manner.</p>
+
+<h3 style="font-weight: bold; color: #333;">Links to Other Sites</h3>
+<p style="font-size: 16px; line-height: 1.6;">Our websites, apps, and other communications may provide links to other websites. To the extent that any linked services are not provided by Walk List Pro, we are not responsible for the services, or any of the content found on these websites. If you provide information on and use third-party services or websites, the privacy policy, and terms of service on those sites are applicable. We encourage you to read the privacy policies of websites that you visit before submitting personal information.</p>
+
+<h3 style="font-weight: bold; color: #333;">How We Protect Personal Information</h3>
+<p style="font-size: 16px; line-height: 1.6;">In proportion to the sensitivity of the information, we maintain reasonable administrative, technical, and/or physical safeguards and appropriate security measures to protect personal information from loss, misuse, or unauthorized access, disclosure, alteration, or destruction of the information you provide. However, we cannot guarantee the security of your personal information, as no electronic data transmission or storage of information is completely secure. If an incident is reported affecting your information, we will investigate and comply with all required reporting obligations.</p>
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">Security of Your Information</h2>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    All information provided to Walk List Pro is transmitted using SSL (Secure Socket Layer) encryption. We also protect your information by placing it on a secure portion of our site that is only accessible by certain qualified employees of Walk List Pro. Unfortunately, however, no Internet activity is 100% secure. While we strive to protect your information, we cannot ensure or warrant the security of such information.
+</p>
+
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">How Long is Personal Information Retained</h2>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    We will keep your personal information for a reasonably necessary period as permitted by applicable law. If there is any information that we are unable, for technical reasons, to delete entirely from our systems, we will put in place appropriate measures to prevent any further processing or use of the data as required by applicable law.
+</p>
+
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">Your Personal Information Rights</h2>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    You may have certain rights regarding your personal information, subject to local law. These include, but may not be limited to, the following rights to:
+</p>
+<ul style="font-size: 16px; color: #555;">
+    <li style="line-height: 1.6;">Access your personal information;</li>
+    <li style="line-height: 1.6;">Correction of your personal information;</li>
+    <li style="line-height: 1.6;">Delete your personal information;</li>
+    <li style="line-height: 1.6;">Opt-out of the processing of your personal information for purposes of sale of your personal information;</li>
+    <li style="line-height: 1.6;">Limit use and disclosure of your sensitive personal information;</li>
+    <li style="line-height: 1.6;">Receive your personal information in a usable electronic format and transmit it to a third party (right to data portability);</li>
+</ul>
+
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    We encourage you to contact us via the contact information provided in the “How to Contact Us” section of this Privacy Policy if you wish to exercise any of these rights. We will respond to you within a reasonable time and within the time limits established by applicable law. Subject to local law, you may appeal our decision with respect to a request you have submitted by submitting your request in our consumer request portal found here. Please note that we may require additional information from you in order to verify your identity and respond to your requests.
+</p>
+
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">Children</h2>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    Our services are not directed to children under 18. We do not knowingly collect personal information from anyone under 18. If you become aware that we have collected personal information from a child under the age of 18 without parental consent, please let us know so we can take appropriate action.
+</p>
+
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">State-Based Notices</h2>
+
+<h3 style="font-size: 20px; font-weight: bold; color: #333;">California:</h3>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    California consumers can click here to access Walk List Pro’s California Consumer Privacy Notice.
+</p>
+
+<h3 style="font-size: 20px; font-weight: bold; color: #333;">Nevada Residents:</h3>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    If you are a Nevada resident, Nevada law allows you to opt-out of the sale of certain personal information called “covered information.” Covered information includes a Nevada resident’s name, address, and any telephone numbers. If you wish to opt-out of Walk List Pro’s potential sale of any of your covered information it may possess, you may contact us using our consumer request portal found here.
+</p>
+
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">Updates to Our Privacy Policy</h2>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    We may modify or update this Privacy Policy from time to time. We will always indicate at the top of the Policy when it was most recently updated. Any changes will be effective immediately upon the posting unless otherwise indicated. We urge you to periodically review our Privacy Policy to understand any changes that may have occurred.
+</p>
+
+<h2 style="font-size: 24px; font-weight: bold; color: #333;">How to Contact Us</h2>
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    If you have questions about this Privacy Policy, a data privacy-related request, or questions, or otherwise wish to contact us, you can contact us using our consumer request portal found here or reach us as follows:
+</p>
+
+<p style="font-size: 16px; color: #555; line-height: 1.6;">
+    By mail: info@walklistpro.com<br>
+    Walk List Pro <br>
+    PO Box XXX <br>
+    Nashville, TN 37011
+</p>
+<span class="close" onclick="closeModal('termsConditionsModal')">&times;</span>
+<button  onclick="closeModal('termsConditionsModal')" style="display: block; margin: 30px auto; padding: 10px 20px; font-size: 16px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;">
+    I Agree
+  </button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+        
     </div>
 
     <h3>Plan Details:</h3>
@@ -119,7 +500,99 @@ h3 {
         <p><strong>Contacts:</strong> {{ plan.contacts }} contact(s)</p>
     </div>
 </div>
+<style>
+    .payment-form {
+    text-align: center;
+    margin: 20px 0;
+}
 
+.terms-conditions {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+}
+
+.terms-conditions .link {
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.terms-conditions .link:hover {
+    text-decoration: underline;
+}
+
+.pay-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: not-allowed;
+}
+
+.pay-button:enabled {
+    cursor: pointer;
+    background-color: #28a745;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 3600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+.payment-form {
+    display: block;
+    justify-content: center;
+    margin-top: 20px;
+}
+</style>
 <script>
     // Get the price from the server and calculate the annual price
     const planPrice = {{ plan.price }};
@@ -127,7 +600,40 @@ h3 {
 
     // Update the annual price in the HTML
     document.getElementById('annual-price').textContent = '$' + annualPrice;
+
+    document.getElementById('acceptTerms').addEventListener('change', function() {
+    var payButton = document.getElementById('payButton');
+    payButton.disabled = !this.checked;
+});
+// next javascript 
+document.getElementById('acceptTerms').addEventListener('change', function() {
+    var payButton = document.getElementById('payButton');
+    payButton.disabled = !this.checked;
+});
+
+function openModal(modalId) {
+    document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+window.onclick = function(event) {
+    var privacyModal = document.getElementById('privacyPolicyModal');
+    var termsModal = document.getElementById('termsConditionsModal');
+    if (event.target == privacyModal) {
+        privacyModal.style.display = 'none';
+    }
+    if (event.target == termsModal) {
+        termsModal.style.display = 'none';
+    }
+}
+
+
 </script>
 
 
-{% endblock %}
+    
+</body>
+</html>

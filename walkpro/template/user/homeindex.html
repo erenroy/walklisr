@@ -280,7 +280,7 @@
 								// Get real data from Django context variables
 								var successfulCount = {{ successful_count }};
 								var inProgressCount = {{ in_progress_count }};
-								var deniedCount = {{ denied_count }};
+								var deniedCount = {{ denial_count }};
 								
 								// Calculate percentages
 								var totalCount = successfulCount + inProgressCount + deniedCount;
@@ -382,7 +382,7 @@
 										<strong>In Progress Surveys:</strong> {{ in_progress_count }} surveys
 									</p>
 									<p style="font-size: 18px; font-weight: bold; color: #FF5722; margin-bottom: 10px; padding: 10px; background-color: #ffebee; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-										<strong>Denied Surveys:</strong> {{ denied_count }} surveys
+										<strong>Denied Surveys:</strong> {{ denial_count }} surveys
 									</p>
 								</div>
 								

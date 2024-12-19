@@ -734,6 +734,7 @@ def complete_survey(request, survey_id):
     return JsonResponse({'status': 'success', 'message': 'Survey completed successfully!'})
 
 def deny_survey(request, survey_id):
+    print('hello')
     # Get the survey or return a 404 if it doesn't exist
     survey = get_object_or_404(Survey, id=survey_id)
 
@@ -756,6 +757,10 @@ def deny_survey(request, survey_id):
         survey.status = 'denied'
         survey.save()
 
+        # Increment the deny_surveys count for the Poltaker
+        poltaker.deny_surveys += 1
+        poltaker.save()
+
         # Update the UserContactList status to 'denied'
         for contact in survey.contacts.all():
             contact.status = 'denied'
@@ -772,12 +777,16 @@ def deny_survey(request, survey_id):
 
 
 
+@login_required
+def user_denial_count(request):
+    # Get the currently logged-in user
+    user = request.user
 
+    # Get all the SurveyResponses for this user with a denial reason
+    denial_count = SurveyResponse.objects.filter(polltaker__user=user, denial_reason__isnull=False).count()
 
-
-
-
-
+    # Render the response count in a template
+    return render(request, 'surveyapp/denial_count.html', {'denial_count': denial_count})
 
 # new dashbaord  -----------------------------------------------------------------------------------------
 from datetime import date

@@ -152,6 +152,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('first_look')
+# Login , Register end here ------------------------------------------------------------------------------------------------------------------------
 
 from surveyapp.models import Survey
 
@@ -212,7 +213,9 @@ def home_view(request):
         successful_data.append(successful_count_day)
         in_progress_data.append(in_progress_count_day)
         denied_data.append(denied_count_day)
-
+    
+    user = request.user
+    denial_count = SurveyResponse.objects.filter(polltaker__user=user, denial_reason__isnull=False).count()
     context = {
         'subscription': user_subscription,
         'username': username,
@@ -227,13 +230,13 @@ def home_view(request):
         'in_progress_data': in_progress_data,
         'denied_data': denied_data,
         'survey_labels': survey_labels,
+        'denial_count': denial_count
     }
 
     return render(request, 'user/homeindex.html', context)  # Render template with updated context
 # Dashboard view Ends here -------------------------------------------------------------------------------------------------------------
 
 
-# Login , Register end here ------------------------------------------------------------------------------------------------------------------------
 
 def cdata_view(request):
     persons = PersonData.objects.all()  # Fetch all PersonData entries
@@ -242,6 +245,7 @@ def cdata_view(request):
 
 
 
+# PAYMENT SUSCRIPTION view Ends here -------------------------------------------------------------------------------------------------------------
 
 
 
@@ -264,76 +268,145 @@ def choose_plan(request, plan_id):
     plan = get_object_or_404(SubscriptionPlan, id=plan_id)
     return render(request, 'payment.html', {'plan': plan , 'username':username})
 
+from paymentinfo.models import PaymentConfig
+from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
+import stripe
+
+
+
 @login_required
 def process_payment(request):
     if request.method == 'POST':
         plan_id = request.POST.get('plan_id')
         plan = get_object_or_404(SubscriptionPlan, id=plan_id)
 
-        # Configure PayPal SDK
-        paypalrestsdk.configure({
-            "mode": "sandbox",  # Use "live" in production
-            "client_id": settings.PAYPAL_CLIENT_ID,
-            "client_secret": settings.PAYPAL_CLIENT_SECRET
-        })
+        # Fetch PaymentConfig (for both payment method and credentials)
+        payment_config = PaymentConfig.objects.first()
 
-        # Calculate annual price
-        annual_price = plan.price * 12
+        if not payment_config:
+            # Handle the case where no PaymentConfig is found
+            return render(request, 'payment_error.html', {'error': 'Payment configuration not found in the database.'})
 
-        # Create the payment
-        payment = paypalrestsdk.Payment({
-            "intent": "sale",
-            "payer": {
-                "payment_method": "paypal"
-            },
-            "redirect_urls": {
-                "return_url": request.build_absolute_uri(reverse('execute_payment')),  # Add this URL for execution
-                "cancel_url": request.build_absolute_uri(reverse('subscription_plans'))  # Redirect to plans if canceled
-            },
-            "transactions": [{
-                "item_list": {
-                    "items": [{
-                        "name": plan.name,
-                        "sku": str(plan.id),
-                        "price": str(annual_price),
-                        "currency": "USD",
-                        "quantity": 1
-                    }]
+        payment_method = payment_config.payment_method  # This field should be either 'paypal' or 'stripe'
+        
+        if payment_method == 'paypal':
+            # PayPal payment flow
+            client_id = payment_config.client_id
+            client_secret = payment_config.client_secret
+
+            # Configure PayPal SDK with the credentials
+            paypalrestsdk.configure({
+                "mode": "sandbox",  # Use "live" in production
+                "client_id": client_id,
+                "client_secret": client_secret
+            })
+
+            # Calculate annual price
+            annual_price = plan.price * 12
+
+            # Create the PayPal payment
+            payment = paypalrestsdk.Payment({
+                "intent": "sale",
+                "payer": {
+                    "payment_method": "paypal"
                 },
-                "amount": {
-                    "total": str(annual_price),
-                    "currency": "USD"
+                "redirect_urls": {
+                    "return_url": request.build_absolute_uri(reverse('execute_payment')),  # Add this URL for execution
+                    "cancel_url": request.build_absolute_uri(reverse('subscription_plans'))  # Redirect to plans if canceled
                 },
-                "description": f"Payment for {plan.name} annual subscription."
-            }]
-        })
+                "transactions": [{
+                    "item_list": {
+                        "items": [{
+                            "name": plan.name,
+                            "sku": str(plan.id),
+                            "price": str(annual_price),
+                            "currency": "USD",
+                            "quantity": 1
+                        }]
+                    },
+                    "amount": {
+                        "total": str(annual_price),
+                        "currency": "USD"
+                    },
+                    "description": f"Payment for {plan.name} annual subscription."
+                }]
+            })
 
-        if payment.create():
-            # Store payment ID in session to verify later
-            request.session['payment_id'] = payment.id
-            # Redirect to PayPal for payment approval
-            for link in payment.links:
-                if link.rel == "approval_url":
-                    return redirect(link.href)
+            if payment.create():
+                # Store payment ID in session to verify later
+                request.session['payment_id'] = payment.id
+                # Redirect to PayPal for payment approval
+                for link in payment.links:
+                    if link.rel == "approval_url":
+                        return redirect(link.href)
+            else:
+                # If payment creation fails, show error
+                return render(request, 'payment_error.html', {'error': payment.error})
+
+        elif payment_method == 'stripe':
+            # Stripe payment flow
+            stripe.api_key = payment_config.stripe_secret_key  # Use the Stripe Secret Key from PaymentConfig
+
+            # Calculate annual price
+            annual_price = plan.price * 12
+
+            try:
+                # Create a Stripe Checkout session
+                session = stripe.checkout.Session.create(
+                    payment_method_types=['card'],
+                    line_items=[
+                        {
+                            'price_data': {
+                                'currency': 'usd',
+                                'product_data': {
+                                    'name': plan.name,
+                                },
+                                'unit_amount': int(annual_price * 100),  # Stripe expects the amount in cents
+                            },
+                            'quantity': 1,
+                        },
+                    ],
+                    mode='payment',
+                    success_url=request.build_absolute_uri(reverse('execute_payment')) + "?session_id={CHECKOUT_SESSION_ID}",
+                    cancel_url=request.build_absolute_uri(reverse('subscription_plans')),
+                    metadata={
+                        'plan_id': plan.id,  # Add the plan_id here for later use
+                    }
+                )
+                # Store session ID in the session for later use
+                request.session['stripe_session_id'] = session.id
+                # Redirect to Stripe Checkout
+                return redirect(session.url)
+            except stripe.error.StripeError as e:
+                return render(request, 'payment_error.html', {'error': str(e)})
+
         else:
-            # If payment creation fails
-            return render(request, 'payment_error.html', {'error': payment.error})
-
-from django.utils import timezone
-from datetime import timedelta
+            # Handle case where neither PayPal nor Stripe is set
+            return render(request, 'payment_error.html', {'error': 'No valid payment method selected.'})
 
 @login_required
 def execute_payment(request):
-    # Retrieve the payment ID stored in session
+    # Retrieve the payment ID stored in session for PayPal (same as before)
     payment_id = request.session.get('payment_id')
     payer_id = request.GET.get('PayerID')
 
     if payment_id and payer_id:
-        # Configure PayPal SDK
+        # Fetch PayPal credentials from the PaymentConfig model
+        payment_config = PaymentConfig.objects.first()
+
+        if not payment_config:
+            return render(request, 'payment_error.html', {'error': 'PayPal credentials not found in the database.'})
+
+        client_id = payment_config.client_id
+        client_secret = payment_config.client_secret
+
+        # Configure PayPal SDK with the credentials
         paypalrestsdk.configure({
             "mode": "sandbox",  # Use "live" in production
-            "client_id": settings.PAYPAL_CLIENT_ID,
-            "client_secret": settings.PAYPAL_CLIENT_SECRET
+            "client_id": client_id,
+            "client_secret": client_secret
         })
 
         # Find the payment object
@@ -353,10 +426,10 @@ def execute_payment(request):
 
             # Set or update the expiration date
             if created or user_subscription.expiration_date < timezone.now():
-                # If new or expired, set expiration to one month from now
+                # If new or expired, set expiration to one year from now
                 user_subscription.expiration_date = timezone.now() + timedelta(days=365)
             else:
-                # Extend expiration date by one month if still active
+                # Extend expiration date by one year if still active
                 user_subscription.expiration_date += timedelta(days=365)
 
             user_subscription.save()
@@ -369,9 +442,56 @@ def execute_payment(request):
         else:
             # Handle failed payment execution
             return render(request, 'payment_error.html', {'error': payment.error})
-    else:
-        # Redirect if payment ID or PayerID is missing
-        return redirect('subscription_plans')
+
+    # Now, handle Stripe payment execution
+    stripe_session_id = request.GET.get('session_id')
+    if stripe_session_id:
+        # Fetch Stripe session ID from session if available
+        session_id = request.session.get('stripe_session_id')
+
+        if session_id == stripe_session_id:
+            try:
+                # Retrieve Stripe session object
+                session = stripe.checkout.Session.retrieve(session_id)
+
+                if session.payment_status == 'paid':
+                    # Get plan ID from the metadata
+                    plan_id = session.metadata.get('plan_id')  # Retrieve plan_id from metadata
+                    if not plan_id:
+                        raise KeyError("Plan ID is missing in the session metadata.")
+
+                    # Get the plan object using the plan_id
+                    plan = get_object_or_404(SubscriptionPlan, id=plan_id)
+
+                    # Get or create the user's subscription and set expiration date
+                    user_subscription, created = UserSubscription.objects.update_or_create(
+                        user=request.user,
+                        defaults={'plan': plan}
+                    )
+
+                    # Set or update the expiration date
+                    if created or user_subscription.expiration_date < timezone.now():
+                        # If new or expired, set expiration to one year from now
+                        user_subscription.expiration_date = timezone.now() + timedelta(days=365)
+                    else:
+                        # Extend expiration date by one year if still active
+                        user_subscription.expiration_date += timedelta(days=365)
+
+                    user_subscription.save()
+
+                    # Clear the session session ID after successful payment
+                    if 'stripe_session_id' in request.session:
+                        del request.session['stripe_session_id']
+
+                    return render(request, 'subscription_success.html', {'plan': plan})
+
+                else:
+                    return render(request, 'payment_error.html', {'error': 'Payment not successful with Stripe.'})
+
+            except stripe.error.StripeError as e:
+                return render(request, 'payment_error.html', {'error': str(e)})
+
+    return redirect('subscription_plans')
 
 @login_required
 def payment_success(request):
@@ -379,11 +499,10 @@ def payment_success(request):
     user_subscription = UserSubscription.objects.get(user=request.user)
 
     # Save the user's subscription
-    user_subscription.plan = user_subscription.plan  # Update the plan
+    user_subscription.plan = user_subscription.plan  # Update the plan (no change needed here)
     user_subscription.save()
 
     return render(request, 'subscription_success.html', {'plan': user_subscription.plan})
-
 # @login_required
 # def subscription_success(request):
 #     return render(request, 'subscription_success.html')
@@ -462,6 +581,7 @@ def check_subscription(view_func):
 @check_subscription
 def homes(request):
     return render(request, 'all.html',)
+# PAYMENT SUSCRIPTION view Ends here -------------------------------------------------------------------------------------------------------------
 
 from django.shortcuts import render
 
@@ -937,71 +1057,38 @@ from django.contrib.auth.decorators import login_required
 from .models import Poltaker, UserSubscription
 from .utils import send_poltaker_email  # Assuming you have this utility function
 
+
 @login_required
 def add_poltaker(request):
     can_add_poltaker = True  # Default assumption
-
-    # Handle form submission
+    
     if request.method == 'POST':
-        # Check if it's a CSV upload
+        # Handle CSV file upload
         if 'csv_file' in request.FILES:
             csv_file = request.FILES['csv_file']
             if not csv_file.name.endswith('.csv'):
-                messages.error(request, 'This is not a CSV file. Please upload a valid CSV file.')
-                return redirect('add_poltaker')  # Redirect to the add poltaker page
+                messages.error(request, 'Please upload a valid CSV file.')
+                return redirect('add_poltaker')
 
-            # Read the CSV file
-            data_set = csv_file.read().decode('UTF-8')
-            io_string = io.StringIO(data_set)
-            next(io_string)  # Skip the header row
+            try:
+                # Read and parse the CSV file
+                data_set = csv_file.read().decode('UTF-8')
+                io_string = io.StringIO(data_set)
+                next(io_string)  # Skip the header row
+                
+                for row in csv.reader(io_string, delimiter=','):
+                    name, email, zip_code, password, mobile = row
+                    if name and email and zip_code and password:
+                        handle_poltaker_creation(request.user, name, email, zip_code, password, mobile)
+                
+                messages.success(request, 'Poltakers added successfully from CSV.')
+                return redirect('add_poltaker')
 
-            # Process each row in the CSV file
-            for row in csv.reader(io_string, delimiter=','):
-                name, email, zip_code, password, mobile = row
-                if name and email and zip_code and password:
-                    try:
-                        user_subscription = UserSubscription.objects.get(user=request.user)
+            except Exception as e:
+                messages.error(request, f"Error processing CSV: {e}")
+                return redirect('add_poltaker')
 
-                        if user_subscription.is_active():
-                            # Determine the number of allowed contacts based on the subscription plan
-                            if user_subscription.plan.name.lower() == 'basic':
-                                poltakers_allowed = 1
-                            elif user_subscription.plan.name.lower() == 'team':
-                                poltakers_allowed = 10
-                            elif user_subscription.plan.name.lower() == 'organization':
-                                poltakers_allowed = 999
-                            else:
-                                poltakers_allowed = 0
-
-                            poltakers_count = Poltaker.objects.filter(user=request.user).count()
-
-                            if poltakers_count >= poltakers_allowed:
-                                messages.error(request, 'Maximum allowed Poltakers exceeded. Please upgrade your subscription or remove some Poltakers.')
-                                can_add_poltaker = False
-                                return render(request, 'user/add_poltaker.html', {
-                                    'poltakers': Poltaker.objects.filter(user=request.user),
-                                    'can_add_poltaker': can_add_poltaker,
-                                })
-
-                        # Create the Poltaker instance
-                        poltaker = Poltaker.objects.create(
-                            user=request.user,
-                            name=name,
-                            email=email,
-                            zip_code=zip_code,
-                            password=password,
-                            mobile=mobile,
-                        )
-                        # Send email notification to the new Poltaker
-                        send_poltaker_email(poltaker)
-
-                    except IntegrityError:
-                        messages.error(request, f'A Poltaker with the email "{email}" already exists. Please use a different email address.')
-
-            messages.success(request, 'Poltakers added successfully from CSV.')
-            return redirect('add_poltaker')  # Redirect to the add poltaker page after successful CSV upload
-
-        # Handle manual addition of a poltaker
+        # Handle manual poltaker form submission
         else:
             name = request.POST.get('name')
             email = request.POST.get('email')
@@ -1011,53 +1098,14 @@ def add_poltaker(request):
 
             if name and email and zip_code and password:
                 try:
-                    user_subscription = UserSubscription.objects.get(user=request.user)
-
-                    if user_subscription.is_active():
-                        # Determine the number of allowed contacts based on the subscription plan
-                        if user_subscription.plan.name.lower() == 'basic':
-                            poltakers_allowed = 1
-                        elif user_subscription.plan.name.lower() == 'team':
-                            poltakers_allowed = 10
-                        elif user_subscription.plan.name.lower() == 'organization':
-                            poltakers_allowed = 999
-                        else:
-                            poltakers_allowed = 0
-
-                        poltakers_count = Poltaker.objects.filter(user=request.user).count()
-
-                        if poltakers_count >= poltakers_allowed:
-                            messages.error(request, 'Maximum allowed Poltakers exceeded. Please upgrade your subscription or remove some Poltakers.')
-                            can_add_poltaker = False
-                            return render(request, 'user/add_poltaker.html', {
-                                'poltakers': Poltaker.objects.filter(user=request.user),
-                                'can_add_poltaker': can_add_poltaker,
-                            })
-
-                    # Create the Poltaker instance
-                    poltaker = Poltaker.objects.create(
-                        user=request.user,
-                        name=name,
-                        email=email,
-                        zip_code=zip_code,
-                        password=password,
-                        mobile=mobile,
-                    )
-                    # Send email notification to the new Poltaker
-                    send_poltaker_email(poltaker)
-
+                    handle_poltaker_creation(request.user, name, email, zip_code, password, mobile)
                     messages.success(request, f'Poltaker "{name}" added successfully!')
                     return redirect('add_poltaker')
-
                 except IntegrityError:
-                    messages.error(request, f'A Poltaker with the email "{email}" already exists. Please use a different email address.')
+                    messages.error(request, f'A Poltaker with the email "{email}" already exists.')
                 except UserSubscription.DoesNotExist:
                     messages.error(request, 'User subscription not found. Please contact support.')
-                    can_add_poltaker = False
-                    return render(request, 'user/add_poltaker.html', {
-                        'poltakers': Poltaker.objects.filter(user=request.user),
-                        'can_add_poltaker': can_add_poltaker,
-                    })
+
             else:
                 messages.error(request, 'Please fill in all fields.')
 
@@ -1071,6 +1119,38 @@ def add_poltaker(request):
     })
 
 
+def handle_poltaker_creation(user, name, email, zip_code, password, mobile):
+    # Check user's subscription plan to ensure they can add more poltakers
+    user_subscription = UserSubscription.objects.get(user=user)
+
+    if user_subscription.is_active():
+        # Define poltaker limits based on the user's subscription plan
+        plan = user_subscription.plan.name.lower()
+        poltakers_allowed = 0
+        if plan == 'basic':
+            poltakers_allowed = 1
+        elif plan == 'team':
+            poltakers_allowed = 10
+        elif plan == 'organization':
+            poltakers_allowed = 999
+
+        poltakers_count = Poltaker.objects.filter(user=user).count()
+
+        if poltakers_count >= poltakers_allowed:
+            raise ValueError('Maximum allowed Poltakers exceeded. Please upgrade your subscription or remove some Poltakers.')
+
+    # Create the new poltaker
+    poltaker = Poltaker.objects.create(
+        user=user,
+        name=name,
+        email=email,
+        zip_code=zip_code,
+        password=password,
+        mobile=mobile,
+    )
+
+    # Send email notification to the new Poltaker
+    send_poltaker_email(poltaker)
 # views.py
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -1082,7 +1162,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Poltaker
 # views.py
-
+# Polltaker starts here --------- no use - poltaker view has changed ------------------------------------------------------------
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Poltaker
@@ -1141,6 +1221,7 @@ def poltaker_logout(request):
     if 'poltaker_id' in request.session:
         del request.session['poltaker_id']  # Remove poltaker session
     return redirect('poltaker_login')  # Redirect to the login page
+# Polltaker Ends here --------- no use - poltaker view has changed ------------------------------------------------------------
 
 # Now Adding question feature 
 from django.shortcuts import render, redirect
@@ -1242,6 +1323,8 @@ def add_questions(request):
 
     username = request.user.username if request.user.is_authenticated else None
     return render(request, 'questions/add_questions.html', {'username': username})
+
+
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render

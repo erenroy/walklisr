@@ -3,6 +3,7 @@ pillow
 pip install paypalrestsdk
 pip install django-paypal
 pip install -U django-jazzmin
+pip install stripe
 
 
 
@@ -11,9 +12,3 @@ pip install -U django-jazzmin
 
 
 
-# Last worked on survey on new app 
-
-
-last night - did till survay crrate ui page 
-
-tommror - complete pending button fix 

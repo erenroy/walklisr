@@ -45,5 +45,6 @@ urlpatterns = [
     path('assigned_surveys_poltaker/', views.assigned_surveys_poltaker, name='assigned_surveys_poltaker'),
 
     path('reuse_survey/<int:survey_id>/', views.reuse_survey, name='reuse_survey'),
+    path('user/denial-count/', views.user_denial_count, name='user_denial_count'),
 
 ]
