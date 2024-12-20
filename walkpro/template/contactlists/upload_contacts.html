@@ -3,7 +3,7 @@
 <!-- contact_list.html -->
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Confirm Subscription{% endblock %}
+{% block title %}Walk List Pro - Upload Contacts {% endblock %}
 
 {% block content %}
 
@@ -1104,6 +1104,7 @@ body {
 }
 
 </style>
+<div class="allcontent">
     <!-- Manual Entry Form -->
     <h2 class="upload-header">Manual Entry</h2>
     <form class="custom-upload-form" method="post">
@@ -1244,6 +1245,8 @@ Jane,Smith,jane@example.com,456 Oak St,Metropolis,IL,USA,62960,Democrat
         </pre>
     </div>
 </div>
+
+</div>
 <!-- start End  -->
            
             
@@ -1304,6 +1307,49 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
     .content {
         width: 100%;
     }
+}
+
+@media (max-width: 800px) {
+    .main-content{
+    width: 100%;
+    max-width: 780px;
+}
+}
+@media (max-width: 600px) {
+    .main-content{
+    width: 100%;
+    max-width: 580px;
+}
+}
+@media (max-width: 500px) {
+    .main-content{
+    width: 100%;
+    max-width: 480px;
+}
+}
+@media (max-width: 450px) {
+    .main-content{
+    width: 100%;
+    max-width: 430px;
+}
+}
+@media (max-width: 400px) {
+    .main-content{
+    width: 100%;
+    max-width: 380px;
+}
+}
+@media (max-width: 350px) {
+    .main-content{
+    width: 100%;
+    max-width: 330px;
+}
+}
+@media (max-width: 300px) {
+    .main-content{
+    width: 100%;
+    max-width: 280px;
+}
 }
 </style>
 

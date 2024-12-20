@@ -1,7 +1,7 @@
 <!-- contact_list.html -->
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Confirm Subscription{% endblock %}
+{% block title %}Walk List Pro - Add Contacts{% endblock %}
 
 {% block content %}
 
@@ -806,11 +806,11 @@ form {
         <div class="main-content">
             <div class="plan-details" style="margin-bottom: 30px;">
                 <div class="custom-search-bars" style="gap: 20px; padding: 10px; border-radius: 8px;">
-                    <label class="custom-label-title" style="font-size: 1.5rem; font-weight: bold; margin-right: auto;">Contact Management</label>
+                    <label class="custom-label-title" style="font-size: 1.5rem; font-weight: bold; margin-right: auto;" id="content-management">Contact Management</label>
                     <!-- operation start  -->
                     <div class="importexportbuttons" style="display: flex; gap: 5px;">
                         <form action="{% url 'upload_contacts' %}" method="get" style="margin: 0;">
-                            <button type="submit" style="padding: 8px 16px; font-size: 1rem; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add Contact</button>
+                            <button type="submit" style="padding: 8px 16px; font-size: 1rem; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Add </button>
                         </form>
                         <form action="{% url 'download_contacts_csv' %}" method="get" style="margin: 0;">
                             <button type="submit" style="padding: 8px 16px; font-size: 1rem; background-color: #007BFF; color: white; border: none; border-radius: 4px; cursor: pointer;">Export</button>
@@ -1306,6 +1306,20 @@ document.addEventListener('DOMContentLoaded', checkScreenWidth);
         width: 100%;
     }
 }
+
+
+@media screen and (max-width: 320px) {
+    form {
+        display: block;
+        margin-top: 32%;
+    }
+    #content-management{
+    margin-left: 10%;
+}
+
+}
+
+
 </style>
 <!-- Making page responsive code goes here ------------------------------------------------------------- --  End -->
 
